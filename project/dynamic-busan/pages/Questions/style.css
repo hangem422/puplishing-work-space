@@ -1,0 +1,19 @@
+@import url("../../src/style/main.css");
+
+.item-header-container .header-custom-content p {
+  flex: 1;
+  transition: font-weight var(--transition-duration)
+    var(--transition-timing-function);
+}
+
+.active .item-header-container .header-custom-content p {
+  font-weight: 700 !important;
+}
+
+.item-header-container .header-custom-content svg {
+  margin-left: 20px;
+}
+
+.item-content-container .content-custom-content {
+  padding: 0px 8px;
+}

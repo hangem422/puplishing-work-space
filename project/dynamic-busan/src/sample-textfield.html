@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="kr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="./style/main.css" />
+    <style>
+      .wrapper {
+        margin: 24px 0px;
+      }
+    </style>
+    <script>
+      // For Prevent Chrome CSS Bug
+    </script>
+    <title>TextField Style Sample</title>
+  </head>
+  <body>
+    <div class="container">
+      <p class="font-text-gnb font-medium">Textfield</p>
+      <div class="wrapper">
+        <div class="textfield">
+          <label for="textfield-default">Default</label>
+          <input
+            type="text"
+            id="textfield-default"
+            placeholder="인증번호를 입력하세요."
+          />
+        </div>
+      </div>
+      <div class="wrapper">
+        <div class="textfield">
+          <label for="textfield-filled">Filled</label>
+          <input
+            type="text"
+            id="textfield-filled"
+            placeholder="인증번호를 입력하세요."
+            value="abcd@coinplug.com"
+          />
+        </div>
+      </div>
+      <div class="wrapper">
+        <div
+          class="textfield textfield-error textfield-error-message"
+          error-message="인증번호가 일치하지 않습니다. 확인 후 다시 시도해주세요. (1/5)"
+        >
+          <label for="textfield-error">Error</label>
+          <input
+            type="text"
+            id="textfield-error"
+            placeholder="인증번호를 입력하세요."
+            value="987654"
+          />
+        </div>
+      </div>
+    </div>
+
+    <br />
+
+    <div class="container">
+      <p class="font-text-gnb font-medium">Textfield + Time</p>
+      <div class="wrapper">
+        <div class="textfield textfield-time" time="3 : 00">
+          <label for="textfield-time-default">Default</label>
+          <input
+            type="text"
+            id="textfield-time-default"
+            placeholder="인증번호를 입력하세요."
+          />
+        </div>
+      </div>
+      <div class="wrapper">
+        <div class="textfield textfield-time" time="3 : 00">
+          <label for="textfield-time-filled">Filled</label>
+          <input
+            type="text"
+            id="textfield-time-filled"
+            placeholder="인증번호를 입력하세요."
+            value="123456"
+          />
+        </div>
+      </div>
+      <div class="wrapper">
+        <div
+          class="textfield textfield-time textfield-error textfield-error-message"
+          time="2 : 30"
+          error-message="인증번호가 일치하지 않습니다. 확인 후 다시 시도해주세요. (1/5)"
+        >
+          <label for="textfield-time-error">Error</label>
+          <input
+            type="text"
+            id="textfield-time-error"
+            placeholder="인증번호를 입력하세요."
+            value="987654"
+          />
+        </div>
+      </div>
+    </div>
+
+    <br />
+
+    <div class="container">
+      <p class="font-text-gnb font-medium">Textfield + Small Button</p>
+      <div class="wrapper">
+        <div class="textfield">
+          <label for="textfield-button-default">Default</label>
+          <div class="row-center">
+            <input
+              type="text"
+              id="textfield-button-default"
+              placeholder="이름을 입력하세요."
+            />
+            <button type="button" class="button button-small">
+              내국인
+            </button>
+            <button type="button" class="button button-small button-mono">
+              외국인
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="wrapper">
+        <div class="textfield">
+          <label for="textfield-button-filled">Filled</label>
+          <div class="row-center">
+            <input
+              type="text"
+              id="textfield-button-filled"
+              placeholder="이름을 입력하세요."
+              value="최예지"
+            />
+            <button type="button" class="button button-small">
+              내국인
+            </button>
+            <button type="button" class="button button-small button-mono">
+              외국인
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="wrapper">
+        <div
+          class="textfield textfield-error textfield-error-message"
+          error-message="이름이 일치하지 않습니다. 확인 후 다시 시도해주세요. (1/5)"
+        >
+          <label for="textfield-button-error">Error</label>
+          <div class="row-center">
+            <input
+              type="text"
+              id="textfield-button-error"
+              placeholder="이름을 입력하세요."
+              value="최예지"
+            />
+            <button type="button" class="button button-small">
+              내국인
+            </button>
+            <button type="button" class="button button-small button-mono">
+              외국인
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

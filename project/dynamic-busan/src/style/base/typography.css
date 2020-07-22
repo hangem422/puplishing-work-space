@@ -1,0 +1,159 @@
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap");
+
+@font-face {
+  font-family: "NanumSquare";
+  src: url("../../font/NanumSquareBold.woff2") format("woff2"),
+    url("../../font/NanumSquareBold.woff") format("woff"),
+    url("../../font/NanumSquareBold.ttf") format("truetype");
+
+  font-weight: 700;
+}
+
+@font-face {
+  font-family: "NanumSquare";
+  src: url("../../font/NanumSquareExtraBold.woff2") format("woff2"),
+    url("../../font/NanumSquareExtraBold.woff") format("woff"),
+    url("../../font/NanumSquareExtraBold.ttf") format("truetype");
+  font-weight: 800;
+}
+
+.font-text {
+  font-family: "Noto Sans KR", sans-serif;
+}
+
+.font-text-caption,
+.font-text-subtitle2 {
+  font-family: "Noto Sans KR", sans-serif;
+  font-size: 12px;
+  line-height: 14px;
+  font-weight: 400;
+}
+
+.font-text-body2,
+.textfield,
+.textfield::after,
+.textfield label,
+.textfield input,
+.textfield input::placeholder {
+  font-family: "Noto Sans KR", sans-serif;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 400;
+}
+
+.button.button-small {
+  font-family: "Noto Sans KR", sans-serif;
+  font-size: 14px;
+  line-height: 22px;
+  font-weight: 500;
+}
+
+.textfield.textfield-time::before {
+  font-family: "Noto Sans KR", sans-serif;
+  font-size: 14px;
+  line-height: 22px;
+  font-weight: 700;
+}
+
+.font-text-body1 {
+  font-family: "Noto Sans KR", sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  font-weight: 400;
+}
+
+.button.button-type-a,
+.button.button-type-b,
+.button.button-both-normal,
+.button.button-both-floating {
+  font-family: "Noto Sans KR", sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  font-weight: 700;
+}
+
+.font-text-gnb {
+  font-family: "Noto Sans KR", sans-serif;
+  font-size: 18px;
+  line-height: 1.5;
+  font-weight: 400;
+}
+
+h2,
+.font-text-subtitle1 {
+  font-family: "Noto Sans KR", sans-serif;
+  font-size: 20px;
+  line-height: 1.5;
+  font-weight: 400;
+}
+
+h1 {
+  font-family: "Noto Sans KR", sans-serif;
+  font-size: 24px;
+  line-height: 1.5;
+  font-weight: 700;
+}
+
+.font-number {
+  font-family: "NanumSquare", sans-serif;
+}
+
+.font-number-body3 {
+  font-family: "NanumSquare", sans-serif;
+  font-size: 12px;
+  line-height: 1;
+  font-weight: 700;
+}
+
+.font-number-body2 {
+  font-family: "NanumSquare", sans-serif;
+  font-size: 14px;
+  line-height: 1;
+  font-weight: 700;
+}
+
+.font-number-body1 {
+  font-family: "NanumSquare", sans-serif;
+  font-size: 16px;
+  line-height: 1;
+  font-weight: 700;
+}
+
+.font-number-subtitle1 {
+  font-family: "NanumSquare", sans-serif;
+  font-size: 24px;
+  line-height: 1;
+  font-weight: 800;
+}
+
+.font-regular {
+  font-weight: 400 !important;
+}
+
+.font-medium {
+  font-weight: 500 !important;
+}
+
+.font-bold {
+  font-weight: 700 !important;
+}
+
+.font-ex-bold {
+  font-weight: 800 !important;
+}
+
+.font-color-dark {
+  color: var(--font-color-dark);
+}
+
+.font-color-medium {
+  color: var(--font-color-medium);
+}
+
+.font-color-regular {
+  color: var(--font-color-regular);
+}
+
+.font-color-light {
+  color: var(--font-color-light);
+}

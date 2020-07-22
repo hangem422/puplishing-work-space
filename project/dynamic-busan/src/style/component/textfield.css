@@ -1,0 +1,77 @@
+.textfield {
+  position: relative;
+}
+
+.textfield::after {
+  position: absolute;
+  margin-top: 8px;
+  content: attr(error-message);
+  color: var(--primary-color-red);
+  opacity: 0;
+  transition: opacity 0.1s ease-in-out;
+}
+
+.textfield.textfield-error-message::after {
+  opacity: 1;
+}
+
+.textfield label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+  color: var(--font-color-regular);
+}
+
+.textfield input {
+  outline: none;
+  transition-property: border, color, background-color;
+  transition-duration: 0.1s;
+  transition-timing-function: ease-in-out;
+}
+
+.textfield input[type="text"] {
+  display: block;
+  height: var(--textfield-input-height);
+  width: 100%;
+  box-sizing: border-box;
+  padding-left: 8px;
+  padding-right: 8px;
+  border-radius: 4px;
+  border: solid 1px var(--line-color);
+  color: var(--font-color-dark);
+}
+
+.textfield input[type="text"]::placeholder {
+  color: var(--font-color-placeholder);
+}
+
+.textfield input[type="text"]:focus {
+  border: solid 1px var(--primary-color-blue);
+}
+
+.textfield.textfield-error input[type="text"] {
+  border: solid 1px var(--primary-color-red);
+}
+
+.textfield.textfield-error input[type="text"]::placeholder {
+  content: "test";
+  color: var(--primary-color-red);
+}
+
+.textfield.textfield-error input[type="text"]:focus {
+  border: solid 1px var(--primary-color-red);
+}
+
+.textfield.textfield-time::before {
+  content: attr(time);
+  position: absolute;
+  bottom: 0px;
+  right: 16px;
+  margin: 0px;
+  line-height: var(--textfield-input-height);
+  color: var(--primary-color-blue);
+}
+
+.textfield.textfield-time input {
+  padding-right: 80px;
+}

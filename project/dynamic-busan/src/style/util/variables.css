@@ -1,0 +1,27 @@
+:root {
+  --primary-color-blue: #0056d0;
+  --primary-color-red: #e02020;
+  --primary-color-white: #ffffff;
+  --font-color-dark: #222222;
+  --font-color-medium: #666666;
+  --font-color-regular: #999999;
+  --font-color-light: #a3a3a3;
+  --font-color-placeholder: #cccccc;
+  --bg-color-basic01: #f8f9fb;
+  --bg-color-basic02: #f8f8f8;
+  --line-color: #ededed;
+  --button-line-color-light: #d9d9d9;
+  --button-disable-color: #e1e2e7;
+  --button-active-color: #8abbff;
+
+  --transition-duration: 0.1s;
+  --transition-timing-function: ease-in-out;
+
+  --container-padding: 24px;
+  --container-margin: 24px;
+
+  --textfield-input-height: 50px;
+
+  --drawer-board-item-padding-vertical: 16px;
+  --drawer-board-item-padding-horizontal: 24px;
+}

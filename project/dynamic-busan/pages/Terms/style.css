@@ -1,0 +1,22 @@
+@import url("../../src/style/main.css");
+
+.header .header-subtitle {
+  margin-top: 4px;
+  line-height: 18px;
+}
+
+.content {
+  margin-top: 32px;
+}
+
+.date {
+  margin-top: 40px;
+}
+
+.date li {
+  margin-left: var(--container-padding);
+}
+
+.date li:nth-child(n + 2) {
+  margin-top: 8px;
+}

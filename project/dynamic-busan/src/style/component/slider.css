@@ -1,0 +1,22 @@
+.page-slider-container,
+.page-slider-container .page-slider-wrapper,
+.page-slider-wrapper .page-slider-item {
+  width: 100%;
+  height: 100%;
+}
+
+.page-slider-container {
+  position: relative;
+}
+
+.page-slider-container .page-slider-wrapper {
+  position: absolute;
+  overflow-x: visible;
+  left: 0;
+  transition: left var(--transition-duration-slow)
+    var(--transition-timing-function);
+}
+
+.page-slider-wrapper .page-slider-item {
+  position: absolute;
+}

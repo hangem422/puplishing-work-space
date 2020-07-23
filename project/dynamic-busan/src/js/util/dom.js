@@ -15,7 +15,7 @@ export function setAttributeAll(element, attrObj) {
  * @param {{ [propName: string]: string } | undefined} attrObj 추가할 Attribute
  * @returns {HTMLElement} 생성한 HTML Element
  */
-export function createElementWithOption(tagName, attrObj) {
+export function createElement(tagName, attrObj) {
   const element = document.createElement(tagName);
   if (attrObj) setAttributeAll(element, attrObj);
   return element;
@@ -29,7 +29,7 @@ export function createElementWithOption(tagName, attrObj) {
  * @param {{ [propName: string]: string } | undefined} attrObj 추가할 Attribute
  * @returns {HTMLElement} 생성한 HTML Element
  */
-export function createElementNSWithOption(nameSpace, tagName, attrObj) {
+export function createElementNS(nameSpace, tagName, attrObj) {
   const element = document.createElementNS(nameSpace, tagName);
   if (attrObj) setAttributeAll(element, attrObj);
   return element;

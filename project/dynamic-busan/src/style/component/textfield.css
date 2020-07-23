@@ -8,7 +8,8 @@
   content: attr(error-message);
   color: var(--primary-color-red);
   opacity: 0;
-  transition: opacity 0.1s ease-in-out;
+  transition: opacity var(--transition-duration)
+    var(--transition-timing-function);
 }
 
 .textfield.textfield-error-message::after {
@@ -25,11 +26,11 @@
 .textfield input {
   outline: none;
   transition-property: border, color, background-color;
-  transition-duration: 0.1s;
-  transition-timing-function: ease-in-out;
+  transition-duration: var(--transition-duration);
+  transition-timing-function: var(--transition-timing-function);
 }
 
-.textfield input[type="text"] {
+.textfield input[type='text'] {
   display: block;
   height: var(--textfield-input-height);
   width: 100%;
@@ -41,24 +42,24 @@
   color: var(--font-color-dark);
 }
 
-.textfield input[type="text"]::placeholder {
+.textfield input[type='text']::placeholder {
   color: var(--font-color-placeholder);
 }
 
-.textfield input[type="text"]:focus {
+.textfield input[type='text']:focus {
   border: solid 1px var(--primary-color-blue);
 }
 
-.textfield.textfield-error input[type="text"] {
+.textfield.textfield-error input[type='text'] {
   border: solid 1px var(--primary-color-red);
 }
 
-.textfield.textfield-error input[type="text"]::placeholder {
-  content: "test";
+.textfield.textfield-error input[type='text']::placeholder {
+  content: 'test';
   color: var(--primary-color-red);
 }
 
-.textfield.textfield-error input[type="text"]:focus {
+.textfield.textfield-error input[type='text']:focus {
   border: solid 1px var(--primary-color-red);
 }
 

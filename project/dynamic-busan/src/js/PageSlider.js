@@ -19,8 +19,10 @@ class PageSlider {
     this.separatorClass = separatorClass;
 
     this.wrapper = createElement('div', { class: 'page-slider-wrapper' });
-    this.element = createElement('div', { class: 'page-slider-container' });
-    this.element.appendChild(this.wrapper);
+    this.element = createElement('div', {
+      class: 'page-slider-container',
+      child: this.wrapper,
+    });
 
     this.render(pageList);
   }
@@ -61,8 +63,8 @@ class PageSlider {
     const conatiner = createElement('div', {
       class: 'page-slider-item',
       style: `left: ${this.size * 100}%;`,
+      child: page,
     });
-    conatiner.appendChild(page);
     this.wrapper.appendChild(conatiner);
     this.size += 1;
   }

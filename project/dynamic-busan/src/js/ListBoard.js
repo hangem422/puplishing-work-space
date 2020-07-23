@@ -1,3 +1,5 @@
+import { createElement } from './util/dom';
+
 /**
  * @description List Board Element를 랜더할 수 있는 클래스
  * @property {string} separatorClass 다른 List Board와 구분할 수 있는 고유 class
@@ -13,9 +15,9 @@ class ListBoard {
   constructor(separatorClass, itemList = [], onClickFunction = () => {}) {
     this.separatorClass = separatorClass;
     this.onClick = onClickFunction;
-
-    this.element = document.createElement('ul');
-    this.element.className = `list-board ${separatorClass}`;
+    this.element = createElement('ul', {
+      class: `list-board ${separatorClass}`,
+    });
 
     this.render(itemList);
   }
@@ -25,21 +27,22 @@ class ListBoard {
    * @param {HTMLLIElement} item 추가할 Item
    */
   addItem(item) {
-    // Item을 만듭니다.
-    const container = document.createElement('li');
-    container.className = `list-board-item ${this.separatorClass}`;
-
     // List Item에 들어갈 내부 구성 요소들을 만듭니다.
-    const headerWrapper = document.createElement('div');
-    headerWrapper.className = 'item-header-wrapper';
-    headerWrapper.appendChild(item);
-    const headerContainer = document.createElement('div');
-    headerContainer.className = 'item-header-container';
-    headerContainer.appendChild(headerWrapper);
+    const headerWrapper = createElement('div', {
+      class: 'item-header-wrapper',
+      child: item,
+    });
+    const headerContainer = createElement('div', {
+      class: 'item-header-container',
+      child: headerWrapper,
+    });
 
     // Item의 내부 구성 요소와, Event Listner를 설정합니다.
     const index = this.element.childElementCount;
-    container.appendChild(headerContainer);
+    const container = createElement('li', {
+      class: `list-board-item ${this.separatorClass}`,
+      child: headerContainer,
+    });
     container.addEventListener('click', () => this.onClick(index, item));
 
     this.element.appendChild(container);

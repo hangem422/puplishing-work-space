@@ -1,4 +1,26 @@
 /**
+ * @description HTMl Elemnt에 Child를 한번에 추가하도록 도와줍니다.
+ * @param {HTMLElement} element 자식을 추가할 HTML Element
+ * @param {HTMLElement | HTMLElement[] | string} child Element 추가할 Child
+ */
+export function appendAllChild(element, child) {
+  // ChildList가 List로 제대로 왔을 떄
+  if (Array.isArray(child)) {
+    child.forEach(
+      (node) => node instanceof HTMLElement && element.appendChild(node),
+    );
+  }
+  // ChildList가 단일 Element일 때
+  else if (child instanceof HTMLElement) {
+    element.appendChild(child);
+  }
+  // ChildList가 단일 String일 때
+  else if (typeof child === 'string') {
+    element.innerHTML = child;
+  }
+}
+
+/**
  * @description HTMl Elemnt의 Attribute 값을 한번에 설정하게 도와줍니다.
  * @param {HTMLElement} element Attribute를 추가할 Element
  * @param {{ [propName: string]: string }} attrObj 추가할 Attribute
@@ -10,14 +32,24 @@ export function setAttributeAll(element, attrObj) {
 }
 
 /**
- * @description HTMl Elemnt를 Class와 Attribute를 추가하여 만듭니다.
+ * @description HTMl Elemnt를 Class, Attribute 그리고 Child를 추가하여 생성합니다.
  * @param {string} tagName HTML Element의 tag 이름
- * @param {{ [propName: string]: string } | undefined} attrObj 추가할 Attribute
+ * @param {{ class?: string, child?: HTMLElement | HTMLElement[] | string, [propName: string]: string } | undefined} option 추가할 Class, Attribute, Child
  * @returns {HTMLElement} 생성한 HTML Element
  */
-export function createElement(tagName, attrObj) {
+export function createElement(tagName, option = {}) {
+  const attrObj = { ...option };
+
+  // Element를 생성합니다.
   const element = document.createElement(tagName);
-  if (attrObj) setAttributeAll(element, attrObj);
+  // option에 child가 존재할 시 append 시키고 object에서 제거합니다.
+  if (attrObj.child) {
+    appendAllChild(element, attrObj.child);
+    delete attrObj.child;
+  }
+
+  // Attribute와 Class를 추가합니다.
+  setAttributeAll(element, attrObj);
   return element;
 }
 
@@ -25,21 +57,21 @@ export function createElement(tagName, attrObj) {
  * @description HTMl Elemnt를 NameSpace, Class 그리고 Attribute를 추가하여 만듭니다.
  * @param {string} nameSpace HTML Element의 Name Space
  * @param {string} tagName HTML Element의 tag 이름
- * @param {string | undefined} className HTML Element의 Class
- * @param {{ [propName: string]: string } | undefined} attrObj 추가할 Attribute
+ * @param {{ class?: string, child?: HTMLElement | HTMLElement[] | string, [propName: string]: string } | undefined} option 추가할 Class, Attribute, Child
  * @returns {HTMLElement} 생성한 HTML Element
  */
-export function createElementNS(nameSpace, tagName, attrObj) {
-  const element = document.createElementNS(nameSpace, tagName);
-  if (attrObj) setAttributeAll(element, attrObj);
-  return element;
-}
+export function createElementNS(nameSpace, tagName, option) {
+  const attrObj = { ...option };
 
-/**
- * @description HTMl Elemnt에 Child를 한번에 추가하도록 도와줍니다.
- * @param {HTMLElement} element 자식을 추가할 HTML Element
- * @param {HTMLElement[]} childList Child에 추가할 Element 리스트
- */
-export function appendAllChild(element, childList) {
-  childList.forEach((child) => element.appendChild(child));
+  // Element를 생성합니다.
+  const element = document.createElementNS(nameSpace, tagName);
+  // option에 child가 존재할 시 append 시키고 object에서 제거합니다.
+  if (attrObj.child) {
+    appendAllChild(element, attrObj.child);
+    delete attrObj.child;
+  }
+
+  // Attribute와 Class를 추가합니다.
+  setAttributeAll(element, attrObj);
+  return element;
 }

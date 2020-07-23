@@ -7,12 +7,7 @@ import { createElementNS, appendAllChild } from './util/dom';
  */
 export function emptyAlarmImage(size = 200) {
   const xmlns = 'http://www.w3.org/2000/svg';
-  const svg = createElementNS(xmlns, 'svg', {
-    xmlns,
-    width: size.toString(),
-    height: size.toString(),
-    viewBox: '0 0 200 200',
-  });
+
   const wrapper = createElementNS(xmlns, 'g', {
     fill: 'none',
     'fill-rule': 'evenodd',
@@ -123,6 +118,11 @@ export function emptyAlarmImage(size = 200) {
   });
 
   appendAllChild(wrapper, [p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12]);
-  svg.appendChild(wrapper);
-  return svg;
+  return createElementNS(xmlns, 'svg', {
+    xmlns,
+    width: size.toString(),
+    height: size.toString(),
+    viewBox: '0 0 200 200',
+    child: wrapper,
+  });
 }

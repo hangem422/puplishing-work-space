@@ -10,8 +10,8 @@ if (window) {
     for (let i = 1; i < 6; i += 1) {
       const page = createElement('p', {
         class: 'font-text-body1 font-medium font-color-dark',
+        child: `Test Page 0${i}`,
       });
-      page.innerHTML = `Test Page 0${i}`;
       testPageList.push(page);
     }
 

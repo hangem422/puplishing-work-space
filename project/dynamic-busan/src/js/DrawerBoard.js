@@ -1,3 +1,5 @@
+import { createElement } from './util/dom';
+
 const ACTIVE_ELEMENT_CLASS = 'active';
 const INIT_CONTENT_HEIGHT = '0px';
 
@@ -16,8 +18,9 @@ class DrawerBoard {
   constructor(separatorClass, itemList) {
     this.separatorClass = separatorClass || '';
     this.active = undefined;
-    this.element = document.createElement('ul');
-    this.element.className = `drawer-board ${separatorClass}`;
+    this.element = createElement('ul', {
+      class: `drawer-board ${separatorClass}`,
+    });
 
     if (itemList) this.render(itemList);
   }
@@ -68,43 +71,42 @@ class DrawerBoard {
    * @param {{ header: HTMLLIElement, content: HTMLLIElement}} item 추가할 Item
    */
   addItem(item) {
-    // Item을 만듭니다.
-    const container = document.createElement('li');
-    container.className = `drawer-board-item ${this.separatorClass}`;
-
     // List Item에 들어갈 내부 구성 요소들을 만듭니다.
     // Note: content의 높이를 저장해서 쓰면, Web Font가 로드되기 전과 후의 높이가 달라져서 문제가 발생합니다.
     // Note: dummyForHeight를 보이지 않는 곳에 만들고 그 높이를 가져와 content의 높이를 확장할 때 사용합니다.
-    const headerWrapper = document.createElement('div');
-    headerWrapper.className = 'item-header-wrapper';
-    headerWrapper.appendChild(item.header);
-    const headerContainer = document.createElement('div');
-    headerContainer.className = 'item-header-container';
-    headerContainer.appendChild(headerWrapper);
+    const headerWrapper = createElement('div', {
+      class: 'item-header-wrapper',
+      child: item.header,
+    });
+    const headerContainer = createElement('div', {
+      class: 'item-header-container',
+      child: headerWrapper,
+    });
 
-    const contentWrapper = document.createElement('div');
-    contentWrapper.className = 'item-content-wrapper';
-    contentWrapper.appendChild(item.content);
-    const contentContainer = document.createElement('div');
-    contentContainer.className = 'item-content-container';
-    contentContainer.appendChild(contentWrapper);
+    const contentWrapper = createElement('div', {
+      class: 'item-content-wrapper',
+      child: item.content,
+    });
+    const contentContainer = createElement('div', {
+      class: 'item-content-container',
+      child: contentWrapper,
+      style: `height: ${INIT_CONTENT_HEIGHT};`,
+    });
 
     const dummyForHeight = contentContainer.cloneNode(true);
     dummyForHeight.classList.add('item-dummy');
 
     // Item의 내부 구성 요소와, Event Listner를 설정합니다.
-    container.appendChild(headerContainer);
-    container.appendChild(contentContainer);
-    container.appendChild(dummyForHeight);
+    const container = createElement('li', {
+      class: `drawer-board-item ${this.separatorClass}`,
+      child: [headerContainer, contentContainer, dummyForHeight],
+    });
     container.addEventListener('click', this.createItemOnClick(container));
 
     // 내용 클릭시에는 이벤트가 동작하지 않게 이벤트 버블링을 막습니다.
     contentContainer.addEventListener('click', (event) =>
       event.stopPropagation(),
     );
-
-    // content의 높이를 초기화합니다.
-    contentContainer.style.height = INIT_CONTENT_HEIGHT;
 
     this.element.appendChild(container);
   }

@@ -10,7 +10,7 @@ const postcssNormalize = require('postcss-normalize');
 const mode = process.env.NODE_ENV || 'development';
 const isProduction = mode === 'production';
 
-const projectPath = './project/dynamic-busan/src/sample/list-board';
+const projectPath = './project/dynamic-busan/src/sample/image';
 const projectJs = `${projectPath}/script.js`;
 const projectHtml = `${projectPath}/index.html`;
 

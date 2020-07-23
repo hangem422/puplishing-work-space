@@ -17,5 +17,6 @@ module.exports = {
     'no-param-reassign': 0,
     'no-alert': 0,
     'func-names': 0,
+    'import/prefer-default-export': 0,
   },
 };

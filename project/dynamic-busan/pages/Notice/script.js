@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 import { emptyAlarmImage } from '../../src/js/image';
 import { createElement } from '../../src/js/util/dom';
-import { dropDownIcon } from '../../src/js/Icon';
+import { moreRight } from '../../src/js/Icon';
 import ListBoard from '../../src/js/ListBoard';
 import PageSlider from '../../src/js/PageSlider';
 
@@ -62,7 +62,7 @@ function createListBoardPage(nextPageFunc) {
     });
     const container = createElement('div', {
       class: 'header-custom-content row-center',
-      child: [textWrapper, dropDownIcon(16, '#E5E5E5')],
+      child: [textWrapper, moreRight(16, '#E5E5E5')],
     });
     return prev.concat(container);
   }, []);

@@ -32,7 +32,7 @@ body,
 .notice-board-page {
   height: 100%;
   padding: 8px 0px;
-  overflow-y: scroll;
+  box-sizing: border-box;
 }
 
 .notice-board-page .header-custom-text {
@@ -46,10 +46,19 @@ body,
   text-overflow: ellipsis;
 }
 
-.notice-board-page .header-custom-text > p:nth-child(n + 2) {
+.notice-board-page .header-custom-text p:nth-child(n + 2),
+.notice-detail-page .notice-detail-heder p:nth-child(n + 2) {
   margin-top: 8px;
 }
 
 .notice-board-page .header-custom-content svg {
   margin-left: 20px;
+}
+
+.notice-detail-page .notice-detail-content {
+  margin-top: 32px;
+}
+
+.notice-detail-page .notice-detail-footer {
+  margin-top: 40px;
 }

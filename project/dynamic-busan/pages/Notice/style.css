@@ -34,3 +34,22 @@ body,
   padding: 8px 0px;
   overflow-y: scroll;
 }
+
+.notice-board-page .header-custom-text {
+  flex: 1;
+  max-width: calc(100% - 36px);
+}
+
+.notice-board-page .header-custom-text p {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.notice-board-page .header-custom-text > p:nth-child(n + 2) {
+  margin-top: 8px;
+}
+
+.notice-board-page .header-custom-content svg {
+  margin-left: 20px;
+}

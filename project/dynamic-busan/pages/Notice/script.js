@@ -61,8 +61,8 @@ function createListBoardPage(nextPageFunc) {
       child: [titleElement, dateElement],
     });
     const container = createElement('div', {
-      class: 'header-custom-content',
-      child: [textWrapper, dropDownIcon()],
+      class: 'header-custom-content row-center',
+      child: [textWrapper, dropDownIcon(16, '#E5E5E5')],
     });
     return prev.concat(container);
   }, []);

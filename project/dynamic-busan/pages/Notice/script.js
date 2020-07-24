@@ -1,47 +1,153 @@
 /* eslint-disable no-unused-vars */
 import { emptyAlarmImage } from '../../src/js/image';
-import { createElementWithOption, appendAllChild } from '../../src/js/util/dom';
+import { createElement } from '../../src/js/util/dom';
+import { dropDownIcon } from '../../src/js/Icon';
+import ListBoard from '../../src/js/ListBoard';
+import PageSlider from '../../src/js/PageSlider';
 
 import data from './data.json';
 import './style.css';
 
+const detailPageConfig = {
+  title: undefined,
+  date: undefined,
+  contentWrapper: undefined,
+  from: undefined,
+};
+
 /**
- * @description 공지사항이 없을 시 빈 화면을 보여줍니다.
- * @param {HTMLElement} root 화면을 렌더링할 컨테이너 엘리먼트
+ * @description 공지사항이 없을 시 빈 페이지를 생성합니다.
+ * @returns {HTMLElement} 빈 화면 Element
  */
-function showEmptyScreen(root) {
-  // root의 모든 Child Node를 삭제합니다.
-  root.innerHTML = '';
-
-  // Lavtout Element 생성합니다.
-  const container = createElementWithOption('div', {
-    class: 'container empty-screen',
-  });
-  const wrapper = createElementWithOption('div', { class: 'wrapper' });
-
+function createEmptyPage() {
   // Component Element를 생성합니다.
   const image = emptyAlarmImage();
-  const text = createElementWithOption('div', {
-    class: 'font-text-body1 font-color-light empty-screen-text',
+  const text = createElement('div', {
+    class: 'font-text-body1 font-color-light empty-page-text',
+    child: '아직 등록된 공지사항이 없습니다.',
   });
-  text.innerHTML = '아직 등록된 공지사항이 없습니다.';
 
   // Layout을 구성합니다.
-  appendAllChild(wrapper, [image, text]);
-  container.appendChild(wrapper);
-  root.appendChild(container);
+  const wrapper = createElement('div', {
+    class: 'wrapper',
+    child: [image, text],
+  });
+  return createElement('div', {
+    class: 'container empty-page',
+    child: wrapper,
+  });
 }
 
 /**
- * @description 렌더링할 페이지의 상태에따라 다른 화면을 보여줍니다.
- * @param {'empty' | 'list' | 'detail'} pageState 렌더링할 페이지의 상태
+ * @description Json 데이터를 기반으로 공지사항 리스트 페이지를 생성합니다.
+ * @param {{title: string, date: string, content: string[], from: string}[]} data 공지사항 데이터 리스트
+ * @param {(index: number) => voide} nextPageFunc 다음 페이지로 이동하는 함수
+ * @returns {HTMLElement} List Board Page
  */
-function renderBasedOnState(pageState) {
-  // Page를 Render할 Element를 가져옵니다.
-  const root = document.getElementsByClassName('root')[0];
+function createListBoardPage(nextPageFunc) {
+  // List의 내부를 구성 Element를 만듭니다.
+  const itemList = data.reduce((prev, cur) => {
+    const { title, date } = cur;
+    const titleElement = createElement('p', {
+      class: 'font-text-body1 font-medium font-color-dark',
+      child: title,
+    });
+    const dateElement = createElement('p', {
+      class: 'font-number-body3 font-color-regular',
+      child: date,
+    });
+    const textWrapper = createElement('div', {
+      class: 'header-custom-text',
+      child: [titleElement, dateElement],
+    });
+    const container = createElement('div', {
+      class: 'header-custom-content',
+      child: [textWrapper, dropDownIcon()],
+    });
+    return prev.concat(container);
+  }, []);
 
-  // appSate의 값에 따라 화면을 다리 보여줍니다.
-  if (pageState === 'empty') showEmptyScreen(root);
+  // List Board Paga를 반환합니다.
+  return createElement('div', {
+    class: 'notice-board-page',
+    child: new ListBoard('notice-board', itemList, nextPageFunc).element,
+  });
+}
+
+/**
+ * @description 공지사항 세부 페이지를 생성합니다.
+ * @returns {HTMLElement} 공지사항 세부 페이지
+ */
+function createDetailPage() {
+  // Header Component를 생성합니다.
+  const titleElement = createElement('p', {
+    class: 'font-text-body1 font-medium font-color-dark',
+  });
+  const dateElement = createElement('p', {
+    class: 'font-number-body3 font-color-regular',
+  });
+  const haederWrapper = createElement('div', {
+    class: 'wrapper',
+    child: [titleElement, dateElement],
+  });
+  const headerContainer = createElement('div', {
+    class: 'container notice-detail-heder',
+    child: haederWrapper,
+  });
+
+  // Content Compnent를 생성합니다.
+  const contentWrapper = createElement('div', {
+    class: 'wrpper font-text-body2 font-color-medium',
+  });
+  const contentContainer = createElement('div', {
+    class: 'container notice-detail-content',
+    child: contentWrapper,
+  });
+
+  // Footer Component를 생성합니다.
+  const fromElement = createElement('p', {
+    class: 'font-text-body2 font-color-dark',
+  });
+  const footerWrapper = createElement('div', {
+    class: 'wrapper',
+    child: fromElement,
+  });
+  const footerContainer = createElement('div', {
+    class: 'container notice-detail-footer',
+    child: footerWrapper,
+  });
+
+  // Detail 페이지 내용 수정을 위해 config 전역 변수에 할당합니다.
+  detailPageConfig.title = titleElement;
+  detailPageConfig.date = dateElement;
+  detailPageConfig.contentWrapper = contentWrapper;
+  detailPageConfig.from = fromElement;
+
+  return createElement('div', {
+    class: 'notice-detail-page',
+    child: [headerContainer, contentContainer, footerContainer],
+  });
+}
+
+/**
+ * @description Detail Page의 텍스트를 변경합니다.
+ * @param {number} index Detail Page에서 보여줄 Data의 인덱스 번호
+ */
+function changeDetailPage(index) {
+  // Header Text 변경
+  detailPageConfig.title.innerHTML = data[index].title;
+  detailPageConfig.date.innerHTML = data[index].date;
+
+  // Content Text 변경
+  detailPageConfig.contentWrapper.innerHTML = '';
+  data[index].content.forEach((str) => {
+    detailPageConfig.contentWrapper.appendChild(
+      createElement('p', { child: str }),
+    );
+  });
+
+  // Footer Text 변경
+  detailPageConfig.from.innerHTML = data[index].from;
 }
 
 /**
@@ -49,6 +155,22 @@ function renderBasedOnState(pageState) {
  */
 if (window) {
   window.onload = function () {
-    if (data.length < 1) renderBasedOnState('empty');
+    // Page를 Render할 Element를 가져옵니다.
+    const root = document.getElementsByClassName('root')[0];
+
+    // 데이터가 없을 시 비어있는 페이지를 보여줍니다.
+    if (data.length < 1) {
+      root.appendChild(createEmptyPage());
+    } else {
+      const pageSlider = new PageSlider('notice-slider');
+      const nextPageFunc = (index) => {
+        changeDetailPage(index);
+        pageSlider.moveNext();
+      };
+
+      pageSlider.addPage(createListBoardPage(nextPageFunc));
+      pageSlider.addPage(createDetailPage());
+      root.appendChild(pageSlider.element);
+    }
   };
 }

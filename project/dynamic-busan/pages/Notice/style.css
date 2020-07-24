@@ -6,7 +6,7 @@ body,
   height: 100%;
 }
 
-.empty-screen {
+.empty-page {
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -15,16 +15,22 @@ body,
   align-items: center;
 }
 
-.empty-screen::before {
+.empty-page::before {
   content: '';
   flex: 1;
 }
 
-.empty-screen::after {
+.empty-page::after {
   content: '';
   flex: 2;
 }
 
-.empty-screen .empty-screen-text {
+.empty-page .empty-page-text {
   margin-top: 16px;
+}
+
+.notice-board-page {
+  height: 100%;
+  padding: 8px 0px;
+  overflow-y: scroll;
 }

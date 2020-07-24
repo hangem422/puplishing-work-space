@@ -6,12 +6,13 @@
 export function appendAllChild(element, child) {
   // ChildList가 List로 제대로 왔을 떄
   if (Array.isArray(child)) {
-    child.forEach(
-      (node) => node instanceof HTMLElement && element.appendChild(node),
-    );
+    child.forEach((node) => {
+      if (node instanceof HTMLElement || node instanceof Element)
+        element.appendChild(node);
+    });
   }
   // ChildList가 단일 Element일 때
-  else if (child instanceof HTMLElement) {
+  else if (child instanceof HTMLElement || child instanceof Element) {
     element.appendChild(child);
   }
   // ChildList가 단일 String일 때

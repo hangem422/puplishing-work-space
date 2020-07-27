@@ -15,6 +15,7 @@
   --button-active-color: #8abbff;
 
   --transition-duration: 0.1s;
+  --transition-duration-slow: 0.2s;
   --transition-timing-function: ease-in-out;
 
   --container-padding: 24px;
@@ -22,6 +23,6 @@
 
   --textfield-input-height: 50px;
 
-  --drawer-board-item-padding-vertical: 16px;
-  --drawer-board-item-padding-horizontal: 24px;
+  --board-item-padding-vertical: 16px;
+  --board-item-padding-horizontal: 24px;
 }

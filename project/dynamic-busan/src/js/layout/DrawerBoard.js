@@ -1,4 +1,4 @@
-import { createElement } from './util/dom';
+import { createElement } from '../util/dom';
 
 const ACTIVE_ELEMENT_CLASS = 'active';
 const INIT_CONTENT_HEIGHT = '0px';

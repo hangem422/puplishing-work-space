@@ -1,5 +1,5 @@
 import '../../style/main.css';
-import PageSlider from '../../js/PageSlider';
+import PageSlider from '../../js/layout/PageSlider';
 import { createElement } from '../../js/util/dom';
 
 if (window) {

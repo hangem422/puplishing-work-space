@@ -1,4 +1,4 @@
-import { createElement } from './util/dom';
+import { createElement } from '../util/dom';
 
 /**
  * @description Page Slider Element를 랜더할 수 있는 클래스

@@ -1,5 +1,5 @@
 import '../../style/main.css';
-import ListBoard from '../../js/ListBoard';
+import ListBoard from '../../js/layout/ListBoard';
 import { createElement } from '../../js/util/dom';
 
 if (window) {

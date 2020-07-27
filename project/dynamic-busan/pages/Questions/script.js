@@ -1,5 +1,5 @@
 import { createElement } from '../../src/js/util/dom';
-import DrawerBoard from '../../src/js/DrawerBoard';
+import DrawerBoard from '../../src/js/layout/DrawerBoard';
 import { dropDownIcon } from '../../src/js/Icon';
 
 import './style.css';

@@ -12,6 +12,7 @@
 
 .item-header-container .header-custom-content svg {
   margin-left: 20px;
+  height: 24px;
 }
 
 .active .item-header-container .header-custom-content svg {

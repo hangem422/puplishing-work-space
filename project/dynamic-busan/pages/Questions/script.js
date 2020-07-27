@@ -16,7 +16,7 @@ function createItemHeader(title) {
     class: 'font-text-body1 font-color-dark',
     child: title,
   });
-  const icon = dropDownIcon();
+  const icon = dropDownIcon(16, '#E5E5E5');
 
   // Item Layout을 구성합니다.
   return createElement('div', {

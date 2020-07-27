@@ -72,8 +72,6 @@ class DrawerBoard {
    */
   addItem(item) {
     // List Item에 들어갈 내부 구성 요소들을 만듭니다.
-    // Note: content의 높이를 저장해서 쓰면, Web Font가 로드되기 전과 후의 높이가 달라져서 문제가 발생합니다.
-    // Note: dummyForHeight를 보이지 않는 곳에 만들고 그 높이를 가져와 content의 높이를 확장할 때 사용합니다.
     const headerWrapper = createElement('div', {
       class: 'item-header-wrapper',
       child: item.header,
@@ -93,8 +91,11 @@ class DrawerBoard {
       style: `height: ${INIT_CONTENT_HEIGHT};`,
     });
 
+    // Note: content의 높이를 저장해서 쓰면, Web Font가 로드되기 전과 후의 높이가 달라져서 문제가 발생합니다.
+    // Note: dummyForHeight를 보이지 않는 곳에 만들고 그 높이를 가져와 content의 높이를 확장할 때 사용합니다.
     const dummyForHeight = contentContainer.cloneNode(true);
     dummyForHeight.classList.add('item-dummy');
+    dummyForHeight.removeAttribute('style');
 
     // Item의 내부 구성 요소와, Event Listner를 설정합니다.
     const container = createElement('li', {

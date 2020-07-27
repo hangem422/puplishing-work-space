@@ -23,7 +23,7 @@
 
 .drawer-board-item .item-header-container::after {
   transition-property: left right width;
-  transition-duration: var(--transition-duration);
+  transition-duration: var(--transition-duration-slow);
   transition-timing-function: var(--transition-timing-function);
 }
 
@@ -47,8 +47,8 @@
 
 .drawer-board-item .item-content-wrapper {
   text-overflow: clip;
-  padding: var(--drawer-board-item-padding-vertical)
-    var(--drawer-board-item-padding-horizontal);
+  padding: var(--board-item-padding-vertical)
+    var(--board-item-padding-horizontal);
   background-color: var(--bg-color-basic02);
 }
 

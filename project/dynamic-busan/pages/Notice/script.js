@@ -186,7 +186,7 @@ if (window) {
         }
       };
       // Callback으로 동작하는 라우터를 생성합니다.
-      const router = new Router('/', routerCallback);
+      const router = new Router(routerCallback);
 
       /**
        * @description 리스트 클릭시 상세페이지로 이동하는 함수입니다.

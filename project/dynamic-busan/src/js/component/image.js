@@ -1,4 +1,4 @@
-import { createElementNS, appendAllChild } from './util/dom';
+import { createElementNS, appendAllChild } from '../util/dom';
 
 /**
  * @description Empty Alarm SVG Image을 생성합니다.

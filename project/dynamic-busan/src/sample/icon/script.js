@@ -1,5 +1,5 @@
 import '../../style/main.css';
-import { dropDownIcon, moreRight } from '../../js/Icon';
+import { dropDownIcon, moreRight } from '../../js/component/Icon';
 
 if (window) {
   window.onload = function () {

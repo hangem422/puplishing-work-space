@@ -1,6 +1,6 @@
 import { createElement } from '../../src/js/util/dom';
 import DrawerBoard from '../../src/js/layout/DrawerBoard';
-import { dropDownIcon } from '../../src/js/Icon';
+import { dropDownIcon } from '../../src/js/component/Icon';
 
 import './style.css';
 import data from './data.json';

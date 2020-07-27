@@ -1,5 +1,5 @@
 import '../../style/main.css';
-import { emptyAlarmImage } from '../../js/image';
+import { emptyAlarmImage } from '../../js/component/image';
 
 if (window) {
   window.onload = function () {

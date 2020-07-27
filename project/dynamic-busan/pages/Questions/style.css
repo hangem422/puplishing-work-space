@@ -19,6 +19,16 @@
   transform: rotate(180deg);
 }
 
-.item-content-container .content-custom-content {
-  padding: 0px 8px;
+.item-content-container .content-custom-list .content-custom-list-item {
+  display: flex;
+}
+
+.item-content-container .content-custom-list .content-custom-list-item p {
+  flex: 1;
+  word-break: keep-all;
+}
+
+.item-content-container .content-custom-list .content-custom-list-item svg {
+  height: 20px;
+  margin-right: 4px;
 }

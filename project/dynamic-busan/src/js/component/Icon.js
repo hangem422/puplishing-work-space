@@ -70,3 +70,28 @@ export function moreRight(size = 16, color = '#000000') {
     child: [def, g],
   });
 }
+
+/**
+ * @description Circle Right SVG Icon을 생성합니다.
+ * @param {number} size Icon 크기
+ * @param {string} color Icon 색상
+ * @returns {HTMLElement} Circle Icon
+ */
+export function circleIcon(size = 18, color = '#000000') {
+  const xmlns = 'http://www.w3.org/2000/svg';
+  const circle = createElementNS(xmlns, 'circle', {
+    cx: '9',
+    cy: '9',
+    r: '9',
+    fill: color,
+    'fill-rule': 'evenodd',
+  });
+
+  return createElementNS(xmlns, 'svg', {
+    xmlns,
+    width: size.toString(),
+    height: size.toString(),
+    viewBox: '0 0 18 18',
+    child: circle,
+  });
+}

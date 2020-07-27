@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import { emptyAlarmImage } from '../../src/js/component/Image';
 import { createElement } from '../../src/js/util/dom';
 import Router from '../../src/js/module/RouterWithCB';

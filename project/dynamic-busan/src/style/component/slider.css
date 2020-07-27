@@ -5,12 +5,13 @@
   height: 100%;
 }
 
-.page-slider-wrapper .page-slider-item {
-  overflow-y: scroll;
-}
-
 .page-slider-container {
   position: relative;
+  overflow-y: hidden;
+}
+
+.page-slider-wrapper .page-slider-item {
+  overflow-y: scroll;
 }
 
 .page-slider-container .page-slider-wrapper {

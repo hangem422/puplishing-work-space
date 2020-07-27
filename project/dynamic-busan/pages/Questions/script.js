@@ -1,8 +1,9 @@
-import "./style.css";
+import { createElement } from '../../src/js/util/dom';
+import DrawerBoard from '../../src/js/DrawerBoard';
+import { dropDownIcon } from '../../src/js/Icon';
 
-import DrawerBoard from "../../src/js/DrawerBoard";
-import { dropDownIcon } from "../../src/js/Icon";
-import data from "./data.json";
+import './style.css';
+import data from './data.json';
 
 /**
  * @description DrawerBoard Item의 Header Element를 만듭니다.
@@ -10,20 +11,18 @@ import data from "./data.json";
  * @return {HTMLLIElement} DrawerBoard Item의 Header Element
  */
 function createItemHeader(title) {
-  // Item의 Layout을 만듭니다.
-  const container = document.createElement("div");
-  container.className = "row-center header-custom-content";
-
   // Item Header의 내부를 구성 Element를 만듭니다.
-  const titleElement = document.createElement("p");
-  titleElement.className = "font-text-body1 font-color-dark";
-  titleElement.innerHTML = title;
+  const titleElement = createElement('p', {
+    class: 'font-text-body1 font-color-dark',
+    child: title,
+  });
   const icon = dropDownIcon();
 
   // Item Layout을 구성합니다.
-  container.appendChild(titleElement);
-  container.appendChild(icon);
-  return container;
+  return createElement('div', {
+    class: 'row-center header-custom-content',
+    child: [titleElement, icon],
+  });
 }
 
 /**
@@ -32,19 +31,16 @@ function createItemHeader(title) {
  * @return {HTMLLIElement} Item의 Content Element
  */
 function createItemContent(content) {
-  // Item의 Layout을 만듭니다.
-  const container = document.createElement("div");
-  container.className =
-    "font-text-body2 font-color-medium  content-custom-content";
-
   // Item Contet 내부를 구성 Element를 만듭니다.
-  content.forEach((str) => {
-    const paragraph = document.createElement("p");
-    paragraph.innerHTML = str;
-    container.appendChild(paragraph);
-  });
+  const contentElements = content.map((str) =>
+    createElement('p', { child: str }),
+  );
 
-  return container;
+  // Item의 Layout을 만듭니다.
+  return createElement('div', {
+    class: 'font-text-body2 font-color-medium  content-custom-content',
+    child: contentElements,
+  });
 }
 
 /**
@@ -53,7 +49,7 @@ function createItemContent(content) {
 if (window) {
   window.onload = function () {
     // Page를 Render할 Element를 가져옵니다.
-    const root = document.getElementsByClassName("root")[0];
+    const root = document.getElementsByClassName('root')[0];
 
     // Drawer Board에 들어갈 Item List 생성합니다.
     const itemList = data.reduce((prev, cur) => {
@@ -63,7 +59,7 @@ if (window) {
     }, []);
 
     // Drawer Board를 생성합니다.
-    const drawerBoard = new DrawerBoard("question-board", itemList);
+    const drawerBoard = new DrawerBoard('question-board', itemList);
     root.appendChild(drawerBoard.element);
   };
 }

@@ -20,7 +20,7 @@ function createItemHeader(title) {
 
   // Item Layout을 구성합니다.
   return createElement('div', {
-    class: 'row-center header-custom-content',
+    class: 'row header-custom-content',
     child: [titleElement, icon],
   });
 }

@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 import { emptyAlarmImage } from '../../src/js/image';
 import { createElement } from '../../src/js/util/dom';
-import Router from '../../src/js/util/RouterWithCB';
+import Router from '../../src/js/module/RouterWithCB';
 import { moreRight } from '../../src/js/Icon';
 import ListBoard from '../../src/js/ListBoard';
 import PageSlider from '../../src/js/PageSlider';

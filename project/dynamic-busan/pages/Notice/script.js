@@ -176,10 +176,14 @@ if (window) {
         // Path가 Detail로 시작하면 상세 페이지를 보여줍니다.
         if (path.startsWith('detail')) {
           changeDetailPage(query.index || 0);
+          document.title = '공지사항 상세내용';
           pageSlider.movePage(1);
         }
         // Path가 Detail이 아니면 리스트 페이지를 보여줍니다.
-        else pageSlider.movePage(0);
+        else {
+          document.title = '공지사항';
+          pageSlider.movePage(0);
+        }
       };
       // Callback으로 동작하는 라우터를 생성합니다.
       const router = new Router('/', routerCallback);

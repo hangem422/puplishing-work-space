@@ -1,0 +1,19 @@
+* {
+  margin: 0px;
+  padding: 0px;
+}
+
+.container {
+  margin: 24px 0px;
+  padding: 0px var(--container-padding);
+}
+
+.row {
+  display: flex;
+}
+
+.row-center {
+  display: flex;
+  align-content: center;
+  align-items: center;
+}

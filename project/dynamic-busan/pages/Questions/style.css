@@ -1,8 +1,8 @@
-@import url("../../src/style/main.css");
+@import url('../../src/style/main.css');
 
 .item-header-container .header-custom-content p {
   flex: 1;
-  transition: font-weight var(--transition-duration)
+  transition: font-weight var(--transition-duration-slow)
     var(--transition-timing-function);
 }
 
@@ -12,6 +12,10 @@
 
 .item-header-container .header-custom-content svg {
   margin-left: 20px;
+}
+
+.active .item-header-container .header-custom-content svg {
+  transform: rotate(180deg);
 }
 
 .item-content-container .content-custom-content {

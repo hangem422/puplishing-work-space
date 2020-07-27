@@ -29,36 +29,25 @@ body,
   margin-top: 16px;
 }
 
-.notice-board-page {
-  height: 100%;
+.list-board.notice-board {
   padding: 8px 0px;
-  box-sizing: border-box;
 }
 
-.notice-board-page .header-custom-text {
+.notice-board .header-custom-text {
   flex: 1;
   max-width: calc(100% - 36px);
 }
 
-.notice-board-page .header-custom-text p {
+.notice-board .header-custom-text p {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-.notice-board-page .header-custom-text p:nth-child(n + 2),
-.notice-detail-page .notice-detail-heder p:nth-child(n + 2) {
+.notice-board .header-custom-text p:nth-child(n + 2) {
   margin-top: 8px;
 }
 
 .notice-board-page .header-custom-content svg {
   margin-left: 20px;
-}
-
-.notice-detail-page .notice-detail-content {
-  margin-top: 32px;
-}
-
-.notice-detail-page .notice-detail-footer {
-  margin-top: 40px;
 }

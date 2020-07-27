@@ -7,7 +7,7 @@
 
 .page-slider-container {
   position: relative;
-  overflow-y: hidden;
+  overflow: hidden;
 }
 
 .page-slider-wrapper .page-slider-item {

@@ -1,0 +1,12 @@
+.text-post-container .text-post-header .header-subtitle {
+  line-height: 1.5;
+  margin-top: 4px;
+}
+
+.text-post-container .text-post-content {
+  margin-top: 32px;
+}
+
+.text-post-container .text-post-footer {
+  margin-top: 40px;
+}

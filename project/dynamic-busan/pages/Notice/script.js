@@ -63,11 +63,6 @@ function createListBoardPage(nextPageFunc) {
 
   // List Board Paga를 반환합니다.
   return new ListBoard('notice-board', itemList, nextPageFunc).element;
-  /*
-  return createElement('div', {
-    class: 'notice-board-page',
-    child: new ListBoard('notice-board', itemList, nextPageFunc).element,
-  }); */
 }
 
 /**
@@ -81,47 +76,46 @@ if (window) {
     // 데이터가 없을 시 비어있는 페이지를 보여줍니다.
     if (data.length < 1) {
       root.appendChild(createEmptyPage());
+      return;
     }
-    // 데이터가 한개라도 존재하면 슬라이더 페이지를 보여줍니다.
-    else {
-      // PageSlider를 생성합니다.
-      const pageSlider = new PageSlider('notice-slider');
-      const textPost = new TextPost();
 
-      /**
-       * @description Router에서 Path 변경시 호출해주는 Callback Function
-       * @param {{ path: string, query: object }} param Path 변경 시 전달받는 파라미터
-       */
-      const routerCallback = ({ path, query }) => {
-        // Path가 Detail로 시작하면 상세 페이지를 보여줍니다.
-        if (path.startsWith('detail')) {
-          const index = query.index || 0;
-          textPost.title = data[index].title;
-          textPost.subtitle = data[index].date;
-          textPost.contents = data[index].content;
-          textPost.footer = data[index].from;
-          document.title = '공지사항 상세내용';
-          pageSlider.movePage(1);
-        }
-        // Path가 Detail이 아니면 리스트 페이지를 보여줍니다.
-        else {
-          document.title = '공지사항';
-          pageSlider.movePage(0);
-        }
-      };
-      // Callback으로 동작하는 라우터를 생성합니다.
-      const router = new Router(routerCallback);
+    // PageSlider를 생성합니다.
+    const pageSlider = new PageSlider('notice-slider');
+    const textPost = new TextPost();
 
-      /**
-       * @description 리스트 클릭시 상세페이지로 이동하는 함수입니다.
-       * @param {number} index 리스트에서 선택한 항목의 인덱스 값
-       */
-      const nextPageFunc = (index) => router.redirect('/detail', { index });
+    /**
+     * @description Router에서 Path 변경시 호출해주는 Callback Function
+     * @param {{ path: string, query: object }} param Path 변경 시 전달받는 파라미터
+     */
+    const routerCallback = ({ path, query }) => {
+      // Path가 Detail로 시작하면 상세 페이지를 보여줍니다.
+      if (path.startsWith('detail')) {
+        const index = query.index || 0;
+        textPost.title = data[index].title;
+        textPost.subtitle = data[index].date;
+        textPost.contents = data[index].content;
+        textPost.footer = data[index].from;
+        document.title = '공지사항 상세내용';
+        pageSlider.movePage(1);
+      }
+      // Path가 Detail이 아니면 리스트 페이지를 보여줍니다.
+      else {
+        document.title = '공지사항';
+        pageSlider.movePage(0);
+      }
+    };
+    // Callback으로 동작하는 라우터를 생성합니다.
+    const router = new Router(routerCallback);
 
-      // Page Slider에 리스트 페이지와 상세 페이지를 추가합니다.
-      pageSlider.addPage(createListBoardPage(nextPageFunc));
-      pageSlider.addPage(textPost.element);
-      root.appendChild(pageSlider.element);
-    }
+    /**
+     * @description 리스트 클릭시 상세페이지로 이동하는 함수입니다.
+     * @param {number} index 리스트에서 선택한 항목의 인덱스 값
+     */
+    const nextPageFunc = (index) => router.redirect('/detail', { index });
+
+    // Page Slider에 리스트 페이지와 상세 페이지를 추가합니다.
+    pageSlider.addPage(createListBoardPage(nextPageFunc));
+    pageSlider.addPage(textPost.element);
+    root.appendChild(pageSlider.element);
   };
 }

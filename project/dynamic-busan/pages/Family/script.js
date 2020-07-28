@@ -7,6 +7,23 @@ import TextPost from '../../src/js/layout/TextPost';
 import data from './data.json';
 import './style.css';
 
+// router 함수를 담는 객체
+const routerFunc = {
+  default: () => {},
+};
+
+// Callback으로 동작하는 라우터를 생성합니다.
+const router = new Router(({ path, query }) => {
+  // router 함수 객체에 알맞은 함수가 있으면 실행합니다.
+  const isComplete = Object.keys(routerFunc).some((key) => {
+    if (!path.startsWith(key)) return false;
+    routerFunc[key]({ path, query });
+    return true;
+  });
+  // 알맞은 함수가 없을 시 Default 함수가 실행됩니다.
+  if (!isComplete) routerFunc.default({ path, query });
+});
+
 /**
  * @description YYYY.MM.DD를 YYYY년 MM월 DD일로 변경합니다.
  * @param {string} date YYYY.MM.DD
@@ -26,7 +43,7 @@ function converDate(date) {
  * @param {string} enforce 약관 시행일
  * @return {HTMLLIElement} Footer Element
  */
-function createTextPostFooter(notice, enforce) {
+function createTermDetailFooter(notice, enforce) {
   // Component Element를 생성합니다.
   const noticeElement = createElement('li', { child: notice });
   const enforceElement = createElement('li', { child: enforce });
@@ -36,85 +53,83 @@ function createTextPostFooter(notice, enforce) {
   });
 }
 
+function createTermsOfUsePage() {
+  // 약관 동의 페이지를 구성할 Layout Component들을 생성합니다.
+  const pageSlider = new PageSlider('terms-and-condition');
+  const textPost = new TextPost();
+
+  // 약관 동의 페이지를 구성할 일반 Componenet들을 생성합니다.
+  const agreeTerms = new AgreeTerms(
+    data.terms.map((term) => term.title),
+    { title: '모바일 가족사랑카드를 발급하기 위해 약관을 확인해주세요.' },
+  );
+  const agreeTermsSubmit = createElement('button', {
+    class: 'button button-type-a',
+    child: '확인',
+    disabled: 'disabled',
+  });
+  const agreeTermsSubmitWrapper = createElement('div', {
+    class: 'agree-terms-submit',
+    child: agreeTermsSubmit,
+  });
+  const agreeTermsPage = createElement('div', {
+    class: 'agree-terms-page',
+    child: [agreeTerms.element, agreeTermsSubmitWrapper],
+  });
+
+  // 약관 동의 이벤트들을 설정합니다.
+  /**
+   * @description 약관을 전부 동의하지 않으면 확인 버튼을 누를 수 없습니다.
+   * @param {boolean} isDone 약관 전체를 동의 했는지 여부
+   */
+  agreeTerms.onClick = (isDone) => {
+    if (isDone) agreeTermsSubmit.removeAttribute('disabled');
+    else agreeTermsSubmit.setAttribute('disabled', 'disabled');
+  };
+
+  /**
+   * @description 약관 상세페이지로 이동합니다.
+   * @param {number} index 리스트에서 선택한 항목의 인덱스 값
+   */
+  agreeTerms.onDetail = (index) => router.redirect('/detail', { index });
+
+  // 약관 동의 페이지를 구성합니다.
+  pageSlider.addPage(agreeTermsPage);
+  pageSlider.addPage(textPost.element);
+
+  // 라우터에 함수를 추가합니다.
+  routerFunc.detail = ({ query }) => {
+    const term = data.terms[query.index || 0];
+    document.title = term.title;
+    textPost.title = term.title;
+    textPost.subtitle = `시행일 ${term.enforceDate}`;
+    textPost.contents = term.content;
+    textPost.footer = createTermDetailFooter(
+      converDate(`고지일: ${term.noticeDate}`),
+      converDate(`시행일: ${term.enforceDate}`),
+    );
+    pageSlider.movePage(1);
+  };
+
+  return pageSlider;
+}
+
 /**
  * @description Window Onload Callback
  */
 if (window) {
   window.onload = function () {
-    // 페이지 제목을 첫 페이지에 맞게 변경합니다.
-    document.title = '약관동의';
-
     // Page를 Render할 Element를 가져옵니다.
     const root = document.getElementsByClassName('root')[0];
 
-    // 약관 동의 페이지를 구성할 Layout Component들을 생성합니다.
-    const pageSlider = new PageSlider('terms-and-condition');
-    const textPost = new TextPost();
+    // 페이지를 생성합니다.
+    const termsOfUsePage = createTermsOfUsePage();
 
-    // 약관 동의 페이지를 구성할 일반 Componenet들을 생성합니다.
-    const agreeTerms = new AgreeTerms(
-      data.terms.map((term) => term.title),
-      { title: '모바일 가족사랑카드를 발급하기 위해 약관을 확인해주세요.' },
-    );
-    const agreeTermsSubmit = createElement('button', {
-      class: 'button button-type-a',
-      child: '확인',
-      disabled: 'disabled',
-    });
-    const agreeTermsSubmitWrapper = createElement('div', {
-      class: 'agree-terms-submit',
-      child: agreeTermsSubmit,
-    });
-    const agreeTermsPage = createElement('div', {
-      class: 'agree-terms-page',
-      child: [agreeTerms.element, agreeTermsSubmitWrapper],
-    });
-
-    // 약관 동의 페이지를 구성합니다.
-    pageSlider.addPage(agreeTermsPage);
-    pageSlider.addPage(textPost.element);
-
-    // Callback으로 동작하는 라우터를 생성합니다.
-    /**
-     * @description Router에서 Path 변경시 호출해주는 Callback Function
-     * @param {{ path: string, query: object }} param Path 변경 시 전달받는 파라미터
-     */
-    const router = new Router(({ path, query }) => {
-      // Path가 Detail로 시작하면 약관 상세 페이지를 보여줍니다.
-      if (path.startsWith('detail')) {
-        const term = data.terms[query.index || 0];
-        document.title = term.title;
-        textPost.title = term.title;
-        textPost.subtitle = `시행일 ${term.enforceDate}`;
-        textPost.contents = term.content;
-        textPost.footer = createTextPostFooter(
-          converDate(`고지일: ${term.noticeDate}`),
-          converDate(`시행일: ${term.enforceDate}`),
-        );
-        pageSlider.movePage(1);
-      }
-      // Path 어디에도 속하지 않으면 이용약관 페이지를 보여줍니다.
-      else {
-        document.title = '이용약관';
-        pageSlider.movePage(0);
-      }
-    });
-
-    // 약관 동의 이벤트들을 설정합니다.
-    /**
-     * @description 약관을 전부 동의하지 않으면 확인 버튼을 누를 수 없습니다.
-     * @param {boolean} isDone 약관 전체를 동의 했는지 여부
-     */
-    agreeTerms.onClick = (isDone) => {
-      if (isDone) agreeTermsSubmit.removeAttribute('disabled');
-      else agreeTermsSubmit.setAttribute('disabled', 'disabled');
+    // 라우터의 디폴트 콜백 함수를 추가합니다.
+    routerFunc.default = () => {
+      if (termsOfUsePage.current !== 0) termsOfUsePage.movePage(0);
     };
-    /**
-     * @description 약관 상세페이지로 이동합니다.
-     * @param {number} index 리스트에서 선택한 항목의 인덱스 값
-     */
-    agreeTerms.onDetail = (index) => router.redirect('/detail', { index });
 
-    root.appendChild(pageSlider.element);
+    root.appendChild(termsOfUsePage.element);
   };
 }

@@ -95,3 +95,50 @@ export function circleIcon(size = 18, color = '#000000') {
     child: circle,
   });
 }
+
+/**
+ * @description Check SVG Icon을 생성합니다.
+ * @param {number} size Icon 크기
+ * @param {string} color Icon 색상
+ * @returns {HTMLElement} Check Icon
+ */
+export function checkIcon(size = 16, color = '#000000') {
+  const xmlns = 'http://www.w3.org/2000/svg';
+  const path = createElementNS(xmlns, 'path', {
+    fill: color,
+    d:
+      'M12.81 3.777c.399-.382 1.032-.367 1.413.033.352.368.367.936.053 1.321l-.086.092-7.333 7c-.357.34-.902.367-1.288.079l-.093-.079-3.666-3.5c-.4-.381-.415-1.014-.033-1.413.352-.37.918-.41 1.317-.114l.096.08 2.976 2.841 6.644-6.34z',
+  });
+
+  return createElementNS(xmlns, 'svg', {
+    xmlns,
+    width: size.toString(),
+    height: size.toString(),
+    viewBox: '0 0 16 16',
+    child: path,
+  });
+}
+
+/**
+ * @description Check Circle SVG Icon을 생성합니다.
+ * @param {number} size Icon 크기
+ * @param {string} color Icon 색상
+ * @returns {HTMLElement} Check Circle Icon
+ */
+export function checkCircle(size = 80, color = '#000000') {
+  const xmlns = 'http://www.w3.org/2000/svg';
+  const path = createElementNS(xmlns, 'path', {
+    fill: color,
+    'fill-rule': 'evenodd',
+    d:
+      'M40 0c22.091 0 40 17.909 40 40S62.091 80 40 80 0 62.091 0 40 17.909 0 40 0zm20.755 26.043c-1.265-1.338-3.375-1.396-4.712-.131L33.7 47.047l-9.71-9.437-.318-.273c-1.322-.998-3.211-.879-4.396.34-1.283 1.32-1.253 3.43.067 4.713l12.003 11.667.308.265c1.282.975 3.108.9 4.306-.234l24.664-23.333.286-.306c1.053-1.28 1.013-3.172-.155-4.406z',
+  });
+
+  return createElementNS(xmlns, 'svg', {
+    xmlns,
+    width: size.toString(),
+    height: size.toString(),
+    viewBox: '0 0 80 80',
+    child: path,
+  });
+}

@@ -3,6 +3,7 @@ import { createElement } from '../util/dom';
 /**
  * @description List Board Element를 랜더할 수 있는 클래스
  * @property {string} separatorClass 다른 List Board와 구분할 수 있는 고유 class
+ * @property {(index: number, item: HTMLElement) => void} onClick Item의 온클릭 이벤트 리스너
  * @property {HTMLLIElement} element List Board Element
  */
 class ListBoard {

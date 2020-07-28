@@ -1,0 +1,64 @@
+.agree-terms .agree-all-btn {
+  display: flex;
+  align-items: center;
+  margin-top: 24px;
+  padding: 18px 16px;
+  cursor: pointer;
+  outline: none;
+  border: solid 1px var(--line-color);
+  border-radius: 4px;
+  background-color: var(--bg-color-basic);
+  -webkit-tap-highlight-color: transparent;
+  transition: border var(--transition-duration)
+    var(--transition-timing-function);
+}
+
+.agree-terms .agree-all-btn path {
+  transition: fill var(--transition-duration) var(--transition-timing-function);
+  margin-right: 16px;
+}
+
+.agree-terms .agree-all-btn p {
+  flex: 1;
+  margin-left: 16px;
+}
+
+.agree-terms .agree-all-btn.active {
+  border: solid 1px var(--primary-color-blue);
+}
+
+.agree-terms .agree-all-btn.active path {
+  fill: var(--primary-color-blue);
+}
+
+.agree-terms .agree-terms-list {
+  margin-top: 28px;
+}
+
+.agree-terms .agree-terms-list .agree-terms-item {
+  padding: 0 16px;
+  margin: 8px 0px;
+}
+
+.agree-terms .agree-terms-list .agree-terms-item > * {
+  height: 20px;
+  padding: 4px;
+}
+
+.agree-terms-list .agree-terms-item svg:first-child path {
+  transition: fill var(--transition-duration) var(--transition-timing-function);
+}
+
+.agree-terms-list .agree-terms-item p {
+  flex: 1;
+  margin-left: 12px;
+  transition: color var(--transition-duration) var(--transition-timing-function);
+}
+
+.agree-terms-list .agree-terms-item.active svg:first-child path {
+  fill: var(--primary-color-blue);
+}
+
+.agree-terms-list .agree-terms-item.active p {
+  color: var(--font-color-dark);
+}

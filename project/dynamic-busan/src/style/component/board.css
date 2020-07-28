@@ -49,7 +49,7 @@
   text-overflow: clip;
   padding: var(--board-item-padding-vertical)
     var(--board-item-padding-horizontal);
-  background-color: var(--bg-color-basic02);
+  background-color: var(--bg-color-basic);
 }
 
 .drawer-board-item .item-content-container.item-dummy {

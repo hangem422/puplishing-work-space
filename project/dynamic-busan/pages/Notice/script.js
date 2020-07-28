@@ -83,6 +83,7 @@ if (window) {
     const pageSlider = new PageSlider('notice-slider');
     const textPost = new TextPost();
 
+    // Callback으로 동작하는 라우터를 생성합니다.
     /**
      * @description Router에서 Path 변경시 호출해주는 Callback Function
      * @param {{ path: string, query: object }} param Path 변경 시 전달받는 파라미터
@@ -104,7 +105,6 @@ if (window) {
         pageSlider.movePage(0);
       }
     };
-    // Callback으로 동작하는 라우터를 생성합니다.
     const router = new Router(routerCallback);
 
     /**

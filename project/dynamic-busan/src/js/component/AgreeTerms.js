@@ -147,7 +147,7 @@ class AgreeTerms {
     });
 
     // 약관 동의 / 비동의 온클릭 이벤트 추가
-    const index = this.element.childElementCount;
+    const index = this.termsWrapper.childElementCount;
     container.addEventListener('click', (event) => {
       event.stopPropagation();
       // 동의한 상태의 약관이면 동의를 헤지합니다.

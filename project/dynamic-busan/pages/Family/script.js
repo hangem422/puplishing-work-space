@@ -1,10 +1,10 @@
-/* eslint-disable no-unused-vars */
-import { createElement, wrapping } from '../../src/js/util/dom';
+import { createElement, appendAllChild, wrapping } from '../../src/js/util/dom';
 import Router from '../../src/js/module/RouterWithCB';
 import AgreeTerms from '../../src/js/component/AgreeTerms';
 import PageSlider from '../../src/js/layout/PageSlider';
 import StackSlider from '../../src/js/layout/StackSlider';
 import TextPost from '../../src/js/layout/TextPost';
+import Loading from '../../src/js/component/Loading';
 
 import data from './data.json';
 import './style.css';
@@ -26,6 +26,9 @@ const router = new Router(({ path, query }) => {
   // 알맞은 함수가 없을 시 Default 함수가 실행됩니다.
   if (!isComplete) routerFunc.default({ path, query });
 });
+
+// 로딩과 모달 컴포넌트를 생성합니다.
+const loading = new Loading();
 
 /**
  * @description YYYY.MM.DD를 YYYY년 MM월 DD일로 변경합니다.
@@ -59,6 +62,11 @@ function createTermDetailFooter(notice, enforce) {
 function termsOfUseSubmit() {
   // 다음 페이지로 이동합니다.
   router.redirect('certification');
+}
+
+function certificationSubmit() {
+  // 로딩화면을 보여줍니다.
+  loading.show();
 }
 
 function createTermsOfUsePage() {
@@ -148,6 +156,9 @@ function createCertificationPage() {
     },
   });
 
+  // 제출 버튼 온클릭 이벤트를 설정합니다.
+  submit.addEventListener('click', () => certificationSubmit());
+
   return createElement('div', {
     class: 'certification-page',
     child: [titleContainer, secretTextfield.element, submitContainer],
@@ -179,6 +190,7 @@ if (window) {
       if (termsOfUsePage.current !== 0) termsOfUsePage.movePage(0);
       while (stackSlider.current !== 0) stackSlider.movePrev();
     };
-    root.appendChild(stackSlider.element);
+
+    appendAllChild(root, [loading.element, stackSlider.element]);
   };
 }

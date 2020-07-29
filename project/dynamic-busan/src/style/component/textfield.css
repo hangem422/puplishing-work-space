@@ -20,8 +20,7 @@
 .textfield label {
   display: block;
   margin-bottom: 8px;
-  font-weight: 500;
-  color: var(--font-color-regular);
+  color: var(--font-color-dark);
 }
 
 .textfield input {

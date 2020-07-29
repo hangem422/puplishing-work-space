@@ -58,13 +58,17 @@ class StackSlider {
    * @param {HTMLLIElement} page 추가할 Page
    */
   addPage(page) {
-    const conatiner = createElement('div', {
-      class: 'page-slider-item',
-      style: `z-index: ${this.size * 100};`,
+    const wrapper = createElement('div', {
+      class: 'stack-slider-item-wrapper',
+      style: `z-index: ${(this.size + 1) * 100};`,
       child: page,
     });
+    const conatiner = createElement('div', {
+      class: 'stack-slider-item-container',
+      child: wrapper,
+    });
     if (this.size === 0) conatiner.classList.add(ACTIVE_PAGE_CLASS);
-    this.wrapper.appendChild(conatiner);
+    this.pageWrapper.appendChild(conatiner);
     this.size += 1;
   }
 

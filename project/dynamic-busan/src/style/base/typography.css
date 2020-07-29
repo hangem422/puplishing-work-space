@@ -35,10 +35,16 @@
   font-weight: 400;
 }
 
+.textfield label {
+  font-family: 'Noto Sans KR', sans-serif;
+  font-size: 12px;
+  line-height: 1.5;
+  font-weight: 400;
+}
+
 .font-text-body2,
 .textfield,
 .textfield::after,
-.textfield label,
 .textfield input,
 .textfield input::placeholder {
   font-family: 'Noto Sans KR', sans-serif;

@@ -1,7 +1,9 @@
+/* eslint-disable no-unused-vars */
 import { createElement, wrapping } from '../../src/js/util/dom';
 import Router from '../../src/js/module/RouterWithCB';
 import AgreeTerms from '../../src/js/component/AgreeTerms';
 import PageSlider from '../../src/js/layout/PageSlider';
+import StackSlider from '../../src/js/layout/StackSlider';
 import TextPost from '../../src/js/layout/TextPost';
 
 import data from './data.json';
@@ -54,6 +56,11 @@ function createTermDetailFooter(notice, enforce) {
   });
 }
 
+function termsOfUseSubmit() {
+  // 다음 페이지로 이동합니다.
+  router.redirect('certification');
+}
+
 function createTermsOfUsePage() {
   // 약관 동의 페이지를 구성할 Layout Component들을 생성합니다.
   const pageSlider = new PageSlider('terms-and-condition');
@@ -64,19 +71,19 @@ function createTermsOfUsePage() {
     data.terms.map((term) => term.title),
     { title: '모바일 가족사랑카드를 발급하기 위해 약관을 확인해주세요.' },
   );
-  const agreeTermsSubmit = createElement('button', {
+  const submit = createElement('button', {
     class: 'button button-type-a',
     child: '확인',
     disabled: 'disabled',
   });
-  const agreeTermsSubmitWrapper = createElement('div', {
-    class: 'agree-terms-submit',
-    child: agreeTermsSubmit,
-  });
+  const submitContainer = wrapping('agree-terms-submit', submit);
   const agreeTermsPage = createElement('div', {
     class: 'agree-terms-page',
-    child: [agreeTerms.element, agreeTermsSubmitWrapper],
+    child: [agreeTerms.element, submitContainer],
   });
+
+  // 제출 버튼 온클릭 이벤트를 설정합니다.
+  submit.addEventListener('click', () => termsOfUseSubmit());
 
   // 약관 동의 이벤트들을 설정합니다.
   /**
@@ -84,8 +91,8 @@ function createTermsOfUsePage() {
    * @param {boolean} isDone 약관 전체를 동의 했는지 여부
    */
   agreeTerms.onClick = (isDone) => {
-    if (isDone) agreeTermsSubmit.removeAttribute('disabled');
-    else agreeTermsSubmit.setAttribute('disabled', 'disabled');
+    if (isDone) submit.removeAttribute('disabled');
+    else submit.setAttribute('disabled', 'disabled');
   };
 
   /**
@@ -159,12 +166,19 @@ if (window) {
     const termsOfUsePage = createTermsOfUsePage();
     const certificationPage = createCertificationPage();
 
+    // 전체 페이지들에 대한 Layout Component를 생성합니다.
+    const stackSlider = new StackSlider('family-card');
+    stackSlider.addPage(termsOfUsePage.element);
+    stackSlider.addPage(certificationPage);
+
+    // 라우터에 함수를 추가합니다.
+    routerFunc.certification = () => stackSlider.moveNext();
+
     // 라우터의 디폴트 콜백 함수를 추가합니다.
     routerFunc.default = () => {
       if (termsOfUsePage.current !== 0) termsOfUsePage.movePage(0);
+      while (stackSlider.current !== 0) stackSlider.movePrev();
     };
-
-    // root.appendChild(termsOfUsePage.element);
-    root.appendChild(certificationPage);
+    root.appendChild(stackSlider.element);
   };
 }

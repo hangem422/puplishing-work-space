@@ -76,3 +76,16 @@ export function createElementNS(nameSpace, tagName, option) {
   setAttributeAll(element, attrObj);
   return element;
 }
+
+/**
+ * @description HTMl Elemnt를 wrapper와 container로 감쌉니다.
+ * @param {string} separatorClass 다른 컨테이너와 구분할 수 있는 고유 Class
+ * @param {HTMLElement | HTMLElement[] | string} child Element 추가할 Child
+ */
+export function wrapping(separatorClass, child) {
+  const wrapper = createElement('div', { class: 'wrapper', child });
+  return createElement('div', {
+    class: `container ${separatorClass || ''}`,
+    child: wrapper,
+  });
+}

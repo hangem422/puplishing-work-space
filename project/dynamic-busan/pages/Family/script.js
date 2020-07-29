@@ -1,4 +1,4 @@
-import { createElement } from '../../src/js/util/dom';
+import { createElement, wrapping } from '../../src/js/util/dom';
 import Router from '../../src/js/module/RouterWithCB';
 import AgreeTerms from '../../src/js/component/AgreeTerms';
 import PageSlider from '../../src/js/layout/PageSlider';
@@ -6,6 +6,7 @@ import TextPost from '../../src/js/layout/TextPost';
 
 import data from './data.json';
 import './style.css';
+import SecretTextfield from '../../src/js/component/SecretTextfield';
 
 // router 함수를 담는 객체
 const routerFunc = {
@@ -114,6 +115,38 @@ function createTermsOfUsePage() {
   return pageSlider;
 }
 
+function createCertificationPage() {
+  // 인증 페이지를 구성할 일반 Componenet들을 생성합니다.
+  const title = createElement('p', {
+    class: 'font-text-body1 font-color-dark',
+    child: '주민등록번호를 이용해 인증을 해주세요.',
+  });
+  const submit = createElement('button', {
+    class: 'button button-type-a',
+    child: '인증하기',
+    disabled: 'disabled',
+  });
+  const titleContainer = wrapping('certification-title', title);
+  const submitContainer = wrapping('certification-submit', submit);
+  const secretTextfield = new SecretTextfield({
+    separatorClass: 'certification-input',
+    max: 7,
+    placeholder: '주민등록번호 뒷자리 숫자를 입력하세요.',
+    label: '주민등록번호 뒷자리(7자리 숫자)',
+    validateCharFunc: (char) => /[0-9]/.test(char),
+    validateStringFunc: (str) => /^[0-9]{7}$/.test(str),
+    onChangeFunc: (_, validate) => {
+      if (validate) submit.removeAttribute('disabled');
+      else submit.setAttribute('disabled', 'disabled');
+    },
+  });
+
+  return createElement('div', {
+    class: 'certification-page',
+    child: [titleContainer, secretTextfield.element, submitContainer],
+  });
+}
+
 /**
  * @description Window Onload Callback
  */
@@ -124,12 +157,14 @@ if (window) {
 
     // 페이지를 생성합니다.
     const termsOfUsePage = createTermsOfUsePage();
+    const certificationPage = createCertificationPage();
 
     // 라우터의 디폴트 콜백 함수를 추가합니다.
     routerFunc.default = () => {
       if (termsOfUsePage.current !== 0) termsOfUsePage.movePage(0);
     };
 
-    root.appendChild(termsOfUsePage.element);
+    // root.appendChild(termsOfUsePage.element);
+    root.appendChild(certificationPage);
   };
 }

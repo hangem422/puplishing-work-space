@@ -5,6 +5,7 @@
 .textfield::after {
   position: absolute;
   margin-top: 8px;
+  white-space: pre-line;
   content: attr(error-message);
   color: var(--primary-color-red);
   opacity: 0;
@@ -30,7 +31,8 @@
   transition-timing-function: var(--transition-timing-function);
 }
 
-.textfield input[type='text'] {
+.textfield input[type='text'],
+.textfield input[type='number'] {
   display: block;
   height: var(--textfield-input-height);
   width: 100%;
@@ -42,24 +44,29 @@
   color: var(--font-color-dark);
 }
 
-.textfield input[type='text']::placeholder {
+.textfield input[type='text']::placeholder,
+.textfield input[type='number']::placeholder {
   color: var(--font-color-placeholder);
 }
 
-.textfield input[type='text']:focus {
+.textfield input[type='text']:focus,
+.textfield input[type='number']:focus {
   border: solid 1px var(--primary-color-blue);
 }
 
-.textfield.textfield-error input[type='text'] {
+.textfield.textfield-error input[type='text'],
+.textfield.textfield-error input[type='number'] {
   border: solid 1px var(--primary-color-red);
 }
 
-.textfield.textfield-error input[type='text']::placeholder {
+.textfield.textfield-error input[type='text']::placeholder,
+.textfield.textfield-error input[type='number']::placeholder {
   content: 'test';
   color: var(--primary-color-red);
 }
 
-.textfield.textfield-error input[type='text']:focus {
+.textfield.textfield-error input[type='text']:focus,
+.textfield.textfield-error input[type='number']:focus {
   border: solid 1px var(--primary-color-red);
 }
 

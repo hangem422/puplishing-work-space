@@ -14,7 +14,7 @@ class ListBoard {
    * @param {(index: number, item: HTMLElement) => void} onClickFunction Item의 온클릭 이벤트 리스너
    */
   constructor(separatorClass, itemList = [], onClickFunction = () => {}) {
-    this.separatorClass = separatorClass;
+    this.separatorClass = separatorClass || '';
     this.onClick = onClickFunction;
     this.element = createElement('ul', {
       class: `list-board ${separatorClass}`,

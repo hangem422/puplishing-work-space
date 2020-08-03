@@ -64,7 +64,7 @@ class StackSlider {
       child: page,
     });
     const conatiner = createElement('div', {
-      class: 'stack-slider-item-container',
+      class: `stack-slider-item-container ${this.sc}`,
       child: wrapper,
     });
     if (this.size === 0) conatiner.classList.add(ACTIVE_PAGE_CLASS);

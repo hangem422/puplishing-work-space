@@ -1,4 +1,4 @@
-import { createElement } from '../../src/js/util/dom';
+import { createElement, wrapping } from '../../src/js/util/dom';
 import Router from '../../src/js/module/RouterWithCB';
 import { emptyAlarmImage } from '../../src/js/component/Image';
 import { moreRight } from '../../src/js/component/Icon';
@@ -8,6 +8,9 @@ import TextPost from '../../src/js/layout/TextPost';
 
 import './style.css';
 import data from './data.json';
+
+const DOCUMENT_TITLE = '이용약관';
+const EMPTY_PAGE_TEXT = '아직 등록된 이용약관이 없습니다.';
 
 // Callback으로 동작하는 라우터를 생성합니다.
 const router = new Router();
@@ -34,18 +37,10 @@ function createEmptyPage() {
   const image = emptyAlarmImage();
   const text = createElement('div', {
     class: 'font-text-body1 font-color-light empty-page-text',
-    child: '아직 등록된 이용약관이 없습니다.',
+    child: EMPTY_PAGE_TEXT,
   });
 
-  // Layout을 구성합니다.
-  const wrapper = createElement('div', {
-    class: 'wrapper',
-    child: [image, text],
-  });
-  return createElement('div', {
-    class: 'container empty-page',
-    child: wrapper,
-  });
+  return wrapping('empty-page', [image, text]);
 }
 
 /**
@@ -141,7 +136,7 @@ if (window) {
       pageSlider.movePage(1);
     });
     router.setRouterFunc('default', () => {
-      document.title = '이용약관';
+      document.title = DOCUMENT_TITLE;
       if (pageSlider.current !== 0) pageSlider.movePage(0);
     });
 

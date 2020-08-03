@@ -20,6 +20,7 @@ class SecretTextfield {
    * @typedef {object} option
    * @property {string} separatorClass 다른 Secret Textfield와 구분할 수 있는 고유 class
    * @property {number} max Textfield의 문자열 최대 길이
+   * @property {string} type Textfield의 type
    * @property {string} placeholder Textfield의 placeholder
    * @property {string} label Textfield의 label 문자열
    * @property {(char: string) => boolean} validateCharFunc 입력한 문자가 유효한 문자인지 검증하는 함수
@@ -39,9 +40,9 @@ class SecretTextfield {
       child: option.label || '',
     });
     this.input = createElement('input', {
-      type: 'text',
       id: this.separatorClass || 'secret-textfield-input',
       placeholder: option.placeholder || '',
+      type: option.type || 'text',
     });
     this.secret = createElement('div', {
       class: 'secret-textfield-text',
@@ -55,12 +56,15 @@ class SecretTextfield {
       child: this.wrapper,
     });
 
-    this.input.addEventListener('keydown', (event) => {
-      event.preventDefault();
+    this.input.addEventListener('keyup', (event) => {
       // backspace 입력시 문자 삭제
       if (event.keyCode === 8) this.deleteChar();
       // 허용 범위의 키가 입력됐을 시 문자 추가
-      else this.addChar(String.fromCharCode(event.keyCode));
+      else if (event.target.value.length > this.text.length) {
+        const char = event.target.value.slice(-1);
+        event.target.value = event.target.value.slice(0, -1);
+        this.addChar(char);
+      }
     });
 
     this.secret.addEventListener('click', (event) => {
@@ -83,7 +87,7 @@ class SecretTextfield {
   deleteChar() {
     if (this.text.length > 0) {
       this.text = this.text.slice(0, -1);
-      this.input.value = this.input.value.slice(0, -1);
+      this.input.value = this.input.value.slice(0, this.text.length);
 
       // 동그라미를 한개 삭제합니다.
       this.secret.removeChild(this.secret.lastChild);
@@ -99,7 +103,7 @@ class SecretTextfield {
   addChar(char) {
     if (this.validateCharFunc(char) && this.text.length < this.max) {
       this.text += char;
-      this.input.value += ' ';
+      this.input.value += '0';
 
       // 동그라미를 한개 추가합니다.
       const circle = circleIcon(14, '#0056d0');

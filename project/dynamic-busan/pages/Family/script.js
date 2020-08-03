@@ -181,6 +181,7 @@ function createCertificationPage() {
   const secretTextfield = new SecretTextfield({
     separatorClass: 'certification-input',
     max: 7,
+    type: 'number',
     placeholder: CERTIFICATION_PLACEHOLDER,
     label: CERTIFICATION_LABEL,
     validateCharFunc: (char) => /[0-9]/.test(char),

@@ -31,7 +31,7 @@ class Loading {
 
   /**
    * @description Loading 컴포넌트 사용 여부를 설정합니다.
-   * @param {boolean} 사용 여부
+   * @param {boolean} state 사용 여부
    */
   setState(state) {
     if (!this.element) return;

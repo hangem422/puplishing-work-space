@@ -5,6 +5,7 @@ import PageSlider from '../../src/js/layout/PageSlider';
 import StackSlider from '../../src/js/layout/StackSlider';
 import TextPost from '../../src/js/layout/TextPost';
 import Loading from '../../src/js/component/Loading';
+import Modal from '../../src/js/component/SingleBtnModal';
 
 import data from './data.json';
 import './style.css';
@@ -29,6 +30,7 @@ const router = new Router(({ path, query }) => {
 
 // 로딩과 모달 컴포넌트를 생성합니다.
 const loading = new Loading();
+const modal = new Modal();
 
 /**
  * @description YYYY.MM.DD를 YYYY년 MM월 DD일로 변경합니다.
@@ -67,6 +69,12 @@ function termsOfUseSubmit() {
 function certificationSubmit() {
   // 로딩화면을 보여줍니다.
   loading.show();
+  setTimeout(() => {
+    loading.hide();
+    modal.show(
+      '입력하신 주민등록번호가 유요하지 않습니다. 주민등록번호를 확인 후 다시 시도해주세요.',
+    );
+  }, 2000);
 }
 
 function createTermsOfUsePage() {
@@ -183,7 +191,10 @@ if (window) {
     stackSlider.addPage(certificationPage);
 
     // 라우터에 함수를 추가합니다.
-    routerFunc.certification = () => stackSlider.moveNext();
+    routerFunc.certification = () => {
+      document.title = '다자녀가정 인증';
+      stackSlider.moveNext();
+    };
 
     // 라우터의 디폴트 콜백 함수를 추가합니다.
     routerFunc.default = () => {
@@ -191,6 +202,6 @@ if (window) {
       while (stackSlider.current !== 0) stackSlider.movePrev();
     };
 
-    appendAllChild(root, [loading.element, stackSlider.element]);
+    appendAllChild(root, [loading.element, modal.element, stackSlider.element]);
   };
 }

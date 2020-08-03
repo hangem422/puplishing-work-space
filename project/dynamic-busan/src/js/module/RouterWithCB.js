@@ -1,3 +1,5 @@
+import { objToQueryURL } from '../util/ajax';
+
 /**
  * @description URL Path의 앞뒤 '/'를 제거합니다.
  * @param {string} path URL Path
@@ -55,12 +57,7 @@ class RouterWithCB {
     let url = `${this.root}/${clearPath}`;
 
     // Query Parameter가 존재하면 Query와 URL을 재설정 합니다.
-    if (typeof query === 'object') {
-      const queryUrl = Object.entries(query)
-        .map((keyValue) => keyValue.join('='))
-        .join('&');
-      url += `?${queryUrl}`;
-    }
+    if (typeof query === 'object') url += `?${objToQueryURL(query)}`;
 
     // 브라우저의 세션 기록 스택에 상태를 추가합니다.
     window.history.pushState(query, null, url);

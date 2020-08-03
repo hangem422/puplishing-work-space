@@ -1,5 +1,7 @@
+/* eslint-disable no-unused-vars */
 import { createElement, appendAllChild, wrapping } from '../../src/js/util/dom';
-import { isAndroid, isIOS } from '../../src/js/util/os';
+import { requestVP } from '../../src/js/util/os';
+import { post } from '../../src/js/util/ajax';
 import Router from '../../src/js/module/RouterWithCB';
 import AgreeTerms from '../../src/js/component/AgreeTerms';
 import PageSlider from '../../src/js/layout/PageSlider';
@@ -12,7 +14,11 @@ import data from './data.json';
 import './style.css';
 import SecretTextfield from '../../src/js/component/SecretTextfield';
 
+const API_SERVER_HOST = 'http://15.164.137.13:8005';
+const SEND_VP_API_URL = `${API_SERVER_HOST}/api/v1/request_required_vp`;
+
 const ERROR_MESSAGE_01 = '유효하지 않은 환경에서 실행할 수 없습니다.';
+const ERROR_MESSAGE_02 = '오류가 발생했습니다. 잠시 후에 다시 시도해주세요.';
 // const ERROR_MESSAGE_02 =
 //   '입력하신 주민등록번호가 유요하지 않습니다. 주민등록번호를 확인 후 다시 시도해주세요.';
 // const ERROR_MESSAGE_03 =
@@ -35,45 +41,38 @@ const loading = new Loading();
 const modal = new Modal();
 
 /**
- *
- * @param {*} vp
+ * @description Api 서버로 VP를 전달합니다.
+ * @param {string} vp AA VC 밝급을 위한 VP
  */
 // eslint-disable-next-line no-unused-vars
-function apiHandler(vp) {
-  console.log(vp);
-}
-
-function certificationSubmit() {
-  loading.show();
-  // Android Javascript Call
-  if (isAndroid() && window.KeepinBridge && window.KeepinBridge.requestVP) {
-    window.KeepinBridge.requestVP('apiHandler');
-  }
-  // iOS Javascript Call
-  else if (
-    isIOS() &&
-    window.webkit &&
-    window.webkit.messageHandlers &&
-    window.webkit.messageHandlers.KeepinBridgeRequestVP
-  ) {
-    window.webkit.messageHandlers.KeepinBridgeRequestVP.postMessage(
-      'apiHandler',
-    );
-  }
-  // 유효하지 않은 환경일때 예외 처리
-  else {
-    modal.show(ERROR_MESSAGE_01);
-    loading.hide();
-  }
+function sendVpToApi(vp) {
+  if (!loading.state) loading.show();
+  post(SEND_VP_API_URL, { vp }, true)
+    .then(() => {
+      loading.hide();
+      router.redirect('certification');
+    })
+    .catch(() => {
+      loading.hide();
+      modal.show(ERROR_MESSAGE_02);
+    });
 }
 
 /**
  * @description 이용 약관 동의 버튼 클릭 이벤트 콜백 함수
  */
 function termsOfUseSubmit() {
-  // 다음 페이지로 이동합니다.
-  router.redirect('certification');
+  /*
+  loading.show();
+  requestVP(sendVpToApi.name, () => {
+    loading.hide();
+    modal.show(ERROR_MESSAGE_01);
+  });
+  */
+  sendVpToApi(data.testVp);
 }
+
+function certificationSubmit() {}
 
 /**
  * @description YYYY.MM.DD를 YYYY년 MM월 DD일로 변경합니다.

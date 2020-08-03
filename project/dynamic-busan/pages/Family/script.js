@@ -11,22 +11,8 @@ import data from './data.json';
 import './style.css';
 import SecretTextfield from '../../src/js/component/SecretTextfield';
 
-// router 함수를 담는 객체
-const routerFunc = {
-  default: () => {},
-};
-
 // Callback으로 동작하는 라우터를 생성합니다.
-const router = new Router(({ path, query }) => {
-  // router 함수 객체에 알맞은 함수가 있으면 실행합니다.
-  const isComplete = Object.keys(routerFunc).some((key) => {
-    if (!path.startsWith(key)) return false;
-    routerFunc[key]({ path, query });
-    return true;
-  });
-  // 알맞은 함수가 없을 시 Default 함수가 실행됩니다.
-  if (!isComplete) routerFunc.default({ path, query });
-});
+const router = new Router();
 
 // 로딩과 모달 컴포넌트를 생성합니다.
 const loading = new Loading();
@@ -122,7 +108,7 @@ function createTermsOfUsePage() {
   pageSlider.addPage(textPost.element);
 
   // 라우터에 함수를 추가합니다.
-  routerFunc.detail = ({ query }) => {
+  router.setRouterFunc('detail', ({ query }) => {
     const term = data.terms[query.index || 0];
     document.title = term.title;
     textPost.title = term.title;
@@ -133,7 +119,7 @@ function createTermsOfUsePage() {
       converDate(`시행일: ${term.enforceDate}`),
     );
     pageSlider.movePage(1);
-  };
+  });
 
   return pageSlider;
 }
@@ -191,16 +177,16 @@ if (window) {
     stackSlider.addPage(certificationPage);
 
     // 라우터에 함수를 추가합니다.
-    routerFunc.certification = () => {
+    router.setRouterFunc('certification', () => {
       document.title = '다자녀가정 인증';
       stackSlider.moveNext();
-    };
+    });
 
     // 라우터의 디폴트 콜백 함수를 추가합니다.
-    routerFunc.default = () => {
+    router.setRouterFunc('default', () => {
       if (termsOfUsePage.current !== 0) termsOfUsePage.movePage(0);
       while (stackSlider.current !== 0) stackSlider.movePrev();
-    };
+    });
 
     appendAllChild(root, [loading.element, modal.element, stackSlider.element]);
   };

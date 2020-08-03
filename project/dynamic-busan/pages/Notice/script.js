@@ -84,28 +84,21 @@ if (window) {
     const textPost = new TextPost();
 
     // Callback으로 동작하는 라우터를 생성합니다.
-    /**
-     * @description Router에서 Path 변경시 호출해주는 Callback Function
-     * @param {{ path: string, query: object }} param Path 변경 시 전달받는 파라미터
-     */
-    const routerCallback = ({ path, query }) => {
-      // Path가 Detail로 시작하면 상세 페이지를 보여줍니다.
-      if (path.startsWith('detail')) {
-        const index = query.index || 0;
-        textPost.title = data[index].title;
-        textPost.subtitle = data[index].date;
-        textPost.contents = data[index].content;
-        textPost.footer = data[index].from;
-        document.title = '공지사항 상세내용';
-        pageSlider.movePage(1);
-      }
+    const router = new Router(() => {
       // Path가 Detail이 아니면 리스트 페이지를 보여줍니다.
-      else {
-        document.title = '공지사항';
-        pageSlider.movePage(0);
-      }
-    };
-    const router = new Router(routerCallback);
+      document.title = '공지사항';
+      pageSlider.movePage(0);
+    });
+    router.setRouterFunc('detail', ({ query }) => {
+      // Path가 Detail로 시작하면 상세 페이지를 보여줍니다.
+      const index = query.index || 0;
+      textPost.title = data[index].title;
+      textPost.subtitle = data[index].date;
+      textPost.contents = data[index].content;
+      textPost.footer = data[index].from;
+      document.title = '공지사항 상세내용';
+      pageSlider.movePage(1);
+    });
 
     /**
      * @description 리스트 클릭시 상세페이지로 이동하는 함수입니다.

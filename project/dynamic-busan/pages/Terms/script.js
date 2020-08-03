@@ -9,22 +9,8 @@ import TextPost from '../../src/js/layout/TextPost';
 import './style.css';
 import data from './data.json';
 
-// router 함수를 담는 객체
-const routerFunc = {
-  default: () => {},
-};
-
 // Callback으로 동작하는 라우터를 생성합니다.
-const router = new Router(({ path, query }) => {
-  // router 함수 객체에 알맞은 함수가 있으면 실행합니다.
-  const isComplete = Object.keys(routerFunc).some((key) => {
-    if (!path.startsWith(key)) return false;
-    routerFunc[key]({ path, query });
-    return true;
-  });
-  // 알맞은 함수가 없을 시 Default 함수가 실행됩니다.
-  if (!isComplete) routerFunc.default({ path, query });
-});
+const router = new Router();
 
 /**
  * @description YYYY.MM.DD를 YYYY년 MM월 DD일로 변경합니다.
@@ -142,7 +128,7 @@ if (window) {
     ]);
 
     // 라우터에 함수를 추가합니다.
-    routerFunc.detail = ({ query }) => {
+    router.setRouterFunc('detail', ({ query }) => {
       const cur = data[query.index || 0];
       document.title = cur.title;
       textPostPage.title = cur.title;
@@ -153,12 +139,11 @@ if (window) {
         converDate(`시행일: ${cur.enforceDate}`),
       );
       pageSlider.movePage(1);
-    };
-
-    routerFunc.default = () => {
+    });
+    router.setRouterFunc('default', () => {
       document.title = '이용약관';
       if (pageSlider.current !== 0) pageSlider.movePage(0);
-    };
+    });
 
     // Page Slider에 리스트 페이지와 상세 페이지를 추가합니다.
     root.appendChild(pageSlider.element);

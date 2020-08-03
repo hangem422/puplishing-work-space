@@ -1,13 +1,20 @@
-import { emptyAlarmImage } from '../../src/js/component/Image';
-import { createElement } from '../../src/js/util/dom';
+import { createElement, wrapping } from '../../src/js/util/dom';
 import Router from '../../src/js/module/RouterWithCB';
-import { moreRight } from '../../src/js/component/Icon';
 import ListBoard from '../../src/js/layout/ListBoard';
 import TextPost from '../../src/js/layout/TextPost';
 import PageSlider from '../../src/js/layout/PageSlider';
+import { emptyAlarmImage } from '../../src/js/component/Image';
+import { moreRight } from '../../src/js/component/Icon';
 
 import data from './data.json';
 import './style.css';
+
+const DOCUMENT_TITLE = '이용약관';
+const DOCUMENT_DETAIL_TITLE = '공지사항 상세내용';
+const EMPTY_PAGE_TEXT = '아직 등록된 공지사항이 없습니다.';
+
+// Callback으로 동작하는 라우터를 생성합니다.
+const router = new Router();
 
 /**
  * @description 공지사항이 없을 시 빈 페이지를 생성합니다.
@@ -18,18 +25,10 @@ function createEmptyPage() {
   const image = emptyAlarmImage();
   const text = createElement('div', {
     class: 'font-text-body1 font-color-light empty-page-text',
-    child: '아직 등록된 공지사항이 없습니다.',
+    child: EMPTY_PAGE_TEXT,
   });
 
-  // Layout을 구성합니다.
-  const wrapper = createElement('div', {
-    class: 'wrapper',
-    child: [image, text],
-  });
-  return createElement('div', {
-    class: 'container empty-page',
-    child: wrapper,
-  });
+  return wrapping('empty-page', [image, text]);
 }
 
 /**
@@ -83,12 +82,7 @@ if (window) {
     const pageSlider = new PageSlider('notice-slider');
     const textPost = new TextPost();
 
-    // Callback으로 동작하는 라우터를 생성합니다.
-    const router = new Router(() => {
-      // Path가 Detail이 아니면 리스트 페이지를 보여줍니다.
-      document.title = '공지사항';
-      pageSlider.movePage(0);
-    });
+    // 라우터에 함수를 추가합니다.
     router.setRouterFunc('detail', ({ query }) => {
       // Path가 Detail로 시작하면 상세 페이지를 보여줍니다.
       const index = query.index || 0;
@@ -96,8 +90,13 @@ if (window) {
       textPost.subtitle = data[index].date;
       textPost.contents = data[index].content;
       textPost.footer = data[index].from;
-      document.title = '공지사항 상세내용';
+      document.title = DOCUMENT_DETAIL_TITLE;
       pageSlider.movePage(1);
+    });
+    router.setRouterFunc('default', () => {
+      // Path가 Detail이 아니면 리스트 페이지를 보여줍니다.
+      document.title = DOCUMENT_TITLE;
+      pageSlider.movePage(0);
     });
 
     /**

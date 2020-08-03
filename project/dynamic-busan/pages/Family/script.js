@@ -1,4 +1,5 @@
 import { createElement, appendAllChild, wrapping } from '../../src/js/util/dom';
+import { isAndroid, isIOS } from '../../src/js/util/os';
 import Router from '../../src/js/module/RouterWithCB';
 import AgreeTerms from '../../src/js/component/AgreeTerms';
 import PageSlider from '../../src/js/layout/PageSlider';
@@ -11,9 +12,10 @@ import data from './data.json';
 import './style.css';
 import SecretTextfield from '../../src/js/component/SecretTextfield';
 
-const ERROR_MESSAGE_01 =
-  '입력하신 주민등록번호가 유요하지 않습니다. 주민등록번호를 확인 후 다시 시도해주세요.';
+const ERROR_MESSAGE_01 = '유효하지 않은 환경에서 실행할 수 없습니다.';
 // const ERROR_MESSAGE_02 =
+//   '입력하신 주민등록번호가 유요하지 않습니다. 주민등록번호를 확인 후 다시 시도해주세요.';
+// const ERROR_MESSAGE_03 =
 //   '모바일 가족사랑카드 발급대상이 아닙니다. 모바일 가족사랑카드는 주소지가 부산광역시면서, 주민등록본에 부 또는 모와 세 자녀 이상이 같이 되어있는 가정의 부모만 발급받을 수 있습니다.';
 
 const TERM_OF_USE_DOC_TITLE = '약관동의';
@@ -31,6 +33,47 @@ const router = new Router();
 // 로딩과 모달 컴포넌트를 생성합니다.
 const loading = new Loading();
 const modal = new Modal();
+
+/**
+ *
+ * @param {*} vp
+ */
+// eslint-disable-next-line no-unused-vars
+function apiHandler(vp) {
+  console.log(vp);
+}
+
+function certificationSubmit() {
+  loading.show();
+  // Android Javascript Call
+  if (isAndroid() && window.KeepinBridge && window.KeepinBridge.requestVP) {
+    window.KeepinBridge.requestVP('apiHandler');
+  }
+  // iOS Javascript Call
+  else if (
+    isIOS() &&
+    window.webkit &&
+    window.webkit.messageHandlers &&
+    window.webkit.messageHandlers.KeepinBridgeRequestVP
+  ) {
+    window.webkit.messageHandlers.KeepinBridgeRequestVP.postMessage(
+      'apiHandler',
+    );
+  }
+  // 유효하지 않은 환경일때 예외 처리
+  else {
+    modal.show(ERROR_MESSAGE_01);
+    loading.hide();
+  }
+}
+
+/**
+ * @description 이용 약관 동의 버튼 클릭 이벤트 콜백 함수
+ */
+function termsOfUseSubmit() {
+  // 다음 페이지로 이동합니다.
+  router.redirect('certification');
+}
 
 /**
  * @description YYYY.MM.DD를 YYYY년 MM월 DD일로 변경합니다.
@@ -59,20 +102,6 @@ function createTermDetailFooter(notice, enforce) {
     class: 'font-text-body2 font-color-dark',
     child: [noticeElement, enforceElement],
   });
-}
-
-function termsOfUseSubmit() {
-  // 다음 페이지로 이동합니다.
-  router.redirect('certification');
-}
-
-function certificationSubmit() {
-  // 로딩화면을 보여줍니다.
-  loading.show();
-  setTimeout(() => {
-    loading.hide();
-    modal.show(ERROR_MESSAGE_01);
-  }, 2000);
 }
 
 function createTermsOfUsePage() {

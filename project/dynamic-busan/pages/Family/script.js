@@ -11,6 +11,20 @@ import data from './data.json';
 import './style.css';
 import SecretTextfield from '../../src/js/component/SecretTextfield';
 
+const ERROR_MESSAGE_01 =
+  '입력하신 주민등록번호가 유요하지 않습니다. 주민등록번호를 확인 후 다시 시도해주세요.';
+// const ERROR_MESSAGE_02 =
+//   '모바일 가족사랑카드 발급대상이 아닙니다. 모바일 가족사랑카드는 주소지가 부산광역시면서, 주민등록본에 부 또는 모와 세 자녀 이상이 같이 되어있는 가정의 부모만 발급받을 수 있습니다.';
+
+const TERM_OF_USE_DOC_TITLE = '약관동의';
+const TERM_OF_USE_TITLE =
+  '모바일 가족사랑카드를 발급하기 위해 약관을 확인해주세요.';
+
+const CERTIFICATION_DOC_TITLE = '다자녀가정 인증';
+const CERTIFICATION_TITLE = '주민등록번호를 이용해 인증을 해주세요.';
+const CERTIFICATION_LABEL = '주민등록번호 뒷자리(7자리 숫자)';
+const CERTIFICATION_PLACEHOLDER = '주민등록번호 뒷자리 숫자를 입력하세요.';
+
 // Callback으로 동작하는 라우터를 생성합니다.
 const router = new Router();
 
@@ -57,9 +71,7 @@ function certificationSubmit() {
   loading.show();
   setTimeout(() => {
     loading.hide();
-    modal.show(
-      '입력하신 주민등록번호가 유요하지 않습니다. 주민등록번호를 확인 후 다시 시도해주세요.',
-    );
+    modal.show(ERROR_MESSAGE_01);
   }, 2000);
 }
 
@@ -71,7 +83,7 @@ function createTermsOfUsePage() {
   // 약관 동의 페이지를 구성할 일반 Componenet들을 생성합니다.
   const agreeTerms = new AgreeTerms(
     data.terms.map((term) => term.title),
-    { title: '모바일 가족사랑카드를 발급하기 위해 약관을 확인해주세요.' },
+    { title: TERM_OF_USE_TITLE },
   );
   const submit = createElement('button', {
     class: 'button button-type-a',
@@ -128,7 +140,7 @@ function createCertificationPage() {
   // 인증 페이지를 구성할 일반 Componenet들을 생성합니다.
   const title = createElement('p', {
     class: 'font-text-body1 font-color-dark',
-    child: '주민등록번호를 이용해 인증을 해주세요.',
+    child: CERTIFICATION_TITLE,
   });
   const submit = createElement('button', {
     class: 'button button-type-a',
@@ -140,8 +152,8 @@ function createCertificationPage() {
   const secretTextfield = new SecretTextfield({
     separatorClass: 'certification-input',
     max: 7,
-    placeholder: '주민등록번호 뒷자리 숫자를 입력하세요.',
-    label: '주민등록번호 뒷자리(7자리 숫자)',
+    placeholder: CERTIFICATION_PLACEHOLDER,
+    label: CERTIFICATION_LABEL,
     validateCharFunc: (char) => /[0-9]/.test(char),
     validateStringFunc: (str) => /^[0-9]{7}$/.test(str),
     onChangeFunc: (_, validate) => {
@@ -164,6 +176,9 @@ function createCertificationPage() {
  */
 if (window) {
   window.onload = function () {
+    // Document Title 초기화
+    document.title = TERM_OF_USE_DOC_TITLE;
+
     // Page를 Render할 Element를 가져옵니다.
     const root = document.getElementsByClassName('root')[0];
 
@@ -178,12 +193,13 @@ if (window) {
 
     // 라우터에 함수를 추가합니다.
     router.setRouterFunc('certification', () => {
-      document.title = '다자녀가정 인증';
+      document.title = CERTIFICATION_DOC_TITLE;
       stackSlider.moveNext();
     });
 
     // 라우터의 디폴트 콜백 함수를 추가합니다.
     router.setRouterFunc('default', () => {
+      document.title = TERM_OF_USE_DOC_TITLE;
       if (termsOfUsePage.current !== 0) termsOfUsePage.movePage(0);
       while (stackSlider.current !== 0) stackSlider.movePrev();
     });

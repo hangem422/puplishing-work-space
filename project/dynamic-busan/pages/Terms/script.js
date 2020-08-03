@@ -9,6 +9,23 @@ import TextPost from '../../src/js/layout/TextPost';
 import './style.css';
 import data from './data.json';
 
+// router 함수를 담는 객체
+const routerFunc = {
+  default: () => {},
+};
+
+// Callback으로 동작하는 라우터를 생성합니다.
+const router = new Router(({ path, query }) => {
+  // router 함수 객체에 알맞은 함수가 있으면 실행합니다.
+  const isComplete = Object.keys(routerFunc).some((key) => {
+    if (!path.startsWith(key)) return false;
+    routerFunc[key]({ path, query });
+    return true;
+  });
+  // 알맞은 함수가 없을 시 Default 함수가 실행됩니다.
+  if (!isComplete) routerFunc.default({ path, query });
+});
+
 /**
  * @description YYYY.MM.DD를 YYYY년 MM월 DD일로 변경합니다.
  * @param {string} date YYYY.MM.DD
@@ -47,11 +64,9 @@ function createEmptyPage() {
 
 /**
  * @description Json 데이터를 기반으로 이용약관 리스트 페이지를 생성합니다.
- * @param {{title: string, date: string, content: string[], from: string}[]} data 이용약관 데이터 리스트
- * @param {(index: number) => voide} nextPageFunc 다음 페이지로 이동하는 함수
  * @returns {HTMLElement} List Board Page
  */
-function createListBoardPage(nextPageFunc) {
+function createListBoardPage() {
   // List의 내부를 구성 Element를 만듭니다.
   const itemList = data.reduce((prev, cur) => {
     const { title, enforceDate } = cur;
@@ -74,8 +89,18 @@ function createListBoardPage(nextPageFunc) {
     return prev.concat(container);
   }, []);
 
+  /**
+   * @description 리스트 클릭시 상세페이지로 이동하는 함수입니다.
+   * @param {number} index 리스트에서 선택한 항목의 인덱스 값
+   */
+  const nextPageFunc = (index) => {
+    // 링크가 있는 약관이면 링크로 리다이렉션 시킵니다.
+    if (data[index].link) window.location.href = data[index].link;
+    else router.redirect('/detail', { index });
+  };
+
   // List Board Paga를 반환합니다.
-  return new ListBoard('term-board', itemList, nextPageFunc).element;
+  return new ListBoard('term-board', itemList, nextPageFunc);
 }
 
 /**
@@ -108,53 +133,34 @@ if (window) {
       return;
     }
 
-    // PageSlider를 생성합니다.
-    const pageSlider = new PageSlider('term-slider');
-    const textPost = new TextPost();
+    // Page Slide를 생성합니다.
+    const listBoardPage = createListBoardPage();
+    const textPostPage = new TextPost();
+    const pageSlider = new PageSlider('term-slider', [
+      listBoardPage.element,
+      textPostPage.element,
+    ]);
 
-    /**
-     * @description Router에서 Path 변경시 호출해주는 Callback Function
-     * @param {{ path: string, query: object }} param Path 변경 시 전달받는 파라미터
-     */
-    const routerCallback = ({ path, query }) => {
-      // Path가 Detail로 시작하면 상세 페이지를 보여줍니다.
-      if (path.startsWith('detail')) {
-        const cur = data[query.index || 0];
-        // data에 link가 있으면 해당 링크로 이동합니다.
-        if (cur.link) {
-          window.location.replace(cur.link);
-        }
-        // data에 link가 없으면 detail 페이지를 구성하여 보여줍니다.
-        else {
-          document.title = cur.title;
-          textPost.title = cur.title;
-          textPost.subtitle = `시행일 ${cur.enforceDate}`;
-          textPost.contents = cur.content;
-          textPost.footer = createFooterElement(
-            converDate(`고지일: ${cur.noticeDate}`),
-            converDate(`시행일: ${cur.enforceDate}`),
-          );
-          pageSlider.movePage(1);
-        }
-      }
-      // Path가 Detail이 아니면 리스트 페이지를 보여줍니다.
-      else {
-        document.title = '이용약관';
-        pageSlider.movePage(0);
-      }
+    // 라우터에 함수를 추가합니다.
+    routerFunc.detail = ({ query }) => {
+      const cur = data[query.index || 0];
+      document.title = cur.title;
+      textPostPage.title = cur.title;
+      textPostPage.subtitle = `시행일 ${cur.enforceDate}`;
+      textPostPage.contents = cur.content;
+      textPostPage.footer = createFooterElement(
+        converDate(`고지일: ${cur.noticeDate}`),
+        converDate(`시행일: ${cur.enforceDate}`),
+      );
+      pageSlider.movePage(1);
     };
-    // Callback으로 동작하는 라우터를 생성합니다.
-    const router = new Router(routerCallback);
 
-    /**
-     * @description 리스트 클릭시 상세페이지로 이동하는 함수입니다.
-     * @param {number} index 리스트에서 선택한 항목의 인덱스 값
-     */
-    const nextPageFunc = (index) => router.redirect('/detail', { index });
+    routerFunc.default = () => {
+      document.title = '이용약관';
+      if (pageSlider.current !== 0) pageSlider.movePage(0);
+    };
 
     // Page Slider에 리스트 페이지와 상세 페이지를 추가합니다.
-    pageSlider.addPage(createListBoardPage(nextPageFunc));
-    pageSlider.addPage(textPost.element);
     root.appendChild(pageSlider.element);
   };
 }

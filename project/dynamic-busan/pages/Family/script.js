@@ -79,7 +79,10 @@ function termsOfUseSubmit() {
   // 로딩 화면이 없으면 로딩 화면을 보여줍니다.
   if (!loading.state) loading.show();
 
-  requestVP(sendVpToApi.name, jsCallInvalidFunc);
+  // NOTE: keepin에서 전역 함수를 실행시켜야하는데 Webpack을 실행시키면 스코프로 감싸지기에 전역 함수 선언이 힘들다.
+  // NOTE: 이를 해결하기위해 Window 객체에 넣어서, 전역함수화 시킵니다.
+  window.sendVpToApi = (vp) => sendVpToApi(vp);
+  requestVP('window.sendVpToApi', jsCallInvalidFunc);
 }
 
 /**

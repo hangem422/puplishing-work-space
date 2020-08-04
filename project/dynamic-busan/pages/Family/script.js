@@ -13,9 +13,11 @@ import data from './data.json';
 import './style.css';
 import SecretTextfield from '../../src/js/component/SecretTextfield';
 
-const API_SERVER_HOST = 'http://15.164.137.13:8005';
-const SEND_VP_API_URL = `${API_SERVER_HOST}/api/v1/request_required_vp`;
-const GET_VC_API_URL = `${API_SERVER_HOST}/api/v1/issue_vc`;
+// const API_SERVER_HOST = 'http://15.164.137.13:8005';
+// const SEND_VP_API_URL = `${API_SERVER_HOST}/api/v1/request_required_vp`;
+// const GET_VC_API_URL = `${API_SERVER_HOST}/api/v1/issue_vc`;
+const SEND_VP_API_URL = '/api/v1/request_required_vp';
+const GET_VC_API_URL = '/api/v1/issue_vc';
 
 const ERROR_MESSAGE_01 = '유효하지 않은 환경에서 실행할 수 없습니다.';
 const ERROR_MESSAGE_02 = '오류가 발생했습니다. 잠시 후에 다시 시도해주세요.';
@@ -32,6 +34,9 @@ const CERTIFICATION_DOC_TITLE = '다자녀가정 인증';
 const CERTIFICATION_TITLE = '주민등록번호를 이용해 인증을 해주세요.';
 const CERTIFICATION_LABEL = '주민등록번호 뒷자리(7자리 숫자)';
 const CERTIFICATION_PLACEHOLDER = '주민등록번호 뒷자리 숫자를 입력하세요.';
+
+// API 서버에서 VC를 받기 위한 Session UUID
+let sessionUUID = '';
 
 // Callback으로 동작하는 라우터를 생성합니다.
 const router = new Router();
@@ -64,13 +69,17 @@ function sendVpToApi(vp) {
   if (!loading.state) loading.show();
 
   // HTTP Status가 200이 아니면 전부 에러 처리합니다.
-  post(SEND_VP_API_URL, { vp }, { strict: true, parse: 'json' })
-    .then(() => {
+  post({ url: SEND_VP_API_URL, data: { vp }, strict: true })
+    .then((res) => {
+      sessionUUID = res;
       loading.hide();
       router.redirect('certification');
     })
     .catch(() => faillToApiConnect());
 }
+// NOTE: keepin에서 전역 함수를 실행시켜야하는데 Webpack을 실행시키면 스코프로 감싸지기에 전역 함수 선언이 힘들다.
+// NOTE: 이를 해결하기위해 Window 객체에 넣어서, 전역함수화 시킵니다.
+window.sendVpToApi = (vp) => sendVpToApi(vp);
 
 /**
  * @description 이용 약관 동의 버튼 클릭 이벤트 콜백 함수
@@ -79,30 +88,39 @@ function termsOfUseSubmit() {
   // 로딩 화면이 없으면 로딩 화면을 보여줍니다.
   if (!loading.state) loading.show();
 
-  requestVP(sendVpToApi.name, jsCallInvalidFunc);
+  requestVP('window.sendVpToApi', jsCallInvalidFunc);
 }
 
 /**
  * @description Api 서버에 주민번호 입력 후, vc를 받아옵니다.
- * @param {string} rnn 입력받은 주민 등록번호 뒷자리
+ * @param {string} rrn 입력받은 주민 등록번호 뒷자리
  */
-function certificationSubmit(rnn) {
+function certificationSubmit(rrn) {
   // 로딩 화면이 없으면 로딩 화면을 보여줍니다.
   if (!loading.state) loading.show();
 
-  get(GET_VC_API_URL, { rnn }, { strict: false, parse: 'json' })
+  // sessionUUID를 발급받은 저깅 없으면 GET 요청을 보낼 수 없습니다.
+  if (!sessionUUID) {
+    jsCallInvalidFunc();
+    return;
+  }
+
+  get({
+    url: GET_VC_API_URL,
+    data: { rrn },
+    headers: { 'referrer-token': sessionUUID },
+    strict: false,
+  })
     .then((res) => {
-      // response에 id가 존재할 경우, 에러 발생으로 간주합니다.
-      if (res.id) {
-        if (res.message && ['E001', 'E002', 'E003'].includes(res.message)) {
-          faillToApiConnect(ERROR_MESSAGE_03);
-        } else if (res.message && ['E004'].includes(res.message)) {
-          faillToApiConnect(ERROR_MESSAGE_04);
-        } else {
-          faillToApiConnect(ERROR_MESSAGE_02);
-        }
+      // 요청 성공시 vcs 문자열을 받습니다.
+      if (typeof res === 'string') issuedVC(res, jsCallInvalidFunc);
+      // 요청 실패
+      else if (res.message && ['E001', 'E002', 'E003'].includes(res.message)) {
+        faillToApiConnect(ERROR_MESSAGE_03);
+      } else if (res.message && ['E004'].includes(res.message)) {
+        faillToApiConnect(ERROR_MESSAGE_04);
       } else {
-        issuedVC(res, jsCallInvalidFunc);
+        faillToApiConnect(ERROR_MESSAGE_02);
       }
     })
     .catch(() => faillToApiConnect());

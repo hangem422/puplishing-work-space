@@ -41,7 +41,7 @@ export function requestVP(funcName, invalidFunc = () => {}) {
 
 /**
  * @description AA에서 발급한 VC를 keepin에 전달
- * @param {Array} vcListJson AA에서 발급한 VC List
+ * @param {string} vcListJson AA에서 발급한 VC List
  * @param {() => void} invalidFunc JS Call Interface 사용 환경이 아닐 때 예외 처리 함수
  */
 export function issuedVC(vcListJson, invalidFunc = () => {}) {

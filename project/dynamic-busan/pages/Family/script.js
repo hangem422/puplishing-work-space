@@ -1,7 +1,6 @@
-/* eslint-disable no-unused-vars */
 import { createElement, appendAllChild, wrapping } from '../../src/js/util/dom';
-import { requestVP } from '../../src/js/util/os';
-import { post } from '../../src/js/util/ajax';
+import { requestVP, issuedVC, fail } from '../../src/js/util/os';
+import { get, post } from '../../src/js/util/ajax';
 import Router from '../../src/js/module/RouterWithCB';
 import AgreeTerms from '../../src/js/component/AgreeTerms';
 import PageSlider from '../../src/js/layout/PageSlider';
@@ -16,13 +15,14 @@ import SecretTextfield from '../../src/js/component/SecretTextfield';
 
 const API_SERVER_HOST = 'http://15.164.137.13:8005';
 const SEND_VP_API_URL = `${API_SERVER_HOST}/api/v1/request_required_vp`;
+const GET_VC_API_URL = `${API_SERVER_HOST}/api/v1/issue_vc`;
 
 const ERROR_MESSAGE_01 = '유효하지 않은 환경에서 실행할 수 없습니다.';
 const ERROR_MESSAGE_02 = '오류가 발생했습니다. 잠시 후에 다시 시도해주세요.';
-// const ERROR_MESSAGE_02 =
-//   '입력하신 주민등록번호가 유요하지 않습니다. 주민등록번호를 확인 후 다시 시도해주세요.';
-// const ERROR_MESSAGE_03 =
-//   '모바일 가족사랑카드 발급대상이 아닙니다. 모바일 가족사랑카드는 주소지가 부산광역시면서, 주민등록본에 부 또는 모와 세 자녀 이상이 같이 되어있는 가정의 부모만 발급받을 수 있습니다.';
+const ERROR_MESSAGE_03 =
+  '모바일 가족사랑카드 발급대상이 아닙니다. 모바일 가족사랑카드는 주소지가 부산광역시면서, 주민등록본에 부 또는 모와 세 자녀 이상이 같이 되어있는 가정의 부모만 발급받을 수 있습니다.';
+const ERROR_MESSAGE_04 =
+  '입력하신 주민등록번호가 유요하지 않습니다. 주민등록번호를 확인 후 다시 시도해주세요.';
 
 const TERM_OF_USE_DOC_TITLE = '약관동의';
 const TERM_OF_USE_TITLE =
@@ -41,38 +41,72 @@ const loading = new Loading();
 const modal = new Modal();
 
 /**
+ * @description JS Call Interface 사용 환경이 아닐 때 예외 처리 함수
+ */
+function jsCallInvalidFunc() {
+  modal.show(ERROR_MESSAGE_01, () => loading.hide());
+}
+
+/**
+ * @description API 서버와 통신에 실패했을 때 예외 처리 함수
+ */
+function faillToApiConnect(message) {
+  modal.show(message || ERROR_MESSAGE_02, () => fail(() => loading.hide()));
+}
+
+/**
  * @description Api 서버로 VP를 전달합니다.
  * @param {string} vp AA VC 밝급을 위한 VP
  */
 // eslint-disable-next-line no-unused-vars
 function sendVpToApi(vp) {
+  // 로딩 화면이 없으면 로딩 화면을 보여줍니다.
   if (!loading.state) loading.show();
-  post(SEND_VP_API_URL, { vp }, true)
+
+  // HTTP Status가 200이 아니면 전부 에러 처리합니다.
+  post(SEND_VP_API_URL, { vp }, { strict: true, parse: 'json' })
     .then(() => {
       loading.hide();
       router.redirect('certification');
     })
-    .catch(() => {
-      loading.hide();
-      modal.show(ERROR_MESSAGE_02);
-    });
+    .catch(() => faillToApiConnect());
 }
 
 /**
  * @description 이용 약관 동의 버튼 클릭 이벤트 콜백 함수
  */
 function termsOfUseSubmit() {
-  /*
-  loading.show();
-  requestVP(sendVpToApi.name, () => {
-    loading.hide();
-    modal.show(ERROR_MESSAGE_01);
-  });
-  */
-  sendVpToApi(data.testVp);
+  // 로딩 화면이 없으면 로딩 화면을 보여줍니다.
+  if (!loading.state) loading.show();
+
+  requestVP(sendVpToApi.name, jsCallInvalidFunc);
 }
 
-function certificationSubmit() {}
+/**
+ * @description Api 서버에 주민번호 입력 후, vc를 받아옵니다.
+ * @param {string} rnn 입력받은 주민 등록번호 뒷자리
+ */
+function certificationSubmit(rnn) {
+  // 로딩 화면이 없으면 로딩 화면을 보여줍니다.
+  if (!loading.state) loading.show();
+
+  get(GET_VC_API_URL, { rnn }, { strict: false, parse: 'json' })
+    .then((res) => {
+      // response에 id가 존재할 경우, 에러 발생으로 간주합니다.
+      if (res.id) {
+        if (res.message && ['E001', 'E002', 'E003'].includes(res.message)) {
+          faillToApiConnect(ERROR_MESSAGE_03);
+        } else if (res.message && ['E004'].includes(res.message)) {
+          faillToApiConnect(ERROR_MESSAGE_04);
+        } else {
+          faillToApiConnect(ERROR_MESSAGE_02);
+        }
+      } else {
+        issuedVC(res, jsCallInvalidFunc);
+      }
+    })
+    .catch(() => faillToApiConnect());
+}
 
 /**
  * @description YYYY.MM.DD를 YYYY년 MM월 DD일로 변경합니다.
@@ -192,7 +226,9 @@ function createCertificationPage() {
   });
 
   // 제출 버튼 온클릭 이벤트를 설정합니다.
-  submit.addEventListener('click', () => certificationSubmit());
+  submit.addEventListener('click', () =>
+    certificationSubmit(secretTextfield.text),
+  );
 
   return createElement('div', {
     class: 'certification-page',

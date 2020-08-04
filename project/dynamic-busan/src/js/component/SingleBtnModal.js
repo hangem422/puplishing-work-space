@@ -1,4 +1,5 @@
 import { createElement } from '../util/dom';
+import { isIOS } from '../util/os';
 
 const ACTIVE_MODAL_CLASS = 'active';
 
@@ -25,15 +26,25 @@ class SingleBtnModal {
       child: '확인',
     });
     this.btn.addEventListener('click', this.onClick);
-
-    const modal = createElement('div', {
-      class: 'single-btn-modal',
-      child: [this.text, this.btn],
-    });
-    this.element = createElement('div', {
-      class: 'single-btn-modal-container',
-      child: modal,
-    });
+    if (isIOS()) {
+      const modal = createElement('div', {
+        class: 'single-btn-modal-ios',
+        child: [this.text, this.btn],
+      });
+      this.element = createElement('div', {
+        class: 'single-btn-modal-container',
+        child: modal,
+      });
+    } else {
+      const modal = createElement('div', {
+        class: 'single-btn-modal',
+        child: [this.text, this.btn],
+      });
+      this.element = createElement('div', {
+        class: 'single-btn-modal-container',
+        child: modal,
+      });
+    }
   }
 
   /**

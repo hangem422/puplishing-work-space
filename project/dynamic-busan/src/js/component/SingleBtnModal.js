@@ -26,16 +26,13 @@ class SingleBtnModal {
       child: '확인',
     });
     this.btn.addEventListener('click', this.onClick);
-    let modal = createElement('div', {
-      class: 'single-btn-modal',
+
+    const ios = isIOS() ? 'ios' : null;
+    const modal = createElement('div', {
+      class: `single-btn-modal ${ios}`,
       child: [this.text, this.btn],
     });
-    if (isIOS()) {
-      modal = createElement('div', {
-        class: 'single-btn-modal ios',
-        child: [this.text, this.btn],
-      });
-    }
+
     this.element = createElement('div', {
       class: 'single-btn-modal-container',
       child: modal,

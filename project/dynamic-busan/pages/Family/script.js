@@ -13,9 +13,10 @@ import data from './data.json';
 import './style.css';
 import SecretTextfield from '../../src/js/component/SecretTextfield';
 
-// const API_SERVER_HOST = 'http://15.164.137.13:8005';
-// const SEND_VP_API_URL = `${API_SERVER_HOST}/api/v1/request_required_vp`;
-// const GET_VC_API_URL = `${API_SERVER_HOST}/api/v1/issue_vc`;
+/* ------------- */
+/*  Config Data  */
+/* ------------- */
+
 const SEND_VP_API_URL = '/api/v1/request_required_vp';
 const GET_VC_API_URL = '/api/v1/issue_vc';
 
@@ -35,37 +36,33 @@ const CERTIFICATION_TITLE = '주민등록번호를 이용해 인증을 해주세
 const CERTIFICATION_LABEL = '주민등록번호 뒷자리(7자리 숫자)';
 const CERTIFICATION_PLACEHOLDER = '주민등록번호 뒷자리 숫자를 입력하세요.';
 
-// API 서버에서 VC를 받기 위한 Session UUID
-let sessionUUID = '';
+const INVALID_RRN_MESSAGE =
+  '입력하신 주민등록번호가 일치하지 않습니다.\n다시 시도해주세요';
 
-// Callback으로 동작하는 라우터를 생성합니다.
-const router = new Router();
+let sessionUUID = ''; // API 서버에서 VC를 받기 위한 Session UUID
+let rrnInvalidCount = 0; // 주민번호 불일치 횟수
 
-// 로딩과 모달 컴포넌트를 생성합니다.
-const loading = new Loading();
+const router = new Router(); // Callback으로 동작하는 라우터를 생성합니다.
+const loading = new Loading(); // 로딩과 모달 컴포넌트를 생성합니다.
 const modal = new Modal();
 
-/**
- * @description JS Call Interface 사용 환경이 아닐 때 예외 처리 함수
- */
-function jsCallInvalidFunc() {
-  modal.show(ERROR_MESSAGE_01, () => loading.hide());
-}
+// 에러 발생시 에러 모달을 보여주는 함수입니다.
+const errorFunc = {
+  // 확인 버튼 클릭 시 로딩 헤제
+  showModal: (message) => modal.show(message, () => loading.hide()),
+  // 확인 버튼 클릭시 프로세스 실패
+  fail: (message) => modal.show(message, () => fail()),
+};
 
-/**
- * @description API 서버와 통신에 실패했을 때 예외 처리 함수
- */
-function faillToApiConnect(message) {
-  modal.show(message || ERROR_MESSAGE_02, () => fail(() => loading.hide()));
-}
+/* ------------- */
+/*  API Handler  */
+/* ------------- */
 
 /**
  * @description Api 서버로 VP를 전달합니다.
  * @param {string} vp AA VC 밝급을 위한 VP
  */
-// eslint-disable-next-line no-unused-vars
 function sendVpToApi(vp) {
-  // 로딩 화면이 없으면 로딩 화면을 보여줍니다.
   if (!loading.state) loading.show();
 
   // HTTP Status가 200이 아니면 전부 에러 처리합니다.
@@ -75,20 +72,22 @@ function sendVpToApi(vp) {
       loading.hide();
       router.redirect('certification');
     })
-    .catch(() => faillToApiConnect());
+    .catch(() => errorFunc.fail(ERROR_MESSAGE_02));
 }
 // NOTE: keepin에서 전역 함수를 실행시켜야하는데 Webpack을 실행시키면 스코프로 감싸지기에 전역 함수 선언이 힘들다.
 // NOTE: 이를 해결하기위해 Window 객체에 넣어서, 전역함수화 시킵니다.
 window.sendVpToApi = (vp) => sendVpToApi(vp);
 
+/* -------------------------------- */
+/*  Submit Button Onclick Callback  */
+/* -------------------------------- */
+
 /**
  * @description 이용 약관 동의 버튼 클릭 이벤트 콜백 함수
  */
 function termsOfUseSubmit() {
-  // 로딩 화면이 없으면 로딩 화면을 보여줍니다.
   if (!loading.state) loading.show();
-
-  requestVP('window.sendVpToApi', jsCallInvalidFunc);
+  requestVP('window.sendVpToApi', () => errorFunc.showModal(ERROR_MESSAGE_01));
 }
 
 /**
@@ -96,12 +95,11 @@ function termsOfUseSubmit() {
  * @param {string} rrn 입력받은 주민 등록번호 뒷자리
  */
 function certificationSubmit(rrn) {
-  // 로딩 화면이 없으면 로딩 화면을 보여줍니다.
   if (!loading.state) loading.show();
 
   // sessionUUID를 발급받은 저깅 없으면 GET 요청을 보낼 수 없습니다.
   if (!sessionUUID) {
-    jsCallInvalidFunc();
+    errorFunc.showModal(ERROR_MESSAGE_01);
     return;
   }
 
@@ -113,18 +111,28 @@ function certificationSubmit(rrn) {
   })
     .then((res) => {
       // 요청 성공시 vcs 문자열을 받습니다.
-      if (typeof res === 'string') issuedVC(res, jsCallInvalidFunc);
-      // 요청 실패
-      else if (res.message && ['E001', 'E002', 'E003'].includes(res.message)) {
-        faillToApiConnect(ERROR_MESSAGE_03);
-      } else if (res.message && ['E004'].includes(res.message)) {
-        faillToApiConnect(ERROR_MESSAGE_04);
-      } else {
-        faillToApiConnect(ERROR_MESSAGE_02);
+      if (typeof res === 'string') {
+        issuedVC(res, () => errorFunc(ERROR_MESSAGE_01));
       }
+      // 발급 조건 미달 오류
+      else if (['E001', 'E002', 'E003'].includes(res.message)) {
+        errorFunc.fail(ERROR_MESSAGE_03);
+      }
+      // 주민번호 불일치 오류
+      else if (['E004'].includes(res.message)) {
+        rrnInvalidCount += 1;
+        if (rrnInvalidCount >= 5) errorFunc.fail(ERROR_MESSAGE_04);
+        else errorFunc.showModal(ERROR_MESSAGE_04);
+      }
+      // 기타 오류
+      else errorFunc.fail(ERROR_MESSAGE_02);
     })
-    .catch(() => faillToApiConnect());
+    .catch(() => errorFunc.fail(ERROR_MESSAGE_02));
 }
+
+/* -------------- */
+/*  Util Function */
+/* -------------- */
 
 /**
  * @description YYYY.MM.DD를 YYYY년 MM월 DD일로 변경합니다.
@@ -138,6 +146,10 @@ function converDate(date) {
   dateArr[2] = dateArr[2].length < 2 ? `0${dateArr[2]}일` : `${dateArr[2]}일`;
   return dateArr.join(' ');
 }
+
+/* -------------- */
+/*  View Function */
+/* -------------- */
 
 /**
  * @description 약관 Footer Element 생성합니다.
@@ -193,7 +205,11 @@ function createTermsOfUsePage() {
    * @description 약관 상세페이지로 이동합니다.
    * @param {number} index 리스트에서 선택한 항목의 인덱스 값
    */
-  agreeTerms.onDetail = (index) => router.redirect('/detail', { index });
+  agreeTerms.onDetail = (index) => {
+    // 링크가 있는 약관이면 링크로 리다이렉션 시킵니다.
+    if (data.terms[index].link) window.location.href = data.terms[index].link;
+    else router.redirect('/detail', { index });
+  };
 
   // 약관 동의 페이지를 구성합니다.
   pageSlider.addPage(agreeTermsPage);
@@ -244,15 +260,22 @@ function createCertificationPage() {
   });
 
   // 제출 버튼 온클릭 이벤트를 설정합니다.
-  submit.addEventListener('click', () =>
-    certificationSubmit(secretTextfield.text),
-  );
+  submit.addEventListener('click', () => {
+    certificationSubmit(secretTextfield.text);
+    if (rrnInvalidCount > 0) {
+      secretTextfield.error(`${INVALID_RRN_MESSAGE} (${rrnInvalidCount}/5)`);
+    }
+  });
 
   return createElement('div', {
     class: 'certification-page',
     child: [titleContainer, secretTextfield.element, submitContainer],
   });
 }
+
+/* -------------- */
+/*  Window Onload */
+/* -------------- */
 
 /**
  * @description Window Onload Callback

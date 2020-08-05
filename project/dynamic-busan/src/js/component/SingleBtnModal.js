@@ -26,25 +26,20 @@ class SingleBtnModal {
       child: '확인',
     });
     this.btn.addEventListener('click', this.onClick);
+    let modal = createElement('div', {
+      class: 'single-btn-modal',
+      child: [this.text, this.btn],
+    });
     if (isIOS()) {
-      const modal = createElement('div', {
-        class: 'single-btn-modal-ios',
+      modal = createElement('div', {
+        class: 'single-btn-modal ios',
         child: [this.text, this.btn],
-      });
-      this.element = createElement('div', {
-        class: 'single-btn-modal-container',
-        child: modal,
-      });
-    } else {
-      const modal = createElement('div', {
-        class: 'single-btn-modal',
-        child: [this.text, this.btn],
-      });
-      this.element = createElement('div', {
-        class: 'single-btn-modal-container',
-        child: modal,
       });
     }
+    this.element = createElement('div', {
+      class: 'single-btn-modal-container',
+      child: modal,
+    });
   }
 
   /**

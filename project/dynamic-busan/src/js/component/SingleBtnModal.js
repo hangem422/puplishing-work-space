@@ -27,9 +27,8 @@ class SingleBtnModal {
     });
     this.btn.addEventListener('click', this.onClick);
 
-    const ios = isIOS() ? 'ios' : null;
     const modal = createElement('div', {
-      class: `single-btn-modal ${ios}`,
+      class: `single-btn-modal ${isIOS() ? 'ios' : ''}`,
       child: [this.text, this.btn],
     });
 

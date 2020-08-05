@@ -9,7 +9,10 @@
   --font-color-placeholder: #cccccc;
   --bg-color-basic: #f8f8f8;
   --pop-up-bg-color: rgba(0, 0, 0, 0.4);
+  --pop-up-bg-color-ios: #f1f1f1;
+  --pop-up-text-color-ios: #007aff;
   --line-color: #ededed;
+  --pop-up-line-color-ios: rgba(60, 60, 67, 0.29);
   --button-line-color-light: #d9d9d9;
   --button-disable-color: #e1e2e7;
   --button-active-color: #8abbff;

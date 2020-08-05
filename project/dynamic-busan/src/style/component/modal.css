@@ -40,6 +40,11 @@
     0 2px 8px 4px rgba(66, 66, 66, 0.1);
 }
 
+.single-btn-modal-container .single-btn-modal.ios {
+  border-radius: 14px;
+  background-color: var(--pop-up-bg-color-ios);
+}
+
 .single-btn-modal-container.active .single-btn-modal {
   transition-property: width font-size;
   transition-duration: var(--transition-duration);
@@ -64,4 +69,10 @@
   background-color: var(--primary-color-white);
   border: none;
   border-top: 1px solid var(--line-color);
+}
+
+.single-btn-modal-container .single-btn-modal.ios > button {
+  color: var(--pop-up-text-color-ios);
+  background-color: var(--pop-up-bg-color-ios);
+  border-top: 1px solid var(--pop-up-line-color-ios);
 }

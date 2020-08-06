@@ -24,6 +24,7 @@ class RouterWithCB {
   constructor(defaultFunc = () => {}) {
     this.orginPath = window.location.pathname;
     this.root = this.orginPath.split('/').pop();
+    this.currentPath = this.root;
     this.routerFunc = { default: defaultFunc };
 
     // popstate 이벤트 리스너에 라우터 함수를 적용합니다.
@@ -59,7 +60,11 @@ class RouterWithCB {
     // Query Parameter가 존재하면 Query와 URL을 재설정 합니다.
     if (typeof query === 'object') url += `?${objToQueryURL(query)}`;
 
+    // 같은 페이지로 이동시 아무런 동작을 하지 않습ㄴ다.
+    if (this.currentPath === url) return;
+
     // 브라우저의 세션 기록 스택에 상태를 추가합니다.
+    this.currentPath = url;
     window.history.pushState(query, null, url);
     this.routerCallback({ path: clearPath, query });
   }

@@ -1,6 +1,7 @@
 const { createElement } = require('../util/dom');
 
 const ACTIVE_PAGE_CLASS = 'active';
+const STACK_PAGE_CLASS = 'stack';
 
 /**
  * @description Page를 한장씩 쌓거나 덜어내는 Slider
@@ -37,6 +38,12 @@ class StackSlider {
   moveNext() {
     // 맨 끝 페이지에서는 사용할 수 없습니다.
     if (this.current === this.size - 1) return;
+
+    this.pageWrapper.childNodes[this.current].classList.remove(
+      ACTIVE_PAGE_CLASS,
+    );
+    this.pageWrapper.childNodes[this.current].classList.add(STACK_PAGE_CLASS);
+
     this.current += 1;
     this.pageWrapper.childNodes[this.current].classList.add(ACTIVE_PAGE_CLASS);
   }
@@ -51,6 +58,11 @@ class StackSlider {
       ACTIVE_PAGE_CLASS,
     );
     this.current -= 1;
+
+    this.pageWrapper.childNodes[this.current].classList.remove(
+      STACK_PAGE_CLASS,
+    );
+    this.pageWrapper.childNodes[this.current].classList.add(ACTIVE_PAGE_CLASS);
   }
 
   /**

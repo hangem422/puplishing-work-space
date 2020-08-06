@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { createElement, appendAllChild, wrapping } from '../../src/js/util/dom';
 import { requestVP, issuedVC, fail } from '../../src/js/util/os';
 import { get, post } from '../../src/js/util/ajax';
@@ -88,8 +89,10 @@ window.sendVpToApi = (vp) => sendVpToApi(vp);
  * @description 이용 약관 동의 버튼 클릭 이벤트 콜백 함수
  */
 function termsOfUseSubmit() {
-  if (!loading.state) loading.show();
-  requestVP('window.sendVpToApi', () => errorFunc.showModal(ERROR_MESSAGE_01));
+  loading.hide();
+  router.redirect('certification');
+  // if (!loading.state) loading.show();
+  // requestVP('window.sendVpToApi', () => errorFunc.showModal(ERROR_MESSAGE_01));
 }
 
 /**

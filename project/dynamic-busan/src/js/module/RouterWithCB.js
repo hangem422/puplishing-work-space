@@ -24,18 +24,17 @@ class RouterWithCB {
   constructor(defaultFunc = () => {}) {
     this.orginPath = window.location.pathname;
     this.root = this.orginPath.split('/').pop();
-    this.currentPath = this.root;
+    this.currentPath = `/${this.root}`;
     this.routerFunc = { default: defaultFunc };
 
     // popstate 이벤트 리스너에 라우터 함수를 적용합니다.
-    window.addEventListener('popstate', (event) =>
-      this.routerCallback({
-        path: clearSlashes(
-          window.location.pathname.replace(this.orginPath, ''),
-        ),
-        query: event.state || {},
-      }),
-    );
+    window.addEventListener('popstate', (event) => {
+      const path = clearSlashes(
+        window.location.pathname.replace(this.orginPath, ''),
+      );
+      this.currentPath = `/${path}`;
+      this.routerCallback({ path, query: event.state || {} });
+    });
   }
 
   /**

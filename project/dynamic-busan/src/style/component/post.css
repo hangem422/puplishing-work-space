@@ -7,8 +7,19 @@
   margin-top: 32px;
 }
 
-.text-post-container .text-post-content p {
-  white-space: pre-line;
+.text-post-container .text-post-content .content-item {
+  margin-top: 16px;
+  margin-left: 16px;
+}
+
+.text-post-container .text-post-content .content-item.depth-0,
+.text-post-container .text-post-content .content-item.depth-1,
+.text-post-container .text-post-content .content-item.depth-2 {
+  margin-left: 0px;
+}
+
+.text-post-container .text-post-content .content-item-title {
+  margin: 8px 0px;
 }
 
 .text-post-container .text-post-footer {

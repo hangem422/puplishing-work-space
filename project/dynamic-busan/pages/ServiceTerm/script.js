@@ -1,5 +1,5 @@
 import { createElement } from '../../src/js/util/dom';
-import TextPost from '../../src/js/layout/TextPost';
+import TextPost, { contentParser } from '../../src/js/layout/TextPost';
 
 import './style.css';
 import data from './data.json';
@@ -49,7 +49,12 @@ if (window) {
     document
       .getElementsByClassName('root')[0]
       .appendChild(
-        new TextPost(data.title, subTitle, data.content, footerElement).element,
+        new TextPost(
+          data.title,
+          subTitle,
+          contentParser({ contents: data.contents }),
+          footerElement,
+        ).element,
       );
   };
 }

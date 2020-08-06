@@ -1,13 +1,15 @@
 import { createElement, wrapping } from '../../src/js/util/dom';
 import Router from '../../src/js/module/RouterWithCB';
 import ListBoard from '../../src/js/layout/ListBoard';
-import TextPost from '../../src/js/layout/TextPost';
+import TextPost, { contentParser } from '../../src/js/layout/TextPost';
 import PageSlider from '../../src/js/layout/PageSlider';
 import { emptyAlarmImage } from '../../src/js/component/Image';
 import { moreRight } from '../../src/js/component/Icon';
 
 import data from './data.json';
 import './style.css';
+
+let noticeData = data;
 
 const DOCUMENT_TITLE = '이용약관';
 const DOCUMENT_DETAIL_TITLE = '공지사항 상세내용';
@@ -73,7 +75,7 @@ if (window) {
     const root = document.getElementsByClassName('root')[0];
 
     // 데이터가 없을 시 비어있는 페이지를 보여줍니다.
-    if (data.length < 1) {
+    if (noticeData.length < 1) {
       root.appendChild(createEmptyPage());
       return;
     }
@@ -86,10 +88,10 @@ if (window) {
     router.setRouterFunc('detail', ({ query }) => {
       // Path가 Detail로 시작하면 상세 페이지를 보여줍니다.
       const index = query.index || 0;
-      textPost.title = data[index].title;
-      textPost.subtitle = data[index].date;
-      textPost.contents = data[index].content;
-      textPost.footer = data[index].from;
+      textPost.title = noticeData[index].title;
+      textPost.subtitle = noticeData[index].date;
+      textPost.contents = noticeData[index].contents;
+      textPost.footer = noticeData[index].from;
       document.title = DOCUMENT_DETAIL_TITLE;
       pageSlider.movePage(1);
     });
@@ -109,5 +111,11 @@ if (window) {
     pageSlider.addPage(createListBoardPage(nextPageFunc));
     pageSlider.addPage(textPost.element);
     root.appendChild(pageSlider.element);
+
+    // 공지사항 데이터 Contents를 파싱합니다.
+    noticeData = noticeData.map((notice) => ({
+      ...notice,
+      contents: contentParser({ contents: notice.contents }),
+    }));
   };
 }

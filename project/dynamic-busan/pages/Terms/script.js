@@ -4,10 +4,12 @@ import { emptyAlarmImage } from '../../src/js/component/Image';
 import { moreRight } from '../../src/js/component/Icon';
 import PageSlider from '../../src/js/layout/PageSlider';
 import ListBoard from '../../src/js/layout/ListBoard';
-import TextPost from '../../src/js/layout/TextPost';
+import TextPost, { contentParser } from '../../src/js/layout/TextPost';
 
 import './style.css';
 import data from './data.json';
+
+let termData = data;
 
 const DOCUMENT_TITLE = '이용약관';
 const EMPTY_PAGE_TEXT = '아직 등록된 이용약관이 없습니다.';
@@ -49,7 +51,7 @@ function createEmptyPage() {
  */
 function createListBoardPage() {
   // List의 내부를 구성 Element를 만듭니다.
-  const itemList = data.reduce((prev, cur) => {
+  const itemList = termData.reduce((prev, cur) => {
     const { title, enforceDate } = cur;
     const titleElement = createElement('p', {
       class: 'font-text-body1 font-medium font-color-dark',
@@ -76,7 +78,7 @@ function createListBoardPage() {
    */
   const nextPageFunc = (index) => {
     // 링크가 있는 약관이면 링크로 리다이렉션 시킵니다.
-    if (data[index].link) window.location.href = data[index].link;
+    if (termData[index].link) window.location.href = termData[index].link;
     else router.redirect('/detail', { index });
   };
 
@@ -109,7 +111,7 @@ if (window) {
     const root = document.getElementsByClassName('root')[0];
 
     // 데이터가 없을 시 비어있는 페이지를 보여줍니다.
-    if (data.length < 1) {
+    if (termData.length < 1) {
       root.appendChild(createEmptyPage());
       return;
     }
@@ -124,11 +126,11 @@ if (window) {
 
     // 라우터에 함수를 추가합니다.
     router.setRouterFunc('detail', ({ query }) => {
-      const cur = data[query.index || 0];
+      const cur = termData[query.index || 0];
       document.title = cur.title;
       textPostPage.title = cur.title;
       textPostPage.subtitle = `시행일 ${cur.enforceDate}`;
-      textPostPage.contents = cur.content;
+      textPostPage.contents = cur.contents;
       textPostPage.footer = createFooterElement(
         converDate(`고지일: ${cur.noticeDate}`),
         converDate(`시행일: ${cur.enforceDate}`),
@@ -142,5 +144,14 @@ if (window) {
 
     // Page Slider에 리스트 페이지와 상세 페이지를 추가합니다.
     root.appendChild(pageSlider.element);
+
+    // 약관 데이터를 파싱합니다.
+    termData = data.map((term) => {
+      if (!term.contents) return term;
+      return {
+        ...term,
+        contents: contentParser({ contents: term.contents }),
+      };
+    });
   };
 }

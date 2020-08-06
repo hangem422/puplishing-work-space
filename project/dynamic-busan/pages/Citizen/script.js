@@ -5,7 +5,7 @@ import Router from '../../src/js/module/RouterWithCB';
 import AgreeTerms from '../../src/js/component/AgreeTerms';
 import PageSlider from '../../src/js/layout/PageSlider';
 import StackSlider from '../../src/js/layout/StackSlider';
-import TextPost from '../../src/js/layout/TextPost';
+import TextPost, { contentParser } from '../../src/js/layout/TextPost';
 import Loading from '../../src/js/component/Loading';
 import Modal from '../../src/js/component/SingleBtnModal';
 
@@ -37,6 +37,8 @@ const CERTIFICATION_PLACEHOLDER = '주민등록번호 뒷자리 숫자를 입력
 
 const INVALID_RRN_MESSAGE =
   '입력하신 주민등록번호가 일치하지 않습니다.\n다시 시도해주세요';
+
+let termData = data;
 
 let sessionUUID = ''; // API 서버에서 VC를 받기 위한 Session UUID
 let rrnInvalidCount = 0; // 주민번호 불일치 횟수
@@ -173,7 +175,7 @@ function createTermsOfUsePage() {
 
   // 약관 동의 페이지를 구성할 일반 Componenet들을 생성합니다.
   const agreeTerms = new AgreeTerms(
-    data.terms.map((term) => term.title),
+    termData.map((term) => term.title),
     { title: TERM_OF_USE_TITLE },
   );
   const submit = createElement('button', {
@@ -206,7 +208,7 @@ function createTermsOfUsePage() {
    */
   agreeTerms.onDetail = (index) => {
     // 링크가 있는 약관이면 링크로 리다이렉션 시킵니다.
-    if (data.terms[index].link) window.location.href = data.terms[index].link;
+    if (termData[index].link) window.location.href = termData[index].link;
     else router.redirect('/detail', { index });
   };
 
@@ -216,11 +218,11 @@ function createTermsOfUsePage() {
 
   // 라우터에 함수를 추가합니다.
   router.setRouterFunc('detail', ({ query }) => {
-    const term = data.terms[query.index || 0];
+    const term = termData[query.index || 0];
     document.title = term.title;
     textPost.title = term.title;
     textPost.subtitle = `시행일 ${term.enforceDate}`;
-    textPost.contents = term.content;
+    textPost.contents = term.contents;
     textPost.footer = createTermDetailFooter(
       converDate(`고지일: ${term.noticeDate}`),
       converDate(`시행일: ${term.enforceDate}`),
@@ -310,5 +312,14 @@ if (window) {
     });
 
     appendAllChild(root, [loading.element, modal.element, stackSlider.element]);
+
+    // 약관 데이터를 파싱합니다.
+    termData = data.map((term) => {
+      if (!term.contents) return term;
+      return {
+        ...term,
+        contents: contentParser({ contents: term.contents }),
+      };
+    });
   };
 }

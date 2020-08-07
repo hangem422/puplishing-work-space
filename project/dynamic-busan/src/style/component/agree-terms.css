@@ -45,17 +45,21 @@
   padding: 4px;
 }
 
-.agree-terms-list .agree-terms-item svg:first-child path {
+.agree-terms-list .agree-terms-item .agree-terms-item-detail {
+  margin-left: 12px;
+  flex: 1;
+}
+
+.agree-terms-list .agree-terms-item .agree-terms-item-check path {
   transition: fill var(--transition-duration) var(--transition-timing-function);
 }
 
-.agree-terms-list .agree-terms-item p {
+.agree-terms-list .agree-terms-item .agree-terms-item-detail p {
   flex: 1;
-  margin-left: 12px;
   transition: color var(--transition-duration) var(--transition-timing-function);
 }
 
-.agree-terms-list .agree-terms-item.active svg:first-child path {
+.agree-terms-list .agree-terms-item.active .agree-terms-item-check path {
   fill: var(--primary-color-blue);
 }
 

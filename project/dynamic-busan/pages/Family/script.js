@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import { createElement, appendAllChild, wrapping } from '../../src/js/util/dom';
 import { requestVP, issuedVC, fail } from '../../src/js/util/os';
 import { get, post } from '../../src/js/util/ajax';
@@ -89,10 +88,8 @@ window.sendVpToApi = (vp) => sendVpToApi(vp);
  * @description 이용 약관 동의 버튼 클릭 이벤트 콜백 함수
  */
 function termsOfUseSubmit() {
-  loading.hide();
-  router.redirect('certification');
-  // if (!loading.state) loading.show();
-  // requestVP('window.sendVpToApi', () => errorFunc.showModal(ERROR_MESSAGE_01));
+  if (!loading.state) loading.show();
+  requestVP('window.sendVpToApi', () => errorFunc.showModal(ERROR_MESSAGE_01));
 }
 
 /**
@@ -251,7 +248,7 @@ function createCertificationPage() {
   const titleContainer = wrapping('certification-title', title);
   const submitContainer = wrapping('certification-submit', submit);
   const secretTextfield = new SecretTextfield({
-    separatorClass: 'certification-input',
+    separatorClass: 'resident-registration-number',
     max: 7,
     type: 'number',
     placeholder: CERTIFICATION_PLACEHOLDER,
@@ -263,6 +260,10 @@ function createCertificationPage() {
       else submit.setAttribute('disabled', 'disabled');
     },
   });
+  const secretTextfieldContainer = wrapping(
+    'certification-input',
+    secretTextfield.element,
+  );
 
   // 제출 버튼 온클릭 이벤트를 설정합니다.
   submit.addEventListener('click', () => {
@@ -274,7 +275,7 @@ function createCertificationPage() {
 
   return createElement('div', {
     class: 'certification-page',
-    child: [titleContainer, secretTextfield.element, submitContainer],
+    child: [titleContainer, secretTextfieldContainer, submitContainer],
   });
 }
 

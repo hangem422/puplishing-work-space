@@ -247,7 +247,7 @@ function createCertificationPage() {
   const titleContainer = wrapping('certification-title', title);
   const submitContainer = wrapping('certification-submit', submit);
   const secretTextfield = new SecretTextfield({
-    separatorClass: 'certification-input',
+    separatorClass: 'resident-registration-number',
     max: 7,
     type: 'number',
     placeholder: CERTIFICATION_PLACEHOLDER,
@@ -259,6 +259,10 @@ function createCertificationPage() {
       else submit.setAttribute('disabled', 'disabled');
     },
   });
+  const secretTextfieldContainer = wrapping(
+    'certification-input',
+    secretTextfield.element,
+  );
 
   // 제출 버튼 온클릭 이벤트를 설정합니다.
   submit.addEventListener('click', () => {
@@ -270,7 +274,7 @@ function createCertificationPage() {
 
   return createElement('div', {
     class: 'certification-page',
-    child: [titleContainer, secretTextfield.element, submitContainer],
+    child: [titleContainer, secretTextfieldContainer, submitContainer],
   });
 }
 

@@ -1,14 +1,41 @@
 /**
- * @description 약관 데이터의 세부 내용을 보여줍니다.
+ * @description 특정영역만 보여줄 수 있는 클래스
+ * @property {HTMLLIElement[]} details
  */
-export function showDetail(detail, index) {
-  for (let i = 0; i < detail.length; i += 1) {
-    if (i === index) {
-      detail[i].style.display = 'block';
-      detail[i].style.width = '100%';
-      detail[i].style.height = '100%';
-    } else {
-      detail[i].style.display = 'none';
+
+class ShowDetail {
+  /**
+   * @description Show Detail의 생성자
+   * @param {HTMLLIElement[]} details
+   */
+  constructor(details) {
+    this.details = details;
+    this.cur = 0;
+
+    this.makeDisplayNone(details);
+  }
+
+  /**
+   * @description 약관 데이터 세부화면의 빈화면을 보여줍니다.
+   * @param {HTMLLIElement} details
+   */
+  makeDisplayNone(details) {
+    for (let i = 0; i < details.length; i += 1) {
+      this.details[i].style.display = 'none';
     }
   }
+
+  /**
+   * @description 약관 데이터의 세부 내용을 보여줍니다.
+   * @param {number} index
+   */
+  renderDetail(index) {
+    this.details[this.cur].style.display = 'none';
+    this.details[index].style.display = 'block';
+    this.details[index].style.width = '100%';
+    this.details[index].style.height = '100%';
+    this.cur = index;
+  }
 }
+
+export default ShowDetail;

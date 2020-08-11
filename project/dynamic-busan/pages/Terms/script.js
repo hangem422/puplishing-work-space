@@ -5,7 +5,7 @@ import { moreRight } from '../../src/js/component/Icon';
 import PageSlider from '../../src/js/layout/PageSlider';
 import ListBoard from '../../src/js/layout/ListBoard';
 import TextPost, { contentParser } from '../../src/js/layout/TextPost';
-import { showDetail } from '../../src/js/layout/ShowDetail';
+import ShowDetail from '../../src/js/layout/ShowDetail';
 
 import './style.css';
 import data from './data.json';
@@ -17,6 +17,19 @@ const EMPTY_PAGE_TEXT = '아직 등록된 이용약관이 없습니다.';
 
 // Callback으로 동작하는 라우터를 생성합니다.
 const router = new Router();
+
+/**
+ * @description YYYY.MM.DD를 YYYY년 MM월 DD일로 변경합니다.
+ * @param {string} date YYYY.MM.DD
+ * @returns {string} YYYY년 MM월 DD일
+ */
+function convertDate(date) {
+  const dateArr = date.split('.');
+  dateArr[0] = `${dateArr[0]}년`;
+  dateArr[1] = dateArr[1].length < 2 ? `0${dateArr[1]}월` : `${dateArr[1]}월`;
+  dateArr[2] = dateArr[2].length < 2 ? `0${dateArr[2]}일` : `${dateArr[2]}일`;
+  return dateArr.join(' ');
+}
 
 /**
  * @description 이용 약관이 없을 시 빈 페이지를 생성합니다.
@@ -73,18 +86,6 @@ function createListBoardPage() {
   // List Board Paga를 반환합니다.
   return new ListBoard('term-board', itemList, nextPageFunc);
 }
-/**
- * @description YYYY.MM.DD를 YYYY년 MM월 DD일로 변경합니다.
- * @param {string} date YYYY.MM.DD
- * @returns {string} YYYY년 MM월 DD일
- */
-function convertDate(date) {
-  const dateArr = date.split('.');
-  dateArr[0] = `${dateArr[0]}년`;
-  dateArr[1] = dateArr[1].length < 2 ? `0${dateArr[1]}월` : `${dateArr[1]}월`;
-  dateArr[2] = dateArr[2].length < 2 ? `0${dateArr[2]}일` : `${dateArr[2]}일`;
-  return dateArr.join(' ');
-}
 
 /**
  * @description 약관 Date Element 생성합니다.
@@ -106,15 +107,6 @@ function createFooterElement(notice, enforce) {
  * @description 약관 데이터의 세부 내용을 보여줍니다.
  */
 function makeTextPostPage(datas) {
-  // 약관 데이터를 파싱합니다.
-  datas = data.map((term) => {
-    if (!term.contents) return term;
-    return {
-      ...term,
-      contents: contentParser({ contents: term.contents }),
-    };
-  });
-
   const textPostPages = [];
   for (let i = 0; i < datas.length; i += 1) {
     const textPostPage = new TextPost();
@@ -123,7 +115,7 @@ function makeTextPostPage(datas) {
     textPostPage.contents =
       datas[i].contents === undefined
         ? document.createElement('div')
-        : datas[i].contents;
+        : contentParser({ contents: datas[i].contents });
     textPostPage.footer = createFooterElement(
       convertDate(`고지일: ${datas[i].noticeDate}`),
       convertDate(`시행일: ${datas[i].enforceDate}`),
@@ -149,6 +141,7 @@ if (window) {
     // Page Slide를 생성합니다.
     const listBoardPage = createListBoardPage();
     const textPostPage = makeTextPostPage(termData);
+    const showDetail = new ShowDetail(textPostPage);
     const pageSlider = new PageSlider('term-slider', [
       listBoardPage.element,
       textPostPage,
@@ -158,7 +151,7 @@ if (window) {
     router.setRouterFunc('detail', ({ query }) => {
       const index = query.index || 0;
       document.title = termData[index].title;
-      showDetail(textPostPage, index);
+      showDetail.renderDetail(index);
       pageSlider.movePage(1);
     });
     router.setRouterFunc('default', () => {

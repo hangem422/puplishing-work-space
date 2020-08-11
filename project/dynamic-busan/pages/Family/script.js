@@ -63,12 +63,13 @@ const errorFunc = {
 /**
  * @description Api 서버로 VP를 전달합니다.
  * @param {string} vp AA VC 밝급을 위한 VP
+ * @returns {Promise<void>} 네트워크 요청 비동기 객체
  */
 function sendVpToApi(vp) {
   if (!loading.state) loading.show();
 
   // HTTP Status가 200이 아니면 전부 에러 처리합니다.
-  post({ url: SEND_VP_API_URL, data: { vp }, strict: true })
+  return post({ url: SEND_VP_API_URL, data: { vp }, strict: true })
     .then((res) => {
       sessionUUID = res;
       loading.hide();
@@ -76,36 +77,16 @@ function sendVpToApi(vp) {
     })
     .catch(() => errorFunc.fail(ERROR_MESSAGE_02));
 }
-// NOTE: keepin에서 전역 함수를 실행시켜야하는데 Webpack을 실행시키면 스코프로 감싸지기에 전역 함수 선언이 힘들다.
-// NOTE: 이를 해결하기위해 Window 객체에 넣어서, 전역함수화 시킵니다.
-window.sendVpToApi = (vp) => sendVpToApi(vp);
-
-/* -------------------------------- */
-/*  Submit Button Onclick Callback  */
-/* -------------------------------- */
-
-/**
- * @description 이용 약관 동의 버튼 클릭 이벤트 콜백 함수
- */
-function termsOfUseSubmit() {
-  if (!loading.state) loading.show();
-  requestVP('window.sendVpToApi', () => errorFunc.showModal(ERROR_MESSAGE_01));
-}
 
 /**
  * @description Api 서버에 주민번호 입력 후, vc를 받아옵니다.
  * @param {string} rrn 입력받은 주민 등록번호 뒷자리
+ * @returns {Promise<void>} 네트워크 요청 비동기 객체
  */
-function certificationSubmit(rrn) {
+function getVcFromApi(rrn) {
   if (!loading.state) loading.show();
 
-  // sessionUUID를 발급받은 저깅 없으면 GET 요청을 보낼 수 없습니다.
-  if (!sessionUUID) {
-    errorFunc.showModal(ERROR_MESSAGE_01);
-    return;
-  }
-
-  get({
+  return get({
     url: GET_VC_API_URL,
     data: { rrn },
     headers: { 'referrer-token': sessionUUID },
@@ -130,6 +111,43 @@ function certificationSubmit(rrn) {
       else errorFunc.fail(ERROR_MESSAGE_02);
     })
     .catch(() => errorFunc.fail(ERROR_MESSAGE_02));
+}
+
+/* -------------------------------- */
+/*  Submit Button Onclick Callback  */
+/* -------------------------------- */
+
+// NOTE: keepin에서 전역 함수를 실행시켜야하는데 Webpack을 실행시키면 스코프로 감싸지기에 전역 함수 선언이 힘들다.
+// NOTE: 이를 해결하기위해 Window 객체에 넣어서, 전역함수화 시킵니다.
+window.sendVpToApi = (vp) => sendVpToApi(vp);
+
+/**
+ * @description 이용 약관 동의 버튼 클릭 이벤트 콜백 함수
+ */
+function termsOfUseSubmit() {
+  if (!loading.state) loading.show();
+  requestVP('window.sendVpToApi', () => errorFunc.showModal(ERROR_MESSAGE_01));
+}
+
+/**
+ * @description 인증하기 버튼 클릭 이벤트 콜백 함수
+ * @param {string} rrn 입력받은 주민 등록번호 뒷자리
+ * @param {() => void)} incorrectRrnCallback 입력받은 주민 등록번호가 불일치 할 시 콜백 함수
+ */
+function certificationSubmit(rrn, incorrectRrnCallback) {
+  if (!loading.state) loading.show();
+
+  // sessionUUID를 발급받은 저깅 없으면 GET 요청을 보낼 수 없습니다.
+  if (!sessionUUID) {
+    errorFunc.showModal(ERROR_MESSAGE_01);
+    return;
+  }
+
+  const rrnInvalidCountTemp = rrnInvalidCount;
+  getVcFromApi(rrn).then(() => {
+    // 주민 번호 불일치 오류 시 콜백 함수를 실행합니다.
+    if (rrnInvalidCountTemp < rrnInvalidCount) incorrectRrnCallback();
+  });
 }
 
 /* -------------- */
@@ -267,10 +285,9 @@ function createCertificationPage() {
 
   // 제출 버튼 온클릭 이벤트를 설정합니다.
   submit.addEventListener('click', () => {
-    certificationSubmit(secretTextfield.text);
-    if (rrnInvalidCount > 0) {
-      secretTextfield.error(`${INVALID_RRN_MESSAGE} (${rrnInvalidCount}/5)`);
-    }
+    certificationSubmit(secretTextfield.text, () =>
+      secretTextfield.error(`${INVALID_RRN_MESSAGE} (${rrnInvalidCount}/5)`),
+    );
   });
 
   return createElement('div', {

@@ -1,0 +1,35 @@
+@import url('../../src/style/main.css');
+
+html,
+body,
+.root {
+  height: 100%;
+}
+
+.certification-email {
+  margin-top: 32px;
+}
+
+.certification-email .button-type-b {
+  margin-top: 24px;
+}
+
+.certification-num {
+  visibility: hidden;
+  opacity: 0;
+  margin-top: 32px;
+  transition: opacity var(--transition-duration)
+    var(--transition-timing-function);
+}
+
+.certification-num.show {
+  visibility: visible;
+  opacity: 1;
+}
+
+.certification-submit {
+  position: absolute;
+  width: 100%;
+  box-sizing: border-box;
+  bottom: 0px;
+}

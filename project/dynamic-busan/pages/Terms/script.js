@@ -107,21 +107,19 @@ function createFooterElement(notice, enforce) {
  * @description 약관 데이터의 세부 내용을 보여줍니다.
  */
 function makeTextPostPage(datas) {
-  const textPostPages = [];
-  for (let i = 0; i < datas.length; i += 1) {
+  const textPostPages = datas.map((term) => {
     const textPostPage = new TextPost();
-    textPostPage.title = datas[i].title;
-    textPostPage.subtitle = `시행일 ${datas[i].enforceDate}`;
-    textPostPage.contents =
-      datas[i].contents === undefined
-        ? document.createElement('div')
-        : contentParser({ contents: datas[i].contents });
+    if (term.link) return textPostPage.element;
+
+    textPostPage.title = term.title;
+    textPostPage.subtitle = `시행일 ${term.enforceDate}`;
+    textPostPage.contents = contentParser({ contents: term.contents });
     textPostPage.footer = createFooterElement(
-      convertDate(`고지일: ${datas[i].noticeDate}`),
-      convertDate(`시행일: ${datas[i].enforceDate}`),
+      convertDate(`고지일: ${term.noticeDate}`),
+      convertDate(`시행일: ${term.enforceDate}`),
     );
-    textPostPages.push(textPostPage.element);
-  }
+    return textPostPage.element;
+  });
   return textPostPages;
 }
 /**
@@ -144,7 +142,7 @@ if (window) {
     const showDetail = new ShowDetail(textPostPage);
     const pageSlider = new PageSlider('term-slider', [
       listBoardPage.element,
-      textPostPage,
+      showDetail.element,
     ]);
 
     // 라우터에 함수를 추가합니다.

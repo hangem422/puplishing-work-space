@@ -1,3 +1,5 @@
+import { createElement } from '../util/dom';
+
 /**
  * @description 특정영역만 보여줄 수 있는 클래스
  * @property {HTMLLIElement[]} details
@@ -10,7 +12,15 @@ class ShowDetail {
    */
   constructor(details) {
     this.details = details;
-    this.cur = 0;
+    this.cur = null;
+
+    this.wrapper = createElement('div', {
+      class: `show-detail-wrapper`,
+    });
+    this.element = createElement('div', {
+      class: `show-detail-container`,
+      child: this.wrapper,
+    });
 
     this.makeDisplayNone(details);
   }
@@ -22,7 +32,9 @@ class ShowDetail {
   makeDisplayNone(details) {
     for (let i = 0; i < details.length; i += 1) {
       this.details[i].style.display = 'none';
+      this.wrapper.appendChild(this.details[i]);
     }
+    this.cur = null;
   }
 
   /**
@@ -30,7 +42,8 @@ class ShowDetail {
    * @param {number} index
    */
   renderDetail(index) {
-    this.details[this.cur].style.display = 'none';
+    if (this.cur !== null) this.details[this.cur].style.display = 'none';
+
     this.details[index].style.display = 'block';
     this.details[index].style.width = '100%';
     this.details[index].style.height = '100%';

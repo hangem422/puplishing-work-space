@@ -1,15 +1,35 @@
 import { createElement } from '../util/dom';
 import { circleIcon } from './Icon';
+import { isIOS } from '../util/os';
+
+/**
+ * @description 숨겨진 Input에 입력될 값
+ * @param {string} type Input Type
+ * @returns {string}
+ */
+function getDummyString(type) {
+  if (type === 'number') return '0';
+  return ' ';
+}
+
+/**
+ * @description os에 따라 수정되어야 하는 타입값을 변환해줍니다.
+ * @param {string} type Input Type
+ * @returns {string}
+ */
+function parsingType(type) {
+  if (!type) return 'text';
+  if (type === 'number' && isIOS) return 'tel';
+  return type;
+}
 
 /**
  * @description 압력값이 보이지 않는 Textfield 컴포넌트
  * @property {string} text 실제 입력된 문자열
  * @property {number} max 최대 입력될 수 있는 문자열 길이
- * @property {number} max 최대 입력될 수 있는 문자열 길이
  * @property {(char: string) => boolean} validateCharFunc 입력한 문자가 유효한 문자인지 검증하는 함수
  * @property {(value: string) => boolean} validateStringFunc Textfield의 값이 맞는지 검증하는 함수
  * @property {(value: string, validate: boolean) => void} onChangeFunc Textfield 값이 변할 때 실행되는 함수
- * @property {HTMLElement} input Input Element
  * @property {HTMLElement} secret Dummy Text Element
  * @property {HTMLElement} wrapper Secret Textfield Wrapper Element
  * @property {HTMLElement} element Secret Textfield Element
@@ -17,7 +37,7 @@ import { circleIcon } from './Icon';
 class SecretTextfield {
   /**
    * @description SecretTextfield Class 생성자
-   * @typedef {object} option
+   * @typedef {object} options
    * @property {string} separatorClass 다른 Secret Textfield와 구분할 수 있는 고유 class
    * @property {number} max Textfield의 문자열 최대 길이
    * @property {string} type Textfield의 type
@@ -26,35 +46,44 @@ class SecretTextfield {
    * @property {(char: string) => boolean} validateCharFunc 입력한 문자가 유효한 문자인지 검증하는 함수
    * @property {(value: string) => boolean} validateStringFunc Textfield의 값이 맞는지 검증하는 함수
    * @property {(value: string, validate: boolean) => void} onChangeFunc Textfield 값이 변할 때 실행되는 함수
-   * @param {option} option SecretTextfield의 옵션 값
+   * @param {options} options SecretTextfield의 옵션 값
    */
-  constructor(option) {
+  constructor(options) {
     this.text = '';
-    this.max = typeof option.max === 'number' ? option.max : Infinity;
-    this.validateCharFunc = option.validateCharFunc || (() => true);
-    this.validateStringFunc = option.validateStringFunc || (() => true);
-    this.onChangeFunc = option.onChangeFunc || (() => {});
+    this.dummyText = getDummyString(options.type);
+    this.separatorClass = options.separatorClass || '';
+    this.max = typeof options.max === 'number' ? options.max : Infinity;
+    this.validateCharFunc = options.validateCharFunc || (() => true);
+    this.validateStringFunc = options.validateStringFunc || (() => true);
+    this.onChangeFunc = options.onChangeFunc || (() => {});
 
     const label = createElement('label', {
       for: this.separatorClass || 'secret-textfield-input',
-      child: option.label || '',
+      child: options.label || '',
     });
     this.input = createElement('input', {
       id: this.separatorClass || 'secret-textfield-input',
-      placeholder: option.placeholder || '',
-      type: option.type || 'text',
+      type: parsingType(options.type),
     });
     this.secret = createElement('div', {
-      class: 'secret-textfield-text',
-    });
-    this.wrapper = createElement('div', {
-      class: `wrapper textfield ${option.separatorClass || ''}`,
-      child: [label, this.input, this.secret],
+      placeholder: options.placeholder,
+      class: 'secret-textfield-text empty',
     });
     this.element = createElement('div', {
-      class: `container secret-textfield ${option.separatorClass || ''}`,
-      child: this.wrapper,
+      class: `secret-textfield ${options.separatorClass || ''}`,
+      child: [label, this.input, this.secret],
     });
+
+    // secret을 클릭하면 숨겨진 input에 포커스가 맞춰집니다.
+    this.secret.addEventListener('click', () => this.input.focus());
+
+    // input의 focus 여부에 맞춰 secret의 스타일을 변경합니다.
+    this.input.addEventListener('focus', () =>
+      this.secret.classList.add('focus'),
+    );
+    this.input.addEventListener('blur', () =>
+      this.secret.classList.remove('focus'),
+    );
 
     this.input.addEventListener('keyup', (event) => {
       // backspace 입력시 문자 삭제
@@ -65,11 +94,6 @@ class SecretTextfield {
         event.target.value = event.target.value.slice(0, -1);
         this.addChar(char);
       }
-    });
-
-    this.secret.addEventListener('click', (event) => {
-      event.preventDefault();
-      this.input.focus();
     });
   }
 
@@ -87,10 +111,12 @@ class SecretTextfield {
   deleteChar() {
     if (this.text.length > 0) {
       this.text = this.text.slice(0, -1);
-      this.input.value = this.input.value.slice(0, this.text.length);
-
-      // 동그라미를 한개 삭제합니다.
       this.secret.removeChild(this.secret.lastChild);
+
+      // text 전부 삭제되면 placeholder를 보여줍니다.
+      if (this.text.length === 0) {
+        this.secret.classList.add('empty');
+      }
 
       this.onChangeFunc(this.text, this.isDone);
     }
@@ -102,12 +128,15 @@ class SecretTextfield {
    */
   addChar(char) {
     if (this.validateCharFunc(char) && this.text.length < this.max) {
-      this.text += char;
-      this.input.value += '0';
+      // placeholder를 숨깁니다.
+      if (this.secret.classList.contains('empty')) {
+        this.secret.classList.remove('empty');
+      }
 
-      // 동그라미를 한개 추가합니다.
-      const circle = circleIcon(14, '#0056d0');
-      this.secret.appendChild(circle);
+      this.text += char;
+      // NOTE: Type이 text와 number일 떄만 고려했습니다.
+      this.input.value += 0;
+      this.secret.appendChild(circleIcon(14, '#0056d0'));
 
       this.onChangeFunc(this.text, this.isDone);
     }
@@ -118,9 +147,9 @@ class SecretTextfield {
    * @param {string} message 에러 메시지
    */
   error(message) {
-    this.wrapper.setAttribute('error-message', message);
-    this.wrapper.classList.add('textfield-error-message');
-    this.wrapper.classList.add('textfield-error');
+    this.element.setAttribute('error-message', message);
+    this.element.classList.add('secret-textfield-error');
+    this.secret.classList.add('error');
   }
 }
 

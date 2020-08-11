@@ -135,21 +135,25 @@ class AgreeTerms {
    */
   addTerm(term) {
     // List Item에 들어갈 내부 구성 요소들을 만듭니다.
-    const checkIconElement = checkIcon(16, '#cccccc');
+    const checkIconElement = checkIcon(20, '#cccccc');
+    checkIconElement.setAttribute('class', 'agree-terms-item-check');
     const termElement = createElement('p', {
       class: 'font-text-body2 font-color-regular',
       child: term,
     });
-    const detailIconElement = moreRight(12, '#E5E5E5');
+    const moreIconElement = moreRight(12, '#A3A3A3');
+    const detialWrapper = createElement('div', {
+      class: 'row-center agree-terms-item-detail',
+      child: [termElement, moreIconElement],
+    });
     const container = createElement('div', {
       class: 'row-center agree-terms-item',
-      child: [checkIconElement, termElement, detailIconElement],
+      child: [checkIconElement, detialWrapper],
     });
 
     // 약관 동의 / 비동의 온클릭 이벤트 추가
     const index = this.termsWrapper.childElementCount;
-    container.addEventListener('click', (event) => {
-      event.stopPropagation();
+    checkIconElement.addEventListener('click', () => {
       // 동의한 상태의 약관이면 동의를 헤지합니다.
       if (container.classList.contains(ACTIVE_TERM_CLASS)) {
         container.classList.remove(ACTIVE_TERM_CLASS);
@@ -165,9 +169,8 @@ class AgreeTerms {
       this.onClick(this.isDone, index, container);
     });
 
-    // 상세보기 아이콘에 온클릭 이벤트 추가
-    detailIconElement.addEventListener('click', (event) => {
-      event.stopPropagation();
+    // 상세보기 온클릭 이벤트 추가
+    detialWrapper.addEventListener('click', () => {
       this.onDetail(index, container);
     });
 

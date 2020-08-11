@@ -25,6 +25,7 @@
 
 .textfield input {
   outline: none;
+  -webkit-appearance: none;
   transition-property: border, color, background-color;
   transition-duration: var(--transition-duration);
   transition-timing-function: var(--transition-timing-function);
@@ -60,7 +61,6 @@
 
 .textfield.textfield-error input[type='text']::placeholder,
 .textfield.textfield-error input[type='number']::placeholder {
-  content: 'test';
   color: var(--primary-color-red);
 }
 

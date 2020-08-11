@@ -35,7 +35,8 @@
   font-weight: 400;
 }
 
-.textfield label {
+.textfield label,
+.secret-textfield label {
   font-family: 'Noto Sans KR', sans-serif;
   font-size: 12px;
   line-height: 1.5;
@@ -46,7 +47,9 @@
 .textfield,
 .textfield::after,
 .textfield input,
-.textfield input::placeholder {
+.textfield input::placeholder,
+.secret-textfield-text::before,
+.secret-textfield::after {
   font-family: 'Noto Sans KR', sans-serif;
   font-size: 14px;
   line-height: 20px;

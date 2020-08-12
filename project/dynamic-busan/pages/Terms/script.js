@@ -5,11 +5,10 @@ import { moreRight } from '../../src/js/component/Icon';
 import PageSlider from '../../src/js/layout/PageSlider';
 import ListBoard from '../../src/js/layout/ListBoard';
 import TextPost, { contentParser } from '../../src/js/layout/TextPost';
+import ShowDetail from '../../src/js/layout/ShowDetail';
 
 import './style.css';
 import data from './data.json';
-
-let termData = data;
 
 const DOCUMENT_TITLE = '이용약관';
 const EMPTY_PAGE_TEXT = '아직 등록된 이용약관이 없습니다.';
@@ -22,7 +21,7 @@ const router = new Router();
  * @param {string} date YYYY.MM.DD
  * @returns {string} YYYY년 MM월 DD일
  */
-function converDate(date) {
+function convertDate(date) {
   const dateArr = date.split('.');
   dateArr[0] = `${dateArr[0]}년`;
   dateArr[1] = dateArr[1].length < 2 ? `0${dateArr[1]}월` : `${dateArr[1]}월`;
@@ -51,7 +50,7 @@ function createEmptyPage() {
  */
 function createListBoardPage() {
   // List의 내부를 구성 Element를 만듭니다.
-  const itemList = termData.reduce((prev, cur) => {
+  const itemList = data.reduce((prev, cur) => {
     const { title, enforceDate } = cur;
     const titleElement = createElement('p', {
       class: 'font-text-body1 font-medium font-color-dark',
@@ -78,7 +77,7 @@ function createListBoardPage() {
    */
   const nextPageFunc = (index) => {
     // 링크가 있는 약관이면 링크로 리다이렉션 시킵니다.
-    if (termData[index].link) window.location.href = termData[index].link;
+    if (data[index].link) window.location.href = data[index].link;
     else router.redirect('/detail', { index });
   };
 
@@ -103,6 +102,25 @@ function createFooterElement(notice, enforce) {
 }
 
 /**
+ * @description 약관 데이터의 세부 내용을 보여줍니다.
+ */
+function makeTextPostPage(datas) {
+  const textPostPages = datas.map((term) => {
+    const textPostPage = new TextPost();
+    if (term.link) return textPostPage.element;
+
+    textPostPage.title = term.title;
+    textPostPage.subtitle = `시행일 ${term.enforceDate}`;
+    textPostPage.contents = contentParser({ contents: term.contents });
+    textPostPage.footer = createFooterElement(
+      convertDate(`고지일: ${term.noticeDate}`),
+      convertDate(`시행일: ${term.enforceDate}`),
+    );
+    return textPostPage.element;
+  });
+  return textPostPages;
+}
+/**
  * @description Window Onload Callback
  */
 if (window) {
@@ -111,30 +129,25 @@ if (window) {
     const root = document.getElementsByClassName('root')[0];
 
     // 데이터가 없을 시 비어있는 페이지를 보여줍니다.
-    if (termData.length < 1) {
+    if (data.length < 1) {
       root.appendChild(createEmptyPage());
       return;
     }
 
     // Page Slide를 생성합니다.
     const listBoardPage = createListBoardPage();
-    const textPostPage = new TextPost();
+    const textPostPage = makeTextPostPage(data);
+    const showDetail = new ShowDetail('term-detail', textPostPage);
     const pageSlider = new PageSlider('term-slider', [
       listBoardPage.element,
-      textPostPage.element,
+      showDetail.element,
     ]);
 
     // 라우터에 함수를 추가합니다.
     router.setRouterFunc('detail', ({ query }) => {
-      const cur = termData[query.index || 0];
-      document.title = cur.title;
-      textPostPage.title = cur.title;
-      textPostPage.subtitle = `시행일 ${cur.enforceDate}`;
-      textPostPage.contents = cur.contents;
-      textPostPage.footer = createFooterElement(
-        converDate(`고지일: ${cur.noticeDate}`),
-        converDate(`시행일: ${cur.enforceDate}`),
-      );
+      const index = query.index || 0;
+      document.title = data[index].title;
+      showDetail.renderDetail(index);
       pageSlider.movePage(1);
     });
     router.setRouterFunc('default', () => {
@@ -144,14 +157,5 @@ if (window) {
 
     // Page Slider에 리스트 페이지와 상세 페이지를 추가합니다.
     root.appendChild(pageSlider.element);
-
-    // 약관 데이터를 파싱합니다.
-    termData = data.map((term) => {
-      if (!term.contents) return term;
-      return {
-        ...term,
-        contents: contentParser({ contents: term.contents }),
-      };
-    });
   };
 }

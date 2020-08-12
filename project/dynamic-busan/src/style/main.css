@@ -6,7 +6,8 @@
 @import './component/button.css';
 @import './component/textfield.css';
 @import './component/board.css';
-@import './component//slider.css';
+@import './component/detail.css';
+@import './component/slider.css';
 @import './component/post.css';
 @import './component/agree-terms.css';
 @import './component/secret-textfield.css';

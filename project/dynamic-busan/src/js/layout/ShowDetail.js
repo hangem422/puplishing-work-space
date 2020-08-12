@@ -48,8 +48,6 @@ class ShowDetail {
     if (this.cur !== null) this.details[this.cur].style.display = 'none';
 
     this.details[index].style.display = 'block';
-    this.details[index].style.width = '100%';
-    this.details[index].style.height = '100%';
     this.cur = index;
   }
 }

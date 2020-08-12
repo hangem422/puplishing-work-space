@@ -10,8 +10,6 @@ import ShowDetail from '../../src/js/layout/ShowDetail';
 import './style.css';
 import data from './data.json';
 
-const termData = data;
-
 const DOCUMENT_TITLE = '이용약관';
 const EMPTY_PAGE_TEXT = '아직 등록된 이용약관이 없습니다.';
 
@@ -52,7 +50,7 @@ function createEmptyPage() {
  */
 function createListBoardPage() {
   // List의 내부를 구성 Element를 만듭니다.
-  const itemList = termData.reduce((prev, cur) => {
+  const itemList = data.reduce((prev, cur) => {
     const { title, enforceDate } = cur;
     const titleElement = createElement('p', {
       class: 'font-text-body1 font-medium font-color-dark',
@@ -79,7 +77,7 @@ function createListBoardPage() {
    */
   const nextPageFunc = (index) => {
     // 링크가 있는 약관이면 링크로 리다이렉션 시킵니다.
-    if (termData[index].link) window.location.href = termData[index].link;
+    if (data[index].link) window.location.href = data[index].link;
     else router.redirect('/detail', { index });
   };
 
@@ -131,15 +129,15 @@ if (window) {
     const root = document.getElementsByClassName('root')[0];
 
     // 데이터가 없을 시 비어있는 페이지를 보여줍니다.
-    if (termData.length < 1) {
+    if (data.length < 1) {
       root.appendChild(createEmptyPage());
       return;
     }
 
     // Page Slide를 생성합니다.
     const listBoardPage = createListBoardPage();
-    const textPostPage = makeTextPostPage(termData);
-    const showDetail = new ShowDetail(textPostPage);
+    const textPostPage = makeTextPostPage(data);
+    const showDetail = new ShowDetail('term-detail', textPostPage);
     const pageSlider = new PageSlider('term-slider', [
       listBoardPage.element,
       showDetail.element,
@@ -148,7 +146,7 @@ if (window) {
     // 라우터에 함수를 추가합니다.
     router.setRouterFunc('detail', ({ query }) => {
       const index = query.index || 0;
-      document.title = termData[index].title;
+      document.title = data[index].title;
       showDetail.renderDetail(index);
       pageSlider.movePage(1);
     });

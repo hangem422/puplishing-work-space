@@ -63,7 +63,7 @@ const errorFunc = {
  * @returns {Promise<void>} 네트워크 요청 비동기 객체
  */
 function sendVpToApi(vp) {
-  // if (!appState.state) appState.showLoading();
+  if (!appState.state) appState.showLoading();
 
   // HTTP Status가 200이 아니면 전부 에러 처리합니다.
   return post({ url: SEND_VP_API_URL, data: { vp }, strict: true })
@@ -81,7 +81,7 @@ function sendVpToApi(vp) {
  * @returns {Promise<void>} 네트워크 요청 비동기 객체
  */
 function getVcFromApi(rrn) {
-  // if (!appState.state) appState.showLoading();
+  if (!appState.state) appState.showLoading();
 
   return get({
     url: GET_VC_API_URL,
@@ -122,7 +122,7 @@ window.sendVpToApi = (vp) => sendVpToApi(vp);
  * @description 이용 약관 동의 버튼 클릭 이벤트 콜백 함수
  */
 function termsOfUseSubmit() {
-  // if (!appState.state) appState.showLoading();
+  if (!appState.state) appState.showLoading();
   requestVP('window.sendVpToApi', () => errorFunc.showModal(ERROR_MESSAGE_01));
 }
 
@@ -132,7 +132,7 @@ function termsOfUseSubmit() {
  * @param {() => void)} incorrectRrnCallback 입력받은 주민 등록번호가 불일치 할 시 콜백 함수
  */
 function certificationSubmit(rrn, incorrectRrnCallback) {
-  // if (!appState.state) appState.showLoading();
+  if (!appState.state) appState.showLoading();
 
   // sessionUUID를 발급받은 적이 없으면 GET 요청을 보낼 수 없습니다.
   if (!sessionUUID) {

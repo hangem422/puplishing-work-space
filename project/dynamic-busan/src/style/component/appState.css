@@ -1,4 +1,6 @@
-.loading-container {
+.app-state-container {
+  padding: 32px;
+  box-sizing: border-box;
   position: fixed;
   z-index: 9999;
   display: flex;
@@ -13,19 +15,78 @@
     var(--transition-timing-function);
 }
 
-.loading-container.active {
-  opacity: 1;
+.app-state-container.active {
+  opacity: 100;
   visibility: visible;
 }
 
-.loading-container::before {
+.app-state-container::before {
   content: '';
   flex: 1;
 }
 
-.loading-container::after {
+.app-state-container::after {
   content: '';
   flex: 1.6;
+}
+
+.app-state-container .single-btn-modal {
+  display: none;
+}
+.app-state-container .single-btn-modal.active {
+  display: block;
+  width: 125%;
+  font-size: 20px;
+  overflow: hidden;
+  border-radius: 4px;
+  background-color: var(--primary-color-white);
+  box-shadow: 0 1px 3px 1px rgba(66, 66, 66, 0.2),
+    0 2px 8px 4px rgba(66, 66, 66, 0.1);
+}
+
+.app-state-container .single-btn-modal.ios {
+  border-radius: 14px;
+  background-color: var(--pop-up-bg-color-ios);
+}
+
+.app-state-container.active .single-btn-modal {
+  transition-property: width font-size;
+  transition-duration: var(--transition-duration);
+  transition-timing-function: var(--transition-timing-function);
+  width: 100%;
+  font-size: 16px;
+}
+
+.app-state-container .single-btn-modal > p {
+  font-size: 1em;
+  padding: 32px 24px;
+}
+
+.app-state-container .single-btn-modal > button {
+  display: block;
+  color: var(--primary-color-blue);
+  font-size: 1em;
+  width: 100%;
+  height: 3.25em;
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+  background-color: var(--primary-color-white);
+  border: none;
+  border-top: 1px solid var(--line-color);
+}
+
+.app-state-container .single-btn-modal.ios > button {
+  color: var(--pop-up-text-color-ios);
+  background-color: var(--pop-up-bg-color-ios);
+  border-top: 1px solid var(--pop-up-line-color-ios);
+}
+
+.loading-container {
+  display: none;
+}
+
+.loading-container.active {
+  display: block;
 }
 
 @keyframes ldio-s5ugu8dwj4l {

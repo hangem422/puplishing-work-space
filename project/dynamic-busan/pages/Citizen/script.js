@@ -6,8 +6,7 @@ import AgreeTerms from '../../src/js/component/AgreeTerms';
 import PageSlider from '../../src/js/layout/PageSlider';
 import StackSlider from '../../src/js/layout/StackSlider';
 import TextPost, { contentParser } from '../../src/js/layout/TextPost';
-import Loading from '../../src/js/component/Loading';
-import Modal from '../../src/js/component/SingleBtnModal';
+import AppState from '../../src/js/component/AppState';
 
 import data from './data.json';
 import './style.css';
@@ -44,15 +43,14 @@ let sessionUUID = ''; // API 서버에서 VC를 받기 위한 Session UUID
 let rrnInvalidCount = 0; // 주민번호 불일치 횟수
 
 const router = new Router(); // Callback으로 동작하는 라우터를 생성합니다.
-const loading = new Loading(); // 로딩과 모달 컴포넌트를 생성합니다.
-const modal = new Modal();
+const appState = new AppState(); // 로딩과 모달 컴포넌트를 생성합니다.
 
 // 에러 발생시 에러 모달을 보여주는 함수입니다.
 const errorFunc = {
-  // 확인 버튼 클릭 시 로딩 헤제
-  showModal: (message) => modal.show(message, () => loading.hide()),
+  // 확인 버튼 클릭 시 로딩 해제
+  showModal: (message) => appState.showModal(message, () => appState.hide()),
   // 확인 버튼 클릭시 프로세스 실패
-  fail: (message) => modal.show(message, () => fail()),
+  fail: (message) => appState.showModal(message, () => fail()),
 };
 
 /* ------------- */
@@ -65,13 +63,13 @@ const errorFunc = {
  * @returns {Promise<void>} 네트워크 요청 비동기 객체
  */
 function sendVpToApi(vp) {
-  if (!loading.state) loading.show();
+  // if (!appState.state) appState.showLoading();
 
   // HTTP Status가 200이 아니면 전부 에러 처리합니다.
   return post({ url: SEND_VP_API_URL, data: { vp }, strict: true })
     .then((res) => {
       sessionUUID = res;
-      loading.hide();
+      appState.hide();
       router.redirect('certification');
     })
     .catch(() => errorFunc.fail(ERROR_MESSAGE_02));
@@ -83,7 +81,7 @@ function sendVpToApi(vp) {
  * @returns {Promise<void>} 네트워크 요청 비동기 객체
  */
 function getVcFromApi(rrn) {
-  if (!loading.state) loading.show();
+  // if (!appState.state) appState.showLoading();
 
   return get({
     url: GET_VC_API_URL,
@@ -124,7 +122,7 @@ window.sendVpToApi = (vp) => sendVpToApi(vp);
  * @description 이용 약관 동의 버튼 클릭 이벤트 콜백 함수
  */
 function termsOfUseSubmit() {
-  if (!loading.state) loading.show();
+  // if (!appState.state) appState.showLoading();
   requestVP('window.sendVpToApi', () => errorFunc.showModal(ERROR_MESSAGE_01));
 }
 
@@ -134,9 +132,9 @@ function termsOfUseSubmit() {
  * @param {() => void)} incorrectRrnCallback 입력받은 주민 등록번호가 불일치 할 시 콜백 함수
  */
 function certificationSubmit(rrn, incorrectRrnCallback) {
-  if (!loading.state) loading.show();
+  // if (!appState.state) appState.showLoading();
 
-  // sessionUUID를 발급받은 저깅 없으면 GET 요청을 보낼 수 없습니다.
+  // sessionUUID를 발급받은 적이 없으면 GET 요청을 보낼 수 없습니다.
   if (!sessionUUID) {
     errorFunc.showModal(ERROR_MESSAGE_01);
     return;
@@ -332,7 +330,7 @@ if (window) {
       while (stackSlider.current !== 0) stackSlider.movePrev();
     });
 
-    appendAllChild(root, [loading.element, modal.element, stackSlider.element]);
+    appendAllChild(root, [appState.element, stackSlider.element]);
 
     // 약관 데이터를 파싱합니다.
     termData = data.map((term) => {

@@ -70,6 +70,8 @@ class AppState {
       this.element.classList.add(ACTIVE_POPUP_CLASS);
     } else if (!this.state && containClass) {
       this.element.classList.remove(ACTIVE_POPUP_CLASS);
+      this.loading.classList.remove(ACTIVE_POPUP_CLASS);
+      this.modal.classList.remove(ACTIVE_POPUP_CLASS);
     }
   }
 

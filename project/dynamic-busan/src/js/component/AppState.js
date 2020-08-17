@@ -56,67 +56,41 @@ class AppState {
   }
 
   /**
-   * @description App State 컴포넌트 사용 여부를 설정합니다.
-   * @param {boolean} state 사용 여부
-   */
-  setState(state) {
-    if (!this.element) return;
-
-    this.state = state;
-
-    // 모달이 스타일을 변경합니다.
-    const containClass = this.element.classList.contains(ACTIVE_POPUP_CLASS);
-    if (this.state && !containClass) {
-      this.element.classList.add(ACTIVE_POPUP_CLASS);
-    } else if (!this.state && containClass) {
-      this.element.classList.remove(ACTIVE_POPUP_CLASS);
-      this.loading.classList.remove(ACTIVE_POPUP_CLASS);
-      this.modal.classList.remove(ACTIVE_POPUP_CLASS);
-    }
-  }
-
-  /**
    * @description 싱글 버튼 모달 컴포넌트 구성
    * @param {string} text 모달 텍스트
    * @param {() => void} 모달 버튼의 온 클릭 이벤트 콜백함수
    */
   showModal(text = '', onClick = () => {}) {
-    this.setState(true);
+    this.element.classList.add(ACTIVE_POPUP_CLASS);
     this.modal.classList.add(ACTIVE_POPUP_CLASS);
     this.loading.classList.remove(ACTIVE_POPUP_CLASS);
 
-    // 모달이 보여져야 한다면, 텍스트와 온 클릭 함수를 적용합니다.
-    if (this.state) {
-      this.text.innerHTML = text;
-      // 기존 이벤트 리스너를 제거합니다.
-      this.btn.removeEventListener('click', this.onClick);
-      // 새로운 온클릭 리스너를 지정합니다.
-      this.onClick = () => {
-        onClick();
-        this.hide();
-      };
-      this.btn.addEventListener('click', this.onClick);
-    }
+    this.text.innerHTML = text;
+    // 기존 이벤트 리스너를 제거합니다.
+    this.btn.removeEventListener('click', this.onClick);
+    // 새로운 온클릭 리스너를 지정합니다.
+    this.onClick = () => {
+      onClick();
+      this.hideModal();
+    };
+    this.btn.addEventListener('click', this.onClick);
   }
 
   /**
    * @description 로딩 컴포넌트 구성
    */
   showLoading() {
-    this.setState(true);
+    this.element.classList.add(ACTIVE_POPUP_CLASS);
     this.loading.classList.add(ACTIVE_POPUP_CLASS);
 
-    this.use = this.state;
+    this.use = true;
   }
 
-  hide() {
-    this.setState(false);
+  hideModal() {
+    this.element.classList.remove(ACTIVE_POPUP_CLASS);
+    this.modal.classList.remove(ACTIVE_POPUP_CLASS);
+    this.loading.classList.remove(ACTIVE_POPUP_CLASS);
   }
 }
 
 export default AppState;
-
-/**
- * @todo 로딩이 왜 마음대로 안되는지 찾아보기
- * @todo 배경화면을 설정하는 기능로만 사용
- */

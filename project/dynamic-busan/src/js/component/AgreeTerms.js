@@ -45,7 +45,7 @@ class AgreeTerms {
     this.onClick = options.onClick || function () {};
     this.onDetail = options.onDetail || function () {};
 
-    // 전체 동의 번튼을 생성합니다.
+    // 전체 동의 버튼을 생성합니다.
     this.agreeAllBtn = createAgreeAllBtn();
     this.agreeAllBtn.addEventListener('click', () => {
       this.changeAll();

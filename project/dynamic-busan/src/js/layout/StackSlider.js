@@ -85,7 +85,7 @@ class StackSlider {
   }
 
   /**
-   * @description Stack Slider Element를 랜더합니다.
+   * @description Stack Slider Element를 렌더합니다.
    * @param {HTMLLIElement[]} pageList Page Slider에 들어갈 Page들의 리스트
    */
   render(pageList) {

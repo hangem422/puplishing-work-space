@@ -62,7 +62,7 @@ function createListBoardPage(nextPageFunc) {
     return prev.concat(container);
   }, []);
 
-  // List Board Paga를 반환합니다.
+  // List Board Page를 반환합니다.
   return new ListBoard('notice-board', itemList, nextPageFunc).element;
 }
 

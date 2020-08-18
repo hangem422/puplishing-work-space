@@ -3,6 +3,7 @@
 @import './base/base.css';
 @import './base/typography.css';
 
+@import './component/appState.css';
 @import './component/button.css';
 @import './component/textfield.css';
 @import './component/board.css';
@@ -11,5 +12,3 @@
 @import './component/post.css';
 @import './component/agree-terms.css';
 @import './component/secret-textfield.css';
-@import './component/loading.css';
-@import './component/modal.css';

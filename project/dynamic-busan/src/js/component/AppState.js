@@ -71,7 +71,7 @@ class AppState {
     // 새로운 온클릭 리스너를 지정합니다.
     this.onClick = () => {
       onClick();
-      this.hide();
+      this.hideModal();
     };
     this.btn.addEventListener('click', this.onClick);
   }
@@ -82,12 +82,11 @@ class AppState {
   showLoading() {
     this.element.classList.add(ACTIVE_POPUP_CLASS);
     this.loading.classList.add(ACTIVE_POPUP_CLASS);
-    this.modal.classList.remove(ACTIVE_POPUP_CLASS);
 
     this.use = true;
   }
 
-  hide() {
+  hideModal() {
     this.element.classList.remove(ACTIVE_POPUP_CLASS);
     this.modal.classList.remove(ACTIVE_POPUP_CLASS);
     this.loading.classList.remove(ACTIVE_POPUP_CLASS);

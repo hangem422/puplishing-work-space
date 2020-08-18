@@ -22,7 +22,7 @@ const IS_IOS = Boolean(
 );
 
 /**
- * @description AA 방급을 위한 VP를 keepin에 요청
+ * @description AA 발급을 위한 VP를 keepin에 요청
  * @param {string} funcName 콜백 함수 이름
  * @param {() => void} invalidFunc JS Call Interface 사용 환경이 아닐 때 예외 처리 함수
  */
@@ -55,12 +55,12 @@ export function issuedVC(vcListJson, invalidFunc = () => {}) {
       vcListJson,
     );
   }
-  // 유효하지 않은 환경일때 예외 처리
+  // 유효하지 않은 환경일 때 예외 처리
   else invalidFunc();
 }
 
 /**
- * @description AA에서 발급 실패함수
+ * @description AA에서 발급 실패 함수
  * @param {() => void} invalidFunc JS Call Interface 사용 환경이 아닐 때 예외 처리 함수
  */
 export function fail(invalidFunc = () => {}) {

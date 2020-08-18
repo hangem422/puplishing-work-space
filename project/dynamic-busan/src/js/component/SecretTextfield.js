@@ -24,7 +24,7 @@ function parsingType(type) {
 }
 
 /**
- * @description 압력값이 보이지 않는 Textfield 컴포넌트
+ * @description 입력값이 보이지 않는 Textfield 컴포넌트
  * @property {string} text 실제 입력된 문자열
  * @property {number} max 최대 입력될 수 있는 문자열 길이
  * @property {(char: string) => boolean} validateCharFunc 입력한 문자가 유효한 문자인지 검증하는 함수
@@ -86,7 +86,7 @@ class SecretTextfield {
     );
 
     this.input.addEventListener('keyup', (event) => {
-      // backspace 입력시 문자 삭제
+      // backspace 입력 시 문자 삭제
       if (event.keyCode === 8) this.deleteChar();
       // 허용 범위의 키가 입력됐을 시 문자 추가
       else if (event.target.value.length > this.text.length) {
@@ -124,7 +124,7 @@ class SecretTextfield {
 
   /**
    * @description 문자를 추가합니다.
-   * @param {string} char 추가할 문자
+   * @param {string} char 추가 할 문자
    */
   addChar(char) {
     if (this.validateCharFunc(char) && this.text.length < this.max) {
@@ -134,7 +134,7 @@ class SecretTextfield {
       }
 
       this.text += char;
-      // NOTE: Type이 text와 number일 떄만 고려했습니다.
+      // NOTE: Type이 text와 number일 때만 고려했습니다.
       this.input.value += 0;
       this.secret.appendChild(circleIcon(14, '#0056d0'));
 

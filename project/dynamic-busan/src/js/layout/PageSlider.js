@@ -1,7 +1,7 @@
 import { createElement } from '../util/dom';
 
 /**
- * @description Page Slider Element를 랜더할 수 있는 클래스
+ * @description Page Slider Element를 렌더할 수 있는 클래스
  * @property {string} separatorClass 다른 Page Slider와 구분할 수 있는 고유 class
  * @property {HTMLLIElement} element Page Slider Element
  * @property {number} size Page Slider Element에 추가된 총 페이지 수
@@ -72,7 +72,7 @@ class PageSlider {
   }
 
   /**
-   * @description Page Slider Element를 랜더합니다.
+   * @description Page Slider Element를 렌더합니다.
    * @param {HTMLLIElement[]} pageList Page Slider에 들어갈 Page들의 리스트
    */
   render(pageList) {

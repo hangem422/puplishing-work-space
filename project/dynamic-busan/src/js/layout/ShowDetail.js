@@ -29,7 +29,7 @@ class ShowDetail {
   }
 
   /**
-   * @description 약관 데이터 세부화면의 빈화면을 보여줍니다.
+   * @description 약관 데이터 세부 화면의 빈 화면을 보여줍니다.
    * @param {HTMLLIElement} details
    */
   makeDisplayNone(details) {

@@ -9,7 +9,13 @@ const TITLE = '사원 정보를 입력 후 요청을 진행하세요.';
 const INPUT_MIN_LENGTH = 2;
 const INPUT_MAX_LENGTH = 12;
 
-function createRequestPage(notice) {
+/**
+ * @description 사원증 발급 페이지를 생성합니다.
+ * @param {string[]} notice 유의 사항 문자열 리스트
+ * @param {(department: string, position: string) => void} submitFunc 사원증 발급 요청
+ * @returns {[HTMLElement, () => void]} 사원증 발급 페이지와 초기화 함수
+ */
+function createRequestPage(notice, submitFunc) {
   /* ------------ */
   /*  Create View */
   /* ------------ */
@@ -96,7 +102,10 @@ function createRequestPage(notice) {
     function validValue(str) {
       return str.length >= INPUT_MIN_LENGTH && str.length <= INPUT_MAX_LENGTH;
     }
-    if (validValue(departInput.value) && validValue(positionInput.value)) {
+    if (
+      validValue(departInput.value) && // 근무 부서가 올바른 포멧이여야 합니다.
+      validValue(positionInput.value) // 직위가 올바른 포멧이여야 합니다.
+    ) {
       submitElement.removeAttribute('disabled');
     } else {
       submitElement.setAttribute('disabled', 'disabled');
@@ -107,9 +116,9 @@ function createRequestPage(notice) {
    * @description 사원증 발급 요청 페이지 초가화 함수
    */
   function initPage() {
-    departInput.value = '';
-    positionInput.value = '';
-    setActiveSubmitBtn();
+    departInput.value = ''; // 근무 부서 인풋 초기화
+    positionInput.value = ''; // 직위 인풋 초기화
+    setActiveSubmitBtn(); // 사원증 발급 요청 버튼 초기화
   }
 
   /* ------------------------- */
@@ -118,6 +127,9 @@ function createRequestPage(notice) {
 
   departInput.addEventListener('keyup', setActiveSubmitBtn);
   positionInput.addEventListener('keyup', setActiveSubmitBtn);
+  submitElement.addEventListener('click', () =>
+    submitFunc(departInput.value, positionInput.value),
+  );
 
   return [requestPage, initPage];
 }

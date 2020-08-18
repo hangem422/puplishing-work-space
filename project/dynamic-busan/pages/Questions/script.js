@@ -56,7 +56,7 @@ if (window) {
     // Page를 Render할 Element를 가져옵니다.
     const root = document.getElementsByClassName('root')[0];
 
-    // Drawer Board에 들어갈 Item List 생성합니다.
+    // Drawer Board에 들어갈 Item List를 생성합니다.
     const itemList = data.reduce((prev, cur) => {
       const header = createItemHeader(cur.title);
       const content = createItemContent(cur.content);

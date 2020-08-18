@@ -49,7 +49,7 @@ function createEmptyPage() {
  * @returns {HTMLElement} List Board Page
  */
 function createListBoardPage() {
-  // List의 내부를 구성 Element를 만듭니다.
+  // List의 내부를 구성하는 Element를 만듭니다.
   const itemList = data.reduce((prev, cur) => {
     const { title, enforceDate } = cur;
     const titleElement = createElement('p', {
@@ -72,7 +72,7 @@ function createListBoardPage() {
   }, []);
 
   /**
-   * @description 리스트 클릭시 상세페이지로 이동하는 함수입니다.
+   * @description 리스트 클릭 시 상세 페이지로 이동하는 함수입니다.
    * @param {number} index 리스트에서 선택한 항목의 인덱스 값
    */
   const nextPageFunc = (index) => {
@@ -81,7 +81,7 @@ function createListBoardPage() {
     else router.redirect('/detail', { index });
   };
 
-  // List Board Paga를 반환합니다.
+  // List Board Page를 반환합니다.
   return new ListBoard('term-board', itemList, nextPageFunc);
 }
 
@@ -92,7 +92,7 @@ function createListBoardPage() {
  * @return {HTMLLIElement} Date Element
  */
 function createFooterElement(notice, enforce) {
-  // Component Element를 생성합니다.
+  // 컴포넌트 Element를 생성합니다.
   const noticeElement = createElement('li', { child: notice });
   const enforceElement = createElement('li', { child: enforce });
   return createElement('ul', {

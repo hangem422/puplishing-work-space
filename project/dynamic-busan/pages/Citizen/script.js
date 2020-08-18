@@ -20,14 +20,14 @@ const SEND_VP_API_URL = '/api/v1/request_required_vp';
 const GET_VC_API_URL = '/api/v1/issue_vc';
 
 const ERROR_MESSAGE_01 = '유효하지 않은 환경에서 실행할 수 없습니다.';
-const ERROR_MESSAGE_02 = '오류가 발생했습니다. 잠시 후에 다시 시도해주세요.';
+const ERROR_MESSAGE_02 = '오류가 발생했습니다. 잠시 후에 다시 시도 해주세요.';
 const ERROR_MESSAGE_03 =
-  '모바일 가족사랑카드 발급대상이 아닙니다. 모바일 가족사랑카드는 주소지가 부산광역시면서, 주민등록본에 부 또는 모와 세 자녀 이상이 같이 되어있는 가정의 부모만 발급받을 수 있습니다.';
+  '모바일 가족사랑 카드 발급대상이 아닙니다. 모바일 가족사랑 카드는 주소지가 부산광역시면서, 주민등록본에 부 또는 모와 세 자녀 이상이 같이 되어있는 가정의 부모만 발급받을 수 있습니다.';
 const ERROR_MESSAGE_04 =
-  '입력하신 주민등록번호가 유요하지 않습니다. 주민등록번호를 확인 후 다시 시도해주세요.';
+  '입력하신 주민등록번호가 유효하지 않습니다. 주민등록번호를 확인 후 다시 시도해주세요.';
 
 const TERM_OF_USE_DOC_TITLE = '약관동의';
-const TERM_OF_USE_TITLE = '부산시민카드를 발급하기 위해 약관을 확인해주세요.';
+const TERM_OF_USE_TITLE = '부산시민 카드를 발급하기 위해 약관을 확인 해주세요.';
 
 const CERTIFICATION_DOC_TITLE = '부산시민 인증';
 const CERTIFICATION_TITLE = '주민등록번호를 이용해 인증을 해주세요.';
@@ -35,21 +35,21 @@ const CERTIFICATION_LABEL = '주민등록번호 뒷자리(7자리 숫자)';
 const CERTIFICATION_PLACEHOLDER = '주민등록번호 뒷자리 숫자를 입력하세요.';
 
 const INVALID_RRN_MESSAGE =
-  '입력하신 주민등록번호가 일치하지 않습니다.\n다시 시도해주세요';
+  '입력하신 주민등록번호가 일치하지 않습니다.\n다시 시도해주세요';
 
 let termData = data;
 
 let sessionUUID = ''; // API 서버에서 VC를 받기 위한 Session UUID
-let rrnInvalidCount = 0; // 주민번호 불일치 횟수
+let rrnInvalidCount = 0; // 주민등록번호 불일치 횟수
 
 const router = new Router(); // Callback으로 동작하는 라우터를 생성합니다.
 const appState = new AppState(); // 로딩과 모달 컴포넌트를 생성합니다.
 
-// 에러 발생시 에러 모달을 보여주는 함수입니다.
+// 에러 발생 시 에러 모달을 보여주는 함수입니다.
 const errorFunc = {
   // 확인 버튼 클릭 시 로딩 해제
   showModal: (message) => appState.showModal(message, () => appState.hide()),
-  // 확인 버튼 클릭시 프로세스 실패
+  // 확인 버튼 클릭 시 프로세스 실패
   fail: (message) => appState.showModal(message, () => fail()),
 };
 
@@ -59,7 +59,7 @@ const errorFunc = {
 
 /**
  * @description Api 서버로 VP를 전달합니다.
- * @param {string} vp AA VC 밝급을 위한 VP
+ * @param {string} vp AA VC 발급을 위한 VP
  * @returns {Promise<void>} 네트워크 요청 비동기 객체
  */
 function sendVpToApi(vp) {
@@ -76,8 +76,8 @@ function sendVpToApi(vp) {
 }
 
 /**
- * @description Api 서버에 주민번호 입력 후, vc를 받아옵니다.
- * @param {string} rrn 입력받은 주민 등록번호 뒷자리
+ * @description Api 서버에 주민번호 입력 후, VC를 받아옵니다.
+ * @param {string} rrn 입력받은 주민등록번호 뒷자리
  * @returns {Promise<void>} 네트워크 요청 비동기 객체
  */
 function getVcFromApi(rrn) {
@@ -90,7 +90,7 @@ function getVcFromApi(rrn) {
     strict: false,
   })
     .then((res) => {
-      // 요청 성공시 vcs 문자열을 받습니다.
+      // 요청 성공 시 VCS 문자열을 받습니다.
       if (typeof res === 'string') {
         issuedVC(res, () => errorFunc(ERROR_MESSAGE_01));
       }
@@ -114,8 +114,8 @@ function getVcFromApi(rrn) {
 /*  Submit Button Onclick Callback  */
 /* -------------------------------- */
 
-// NOTE: keepin에서 전역 함수를 실행시켜야하는데 Webpack을 실행시키면 스코프로 감싸지기에 전역 함수 선언이 힘들다.
-// NOTE: 이를 해결하기위해 Window 객체에 넣어서, 전역함수화 시킵니다.
+// NOTE: keepin에서 전역 함수를 실행 시켜야 하는데 Webpack을 실행시키면 스코프로 감싸지기에 전역 함수 선언이 힘듭니다.
+// NOTE: 이를 해결하기 위해 Window 객체에 넣어서, 전역 함수화 시킵니다.
 window.sendVpToApi = (vp) => sendVpToApi(vp);
 
 /**
@@ -128,8 +128,8 @@ function termsOfUseSubmit() {
 
 /**
  * @description 인증하기 버튼 클릭 이벤트 콜백 함수
- * @param {string} rrn 입력받은 주민 등록번호 뒷자리
- * @param {() => void)} incorrectRrnCallback 입력받은 주민 등록번호가 불일치 할 시 콜백 함수
+ * @param {string} rrn 입력받은 주민등록번호 뒷자리
+ * @param {() => void)} incorrectRrnCallback 입력받은 주민등록번호가 불일치할 시 콜백 함수
  */
 function certificationSubmit(rrn, incorrectRrnCallback) {
   if (!appState.state) appState.showLoading();
@@ -142,7 +142,7 @@ function certificationSubmit(rrn, incorrectRrnCallback) {
 
   const rrnInvalidCountTemp = rrnInvalidCount;
   getVcFromApi(rrn).then(() => {
-    // 주민 번호 불일치 오류 시 콜백 함수를 실행합니다.
+    // 주민등록번호 불일치 오류 시 콜백 함수를 실행합니다.
     if (rrnInvalidCountTemp < rrnInvalidCount) incorrectRrnCallback();
   });
 }
@@ -169,13 +169,13 @@ function converDate(date) {
 /* -------------- */
 
 /**
- * @description 약관 Footer Element 생성합니다.
+ * @description 약관 Footer Element를 생성합니다.
  * @param {string} notice 약관 고지일
  * @param {string} enforce 약관 시행일
  * @return {HTMLLIElement} Footer Element
  */
 function createTermDetailFooter(notice, enforce) {
-  // Component Element를 생성합니다.
+  // 컴포넌트 Element를 생성합니다.
   const noticeElement = createElement('li', { child: notice });
   const enforceElement = createElement('li', { child: enforce });
   return createElement('ul', {
@@ -185,11 +185,11 @@ function createTermDetailFooter(notice, enforce) {
 }
 
 function createTermsOfUsePage() {
-  // 약관 동의 페이지를 구성할 Layout Component들을 생성합니다.
+  // 약관 동의 페이지를 구성할 Layout 컴포넌트들을 생성합니다.
   const pageSlider = new PageSlider('terms-and-condition');
   const textPost = new TextPost();
 
-  // 약관 동의 페이지를 구성할 일반 Componenet들을 생성합니다.
+  // 약관 동의 페이지를 구성할 일반 컴포넌트들을 생성합니다.
   const agreeTerms = new AgreeTerms(
     termData.map((term) => term.title),
     { title: TERM_OF_USE_TITLE },
@@ -211,7 +211,7 @@ function createTermsOfUsePage() {
   // 약관 동의 이벤트들을 설정합니다.
   /**
    * @description 약관을 전부 동의하지 않으면 확인 버튼을 누를 수 없습니다.
-   * @param {boolean} isDone 약관 전체를 동의 했는지 여부
+   * @param {boolean} isDone 약관 전체를 동의했는지 여부
    */
   agreeTerms.onClick = (isDone) => {
     if (isDone) submit.removeAttribute('disabled');
@@ -250,7 +250,7 @@ function createTermsOfUsePage() {
 }
 
 function createCertificationPage() {
-  // 인증 페이지를 구성할 일반 Componenet들을 생성합니다.
+  // 인증 페이지를 구성할 일반 컴포넌트들을 생성합니다.
   const title = createElement('p', {
     class: 'font-text-body1 font-color-dark',
     child: CERTIFICATION_TITLE,
@@ -312,7 +312,7 @@ if (window) {
     const termsOfUsePage = createTermsOfUsePage();
     const certificationPage = createCertificationPage();
 
-    // 전체 페이지들에 대한 Layout Component를 생성합니다.
+    // 전체 페이지들에 대한 Layout 컴포넌트를 생성합니다.
     const stackSlider = new StackSlider('family-card');
     stackSlider.addPage(termsOfUsePage.element);
     stackSlider.addPage(certificationPage);

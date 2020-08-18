@@ -4,9 +4,9 @@ const ACTIVE_ELEMENT_CLASS = 'active';
 const INIT_CONTENT_HEIGHT = '0px';
 
 /**
- * @description Drawer Board Element를 랜더할 수 있는 클래스
+ * @description Drawer Board Element를 렌더할 수 있는 클래스
  * @property {string} separatorClass 다른 DrawerBoard와 구분할 수 있는 고유 class
- * @property {HTMLLIElement | undefined} active 현재 활성화된 Item
+ * @property {HTMLLIElement | undefined} active 현재 활성화 된 Item
  * @property {HTMLLIElement} element DrawerBoard Element
  */
 class DrawerBoard {
@@ -43,7 +43,7 @@ class DrawerBoard {
    * @param {HTMLLIElement} element 활성화시킬 Item
    */
   changeActive(element) {
-    // 현재 활성화된 Item을 해지합니다.
+    // 현재 활성화 된 Item을 해지합니다.
     if (this.active) this.deleteActive();
 
     // 파라미터로 전달받은 element를 활성화합니다.
@@ -59,7 +59,7 @@ class DrawerBoard {
    */
   createItemOnClick(item) {
     return () => {
-      // 이미 활성화된 상태이면 활성화를 헤지합니다.
+      // 이미 활성화된 상태이면 활성화를 해지합니다.
       if (item.classList.contains(ACTIVE_ELEMENT_CLASS)) this.deleteActive();
       // 활성화 상태가 아니면 활성화된 List Item을 교체합니다.
       else this.changeActive(item);
@@ -91,7 +91,7 @@ class DrawerBoard {
       style: `height: ${INIT_CONTENT_HEIGHT};`,
     });
 
-    // Note: content의 높이를 저장해서 쓰면, Web Font가 로드되기 전과 후의 높이가 달라져서 문제가 발생합니다.
+    // Note: content의 높이를 저장해서 쓰면, Web Front가 로드되기 전과 후의 높이가 달라져서 문제가 발생합니다.
     // Note: dummyForHeight를 보이지 않는 곳에 만들고 그 높이를 가져와 content의 높이를 확장할 때 사용합니다.
     const dummyForHeight = contentContainer.cloneNode(true);
     dummyForHeight.classList.add('item-dummy');
@@ -104,7 +104,7 @@ class DrawerBoard {
     });
     container.addEventListener('click', this.createItemOnClick(container));
 
-    // 내용 클릭시에는 이벤트가 동작하지 않게 이벤트 버블링을 막습니다.
+    // 내용 클릭 시에는 이벤트가 동작하지 않게 이벤트 버블링을 막습니다.
     contentContainer.addEventListener('click', (event) =>
       event.stopPropagation(),
     );
@@ -113,7 +113,7 @@ class DrawerBoard {
   }
 
   /**
-   * @description DrawerBoard Element를 랜더합니다.
+   * @description DrawerBoard Element를 렌더합니다.
    * @param {{ header: HTMLLIElement, content: HTMLLIElement}[]} itmeList DrawerBoard에 들어갈 Item들의 리스트
    */
   render(itmeList) {

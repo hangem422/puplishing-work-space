@@ -82,6 +82,7 @@ class AppState {
   showLoading() {
     this.element.classList.add(ACTIVE_POPUP_CLASS);
     this.loading.classList.add(ACTIVE_POPUP_CLASS);
+    this.modal.classList.remove(ACTIVE_POPUP_CLASS);
 
     this.use = true;
   }

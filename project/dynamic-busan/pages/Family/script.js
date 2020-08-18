@@ -48,15 +48,9 @@ const appState = new AppState(); // 로딩과 모달 컴포넌트를 생성합�
 
 // 에러 발생시 에러 모달을 보여주는 함수입니다.
 const errorFunc = {
-<<<<<<< HEAD
   // 확인 버튼 클릭 시 로딩 헤제
   showModal: (message) => appState.showModal(message),
   // 확인 버튼 클릭시 프로세스 실패
-=======
-  // 확인 버튼 클릭 시 로딩 해제
-  showModal: (message) => appState.showModal(message),
-  // 확인 버튼 클릭 시 프로세스 실패
->>>>>>> 465b169ee4a5e9a422d9c469c1ac96d899b617bc
   fail: (message) => appState.showModal(message, () => fail()),
 };
 

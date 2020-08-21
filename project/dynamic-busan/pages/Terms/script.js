@@ -1,125 +1,18 @@
-import { createElement, wrapping } from '../../src/js/util/dom';
 import Router from '../../src/js/module/RouterWithCB';
-import { emptyAlarmImage } from '../../src/js/component/Image';
-import { moreRight } from '../../src/js/component/Icon';
 import PageSlider from '../../src/js/layout/PageSlider';
-import ListBoard from '../../src/js/layout/ListBoard';
-import TextPost, { contentParser } from '../../src/js/layout/TextPost';
-import ShowDetail from '../../src/js/layout/ShowDetail';
 
 import './style.css';
 import data from './data.json';
 
+import createEmptyPage from './comp/Empty';
+import createListBoardPage from './comp/Board';
+import createDetailPage from './comp/Detail';
+
 const DOCUMENT_TITLE = '이용약관';
-const EMPTY_PAGE_TEXT = '아직 등록된 이용약관이 없습니다.';
 
 // Callback으로 동작하는 라우터를 생성합니다.
 const router = new Router();
 
-/**
- * @description YYYY.MM.DD를 YYYY년 MM월 DD일로 변경합니다.
- * @param {string} date YYYY.MM.DD
- * @returns {string} YYYY년 MM월 DD일
- */
-function convertDate(date) {
-  const dateArr = date.split('.');
-  dateArr[0] = `${dateArr[0]}년`;
-  dateArr[1] = dateArr[1].length < 2 ? `0${dateArr[1]}월` : `${dateArr[1]}월`;
-  dateArr[2] = dateArr[2].length < 2 ? `0${dateArr[2]}일` : `${dateArr[2]}일`;
-  return dateArr.join(' ');
-}
-
-/**
- * @description 이용 약관이 없을 시 빈 페이지를 생성합니다.
- * @returns {HTMLElement} 빈 화면 Element
- */
-function createEmptyPage() {
-  // Component Element를 생성합니다.
-  const image = emptyAlarmImage();
-  const text = createElement('div', {
-    class: 'font-text-body1 font-color-light empty-page-text',
-    child: EMPTY_PAGE_TEXT,
-  });
-
-  return wrapping('empty-page', [image, text]);
-}
-
-/**
- * @description Json 데이터를 기반으로 이용약관 리스트 페이지를 생성합니다.
- * @returns {HTMLElement} List Board Page
- */
-function createListBoardPage() {
-  // List의 내부를 구성하는 Element를 만듭니다.
-  const itemList = data.reduce((prev, cur) => {
-    const { title, enforceDate } = cur;
-    const titleElement = createElement('p', {
-      class: 'font-text-body1 font-medium font-color-dark',
-      child: title,
-    });
-    const dateElement = createElement('p', {
-      class: 'font-number-body3 font-color-regular',
-      child: `시행일 ${enforceDate}`,
-    });
-    const textWrapper = createElement('div', {
-      class: 'header-custom-text',
-      child: [titleElement, dateElement],
-    });
-    const container = createElement('div', {
-      class: 'header-custom-content row',
-      child: [textWrapper, moreRight(16, '#E5E5E5')],
-    });
-    return prev.concat(container);
-  }, []);
-
-  /**
-   * @description 리스트 클릭 시 상세 페이지로 이동하는 함수입니다.
-   * @param {number} index 리스트에서 선택한 항목의 인덱스 값
-   */
-  const nextPageFunc = (index) => {
-    // 링크가 있는 약관이면 링크로 리다이렉션 시킵니다.
-    if (data[index].link) window.location.href = data[index].link;
-    else router.redirect('/detail', { index });
-  };
-
-  // List Board Page를 반환합니다.
-  return new ListBoard('term-board', itemList, nextPageFunc);
-}
-
-/**
- * @description 약관 Date Element 생성합니다.
- * @param {string} notice 약관 고지일
- * @param {string} enforce 약관 시행일
- * @return {HTMLLIElement} Date Element
- */
-function createFooterElement(notice, enforce) {
-  // 컴포넌트 Element를 생성합니다.
-  const noticeElement = createElement('li', { child: notice });
-  const enforceElement = createElement('li', { child: enforce });
-  return createElement('ul', {
-    class: 'font-text-body2 font-color-dark',
-    child: [noticeElement, enforceElement],
-  });
-}
-
-/**
- * @description 약관 데이터의 세부 내용을 보여줍니다.
- */
-function makeTextPostPage(datas) {
-  const textPostPages = datas.map((term) => {
-    const textPostPage = new TextPost();
-    if (term.link) return textPostPage.element;
-
-    textPostPage.title = term.title;
-    textPostPage.subtitle = `시행일 ${term.enforceDate}`;
-    textPostPage.contents = contentParser({ contents: term.contents });
-    textPostPage.footer = createFooterElement(
-      convertDate(`고지일: ${term.noticeDate}`),
-      convertDate(`시행일: ${term.enforceDate}`),
-    );
-    return textPostPage.element;
-  });
-  return textPostPages;
-}
 /**
  * @description Window Onload Callback
  */
@@ -135,27 +28,31 @@ if (window) {
     }
 
     // Page Slide를 생성합니다.
-    const listBoardPage = createListBoardPage();
-    const textPostPage = makeTextPostPage(data);
-    const showDetail = new ShowDetail('term-detail', textPostPage);
-    const pageSlider = new PageSlider('term-slider', [
-      listBoardPage.element,
-      showDetail.element,
-    ]);
+    const pageSlider = new PageSlider('term-slider');
+    const listBoardPage = createListBoardPage(data, (index) => {
+      // 링크가 있는 약관이면 링크로 리다이렉션 시킵니다.
+      if (data[index].link) window.location.href = data[index].link;
+      else router.redirect('/detail', { index });
+    });
+    pageSlider.addPage(listBoardPage.element);
+
+    root.appendChild(pageSlider.element);
+
+    // 약관 상세 페이지는 랜더에 다소 시간이 걸릴 수 있으니, 마지막에 진행합니다.
+    const detailPage = createDetailPage(data);
+    pageSlider.addPage(detailPage.element);
 
     // 라우터에 함수를 추가합니다.
     router.setRouterFunc('detail', ({ query }) => {
       const index = query.index || 0;
       document.title = data[index].title;
-      showDetail.renderDetail(index);
+      detailPage.renderDetail(index);
       pageSlider.movePage(1);
     });
+
     router.setRouterFunc('default', () => {
       document.title = DOCUMENT_TITLE;
       if (pageSlider.current !== 0) pageSlider.movePage(0);
     });
-
-    // Page Slider에 리스트 페이지와 상세 페이지를 추가합니다.
-    root.appendChild(pageSlider.element);
   };
 }

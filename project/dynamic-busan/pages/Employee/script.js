@@ -3,8 +3,7 @@ import { requestVP, issuedVC, fail } from '../../src/js/util/os';
 import { post, get } from '../../src/js/util/ajax';
 import Router from '../../src/js/module/RouterWithCB';
 import StackSlider from '../../src/js/layout/StackSlider';
-import Loading from '../../src/js/component/Loading';
-import Modal from '../../src/js/component/SingleBtnModal';
+import AppState from '../../src/js/component/AppState';
 
 import data from './data.json';
 import './style.css';
@@ -34,15 +33,14 @@ let vpSessionUUID = '';
 let emailSessionUUID = '';
 
 const router = new Router(); // Callback으로 동작하는 라우터를 생성합니다.
-const loading = new Loading(); // 로딩과 모달 컴포넌트를 생성합니다.
-const modal = new Modal();
+const appState = new AppState(); // 로딩과 모달 컴포넌트를 생성합니다.
 
 // 에러 발생시 에러 모달을 보여주는 함수입니다.
 const errorFunc = {
   // 확인 버튼 클릭 시 로딩 헤제
-  showModal: (message) => modal.show(message, () => loading.hide()),
+  showModal: (message) => appState.showModal(message),
   // 확인 버튼 클릭시 프로세스 실패
-  fail: (message) => modal.show(message, () => fail()),
+  fail: (message) => appState.showModal(message, () => fail()),
 };
 
 /* ------------- */
@@ -55,13 +53,13 @@ const errorFunc = {
  * @returns {Promise<bolean>} 요청 성공 / 실패 여부 반환하는 비동기 객체
  */
 function sendVpToApi(vp) {
-  if (!loading.state) loading.show();
+  appState.showLoading();
 
   // HTTP Status가 200이 아니면 전부 에러 처리합니다.
   return post({ url: SEND_VP_API_URL, data: { vp }, strict: true })
     .then((res) => {
       vpSessionUUID = res;
-      loading.hide();
+      appState.hide();
       return true;
     })
     .catch(() => {
@@ -86,7 +84,7 @@ function sendEmailCert(email) {
     return Promise.resolve(false);
   }
 
-  if (!loading.state) loading.show();
+  appState.showLoading();
 
   return post({
     url: EMAIL_CERT_API_URL,
@@ -97,7 +95,7 @@ function sendEmailCert(email) {
     .then((res) => {
       certEmail = email;
       emailSessionUUID = res.data.referrer_token;
-      loading.hide();
+      appState.hide();
       return true;
     })
     .catch(() => {
@@ -117,7 +115,7 @@ function reSendEmailCert() {
     return Promise.resolve(false);
   }
 
-  if (!loading.state) loading.show();
+  appState.showLoading();
 
   return post({
     url: RE_EMAIL_CERT_API_URL,
@@ -126,7 +124,7 @@ function reSendEmailCert() {
   })
     .then((res) => {
       emailSessionUUID = res.data.referrer_token;
-      loading.hide();
+      appState.hide();
       return true;
     })
     .catch(() => {
@@ -147,7 +145,7 @@ function verifyEmailCert(cert) {
     return Promise.resolve(false);
   }
 
-  if (!loading.state) loading.show();
+  appState.showLoading();
 
   return post({
     url: VERIFY_EMAIL_CERT_API_URL,
@@ -158,7 +156,7 @@ function verifyEmailCert(cert) {
     .then((res) => {
       // 이메일 인증 번호 검증 성공
       if (res.data) {
-        loading.hide();
+        appState.hide();
         router.redirect('/request');
         return true;
       }
@@ -218,7 +216,7 @@ if (window) {
     document.title = EMAIL_CERT_PAGE_TITLE;
 
     // VP를 API 서버에 등록 후 시작합니다.
-    loading.show();
+    appState.showLoading();
     requestVP('window.sendVpToApi', () =>
       errorFunc.showModal(MODAL_INVALID_ENV),
     );
@@ -257,6 +255,6 @@ if (window) {
       initRequestPage();
     });
 
-    appendAllChild(root, [loading.element, modal.element, stackSlider.element]);
+    appendAllChild(root, [appState.element, stackSlider.element]);
   };
 }

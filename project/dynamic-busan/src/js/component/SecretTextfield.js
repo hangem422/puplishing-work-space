@@ -122,6 +122,10 @@ class SecretTextfield {
     }
   }
 
+  deleteAll() {
+    while (this.text.length > 0) this.deleteChar();
+  }
+
   /**
    * @description 문자를 추가합니다.
    * @param {string} char 추가 할 문자

@@ -30,10 +30,14 @@ class AppState {
     });
     this.btn.addEventListener('click', this.onClick);
 
-    this.modal = createElement('div', {
+    const modal = createElement('div', {
       class: `single-btn-modal ${isIOS() ? 'ios' : ''}`,
       child: [this.text, this.btn],
     });
+    this.modalWrapper = createElement('div', {
+      class: 'app-state-wrapper modal-wrapper',
+      child: modal,
+    })
 
     const wings = [...Array(12)].map(() => document.createElement('div'));
     const wingWrapper = createElement('div', {
@@ -44,14 +48,14 @@ class AppState {
       class: 'loadingio-spinner-spinner-bv4ofojvnw',
       child: wingWrapper,
     });
-    this.loading = createElement('div', {
-      class: 'loading-container',
+    this.loadingWrapper = createElement('div', {
+      class: 'app-state-wrapper loading-wrapper',
       child: load,
     });
 
     this.element = createElement('div', {
       class: 'app-state-container',
-      child: [this.loading, this.modal],
+      child: [this.loadingWrapper, this.modalWrapper],
     });
   }
 
@@ -62,8 +66,8 @@ class AppState {
    */
   showModal(text = '', onClick = () => {}) {
     this.element.classList.add(ACTIVE_POPUP_CLASS);
-    this.modal.classList.add(ACTIVE_POPUP_CLASS);
-    this.loading.classList.remove(ACTIVE_POPUP_CLASS);
+    this.modalWrapper.classList.add(ACTIVE_POPUP_CLASS);
+    this.loadingWrapper.classList.remove(ACTIVE_POPUP_CLASS);
 
     this.text.innerHTML = text;
     // 기존 이벤트 리스너를 제거합니다.
@@ -81,16 +85,16 @@ class AppState {
    */
   showLoading() {
     this.element.classList.add(ACTIVE_POPUP_CLASS);
-    this.loading.classList.add(ACTIVE_POPUP_CLASS);
-    this.modal.classList.remove(ACTIVE_POPUP_CLASS);
+    this.loadingWrapper.classList.add(ACTIVE_POPUP_CLASS);
+    this.modalWrapper.classList.remove(ACTIVE_POPUP_CLASS);
 
     this.use = true;
   }
 
   hide() {
     this.element.classList.remove(ACTIVE_POPUP_CLASS);
-    this.modal.classList.remove(ACTIVE_POPUP_CLASS);
-    this.loading.classList.remove(ACTIVE_POPUP_CLASS);
+    this.modalWrapper.classList.remove(ACTIVE_POPUP_CLASS);
+    this.loadingWrapper.classList.remove(ACTIVE_POPUP_CLASS);
   }
 }
 

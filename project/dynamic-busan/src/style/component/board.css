@@ -22,7 +22,7 @@
 }
 
 .drawer-board-item .item-header-container::after {
-  transition-property: left right width;
+  transition-property: left, right, width;
   transition-duration: var(--transition-duration-slow);
   transition-timing-function: var(--transition-timing-function);
 }

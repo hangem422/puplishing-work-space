@@ -36,7 +36,6 @@ if (window) {
     });
     pageSlider.addPage(listBoardPage.element);
 
-    // Page Slider에 리스트 페이지와 상세 페이지를 추가합니다.
     root.appendChild(pageSlider.element);
 
     // 약관 상세 페이지는 랜더에 다소 시간이 걸릴 수 있으니, 마지막에 진행합니다.

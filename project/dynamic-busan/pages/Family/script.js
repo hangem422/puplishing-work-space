@@ -1,5 +1,5 @@
 import { appendAllChild } from '../../src/js/util/dom';
-import { requestVP, issuedVC, fail } from '../../src/js/util/os';
+import { requestVP, issuedVC, fail, cancel } from '../../src/js/util/os';
 import { get, post } from '../../src/js/util/ajax';
 import Router from '../../src/js/module/RouterWithCB';
 import PageSlider from '../../src/js/layout/PageSlider';
@@ -39,6 +39,8 @@ const appState = new AppState(); // 로딩과 모달 컴포넌트를 생성합�
 const errorFunc = {
   // 확인 버튼 클릭 시 로딩 헤제
   showModal: (message) => appState.showModal(message),
+  // 확인 버튼 클릭 시 프로세스 취소
+  cancel: (message) => appState.showModal(message, () => cancel()),
   // 확인 버튼 클릭시 프로세스 실패
   fail: (message) => appState.showModal(message, () => fail()),
 };
@@ -108,7 +110,7 @@ function getVcFromApi(rrn, lastChance) {
       }
       // 주민번호 불일치 오류
       if (['E004'].includes(res.message)) {
-        if (lastChance) errorFunc.fail(ERROR_MESSAGE_04);
+        if (lastChance) errorFunc.cancel(ERROR_MESSAGE_04);
         else errorFunc.showModal(ERROR_MESSAGE_04);
         return false;
       }

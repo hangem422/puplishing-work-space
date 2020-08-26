@@ -50,12 +50,39 @@ export function issuedVC(vcListJson, invalidFunc = () => {}) {
     window.KeepinBridge.issuedVC(vcListJson);
   }
   // iOS Javascript Call
+  else if (IS_IOS && window.webkit.messageHandlers.KeepinBridgeIssuedVC) {
+    window.webkit.messageHandlers.KeepinBridgeIssuedVC.postMessage(vcListJson);
+  }
+  // Bridge 이름 통일 전 번전 고려해서 당분간 삽입
   else if (IS_IOS && window.webkit.messageHandlers.MyKeepinBridgeIssuedVC) {
     window.webkit.messageHandlers.MyKeepinBridgeIssuedVC.postMessage(
       vcListJson,
     );
   }
   // 유효하지 않은 환경일 때 예외 처리
+  else invalidFunc();
+}
+
+/**
+ * @description AA에서 발급 취소 함수
+ * @param {() => void} invalidFunc JS Call Interface 사용 환경이 아닐 때 예외 처리 함수
+ */
+export function cancel(invalidFunc = () => {}) {
+  // Android Javascript Call
+  if (IS_ANDROID && window.KeepinBridge.cancel) {
+    window.KeepinBridge.cancel();
+  }
+  // iOS Javascript Call
+  else if (IS_IOS && window.webkit.messageHandlers.KeepinBridgeFail) {
+    // iOS 경우 무조건 String Parameter를 넘겨야합니다.
+    window.webkit.messageHandlers.KeepinBridgeFail.postMessage('');
+  }
+  // Bridge 이름 통일 전 번전 고려해서 당분간 삽입
+  else if (IS_IOS && window.webkit.messageHandlers.MyKeepinBridgeFail) {
+    // iOS 경우 무조건 String Parameter를 넘겨야합니다.
+    window.webkit.messageHandlers.MyKeepinBridgeFail.postMessage('');
+  }
+  // 유효하지 않은 환경일때 예외 처리
   else invalidFunc();
 }
 
@@ -69,8 +96,14 @@ export function fail(invalidFunc = () => {}) {
     window.KeepinBridge.fail();
   }
   // iOS Javascript Call
+  else if (IS_IOS && window.webkit.messageHandlers.KeepinBridgeFail) {
+    // iOS 경우 무조건 String Parameter를 넘겨야합니다.
+    window.webkit.messageHandlers.KeepinBridgeFail.postMessage('');
+  }
+  // Bridge 이름 통일 전 번전 고려해서 당분간 삽입
   else if (IS_IOS && window.webkit.messageHandlers.MyKeepinBridgeFail) {
-    window.webkit.messageHandlers.MyKeepinBridgeFail.postMessage();
+    // iOS 경우 무조건 String Parameter를 넘겨야합니다.
+    window.webkit.messageHandlers.MyKeepinBridgeFail.postMessage('');
   }
   // 유효하지 않은 환경일때 예외 처리
   else invalidFunc();

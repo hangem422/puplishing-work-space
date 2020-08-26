@@ -168,7 +168,7 @@ if (window) {
     termsOfUsePage.addPage(agreeTermsPage);
 
     // 주민번호 인증 페이지를 생성합니다.
-    const stackSlider = new StackSlider('family-card');
+    const stackSlider = new StackSlider('gumin-card');
     const [certificationPage, initCertificationPage] = createCertificationPage(
       getVcFromApi,
     );

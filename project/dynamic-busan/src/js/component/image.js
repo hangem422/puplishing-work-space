@@ -2,7 +2,7 @@ import { createElementNS, appendAllChild } from '../util/dom';
 
 /**
  * @description Empty Alarm SVG Image을 생성합니다.
- * @param {number} size Image을 크기
+ * @param {number} size Image의 크기
  * @returns {HTMLElement} Empty Alarm SVG Image
  */
 export function emptyAlarmImage(size = 200) {

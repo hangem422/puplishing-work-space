@@ -1,0 +1,9 @@
+@import url('../../src/style/main.css');
+
+.text-post-container .text-post-footer li {
+  margin-left: var(--container-padding);
+}
+
+.text-post-container .text-post-footer li:nth-child(n + 2) {
+  margin-top: 8px;
+}

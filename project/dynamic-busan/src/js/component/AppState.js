@@ -37,7 +37,7 @@ class AppState {
     this.modalWrapper = createElement('div', {
       class: 'app-state-wrapper modal-wrapper',
       child: modal,
-    })
+    });
 
     const wings = [...Array(12)].map(() => document.createElement('div'));
     const wingWrapper = createElement('div', {

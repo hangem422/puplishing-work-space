@@ -94,7 +94,6 @@ function createEmailCertPage(
   const certInput = createElement('input', {
     type: 'number',
     id: 'certification-input',
-    max: CERT_NUM_LENGTH.toString(),
     placeholder: '인증번호를 입력하세요.',
   });
   const certInputElement = createElement('div', {
@@ -210,6 +209,13 @@ function createEmailCertPage(
 
   // 이메일 입력 onChangeEvent
   emailInput.addEventListener('keyup', setActiveCertRequestBtn);
+
+  // 인증 번호 입력 onChangeEvent
+  certInput.addEventListener('input', (event) => {
+    if (event.target.value.length > CERT_NUM_LENGTH) {
+      event.target.value = event.target.value.slice(0, CERT_NUM_LENGTH);
+    }
+  });
 
   // 인증 번호 요청 onClickEvent
   requestCertNumBtn.addEventListener('click', async (event) => {

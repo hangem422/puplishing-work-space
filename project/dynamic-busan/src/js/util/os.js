@@ -73,14 +73,14 @@ export function cancel(invalidFunc = () => {}) {
     window.KeepinBridge.cancel();
   }
   // iOS Javascript Call
-  else if (IS_IOS && window.webkit.messageHandlers.KeepinBridgeFail) {
+  else if (IS_IOS && window.webkit.messageHandlers.KeepinBridgeCancel) {
     // iOS 경우 무조건 String Parameter를 넘겨야합니다.
-    window.webkit.messageHandlers.KeepinBridgeFail.postMessage('');
+    window.webkit.messageHandlers.KeepinBridgeCancel.postMessage('');
   }
   // Bridge 이름 통일 전 번전 고려해서 당분간 삽입
-  else if (IS_IOS && window.webkit.messageHandlers.MyKeepinBridgeFail) {
+  else if (IS_IOS && window.webkit.messageHandlers.MyKeepinBridgeCancel) {
     // iOS 경우 무조건 String Parameter를 넘겨야합니다.
-    window.webkit.messageHandlers.MyKeepinBridgeFail.postMessage('');
+    window.webkit.messageHandlers.MyKeepinBridgeCancel.postMessage('');
   }
   // 유효하지 않은 환경일때 예외 처리
   else invalidFunc();

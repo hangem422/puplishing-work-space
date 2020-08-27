@@ -136,7 +136,7 @@ function reSendEmailCert() {
 /**
  * @description 이메일 인증 번호를 검증합니다.
  * @param {string} cert 이메일 인증 번호
- * @returns {Promise<bolean>} 요청 성공 / 실패 여부 반환하는 비동기 객체
+ * @returns {Promise<boolean>} 요청 성공 / 실패 여부 반환하는 비동기 객체
  */
 function verifyEmailCert(cert) {
   // 사전에 이메일 인증 발송을 요청한 적이 없으면 실행을 취소합니다.

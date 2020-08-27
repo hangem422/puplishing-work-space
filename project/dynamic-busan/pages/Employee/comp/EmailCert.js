@@ -14,6 +14,7 @@ const CERT_NUM_REG = /^[0-9]{6}[0-9]*$/;
 
 const RE_CERT_EMAIL_TIME = 30 * 1000;
 const CERT_LIMIT_TIME = 3 * 60 * 1000;
+const CERT_NUM_LENGTH = 6;
 
 /**
  * @description 이메일 인증 페이지를 만듭니다.
@@ -93,6 +94,7 @@ function createEmailCertPage(
   const certInput = createElement('input', {
     type: 'number',
     id: 'certification-input',
+    max: CERT_NUM_LENGTH.toString(),
     placeholder: '인증번호를 입력하세요.',
   });
   const certInputElement = createElement('div', {
@@ -258,9 +260,10 @@ function createEmailCertPage(
   certInput.addEventListener('keyup', setActiveSubmitBtn);
 
   // 인증하기 버튼 onClickEvent
-  submitElement.addEventListener('click', () => {
-    clearTimeCheck();
-    submitFunc(certInput.value);
+  submitElement.addEventListener('click', async () => {
+    const result = await submitFunc(certInput.value);
+    if (result) clearTimeCheck();
+    setActiveSubmitBtn();
   });
 
   return [emailCertPage, initPage];

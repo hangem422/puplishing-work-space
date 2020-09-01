@@ -27,7 +27,7 @@ function createRequestPage(notice, submitFunc) {
   });
   const submitElement = createElement('button', {
     class: 'button button-type-a',
-    child: '방문증 발급 요청하기',
+    child: '사원증 발급 요청하기',
     disabled: 'disabled',
   });
 

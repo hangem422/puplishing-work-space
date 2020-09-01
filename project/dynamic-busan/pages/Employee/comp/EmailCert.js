@@ -8,6 +8,8 @@ const TITLE = '회사 이메일을 이용해 인증을 해주세요.';
 const EMAIL_CHANGE_ERROR = '변경된 이메일로 인증 번호를 재요청 할 수 없습니다.';
 const EMAIL_TIMEOUT_ERROR =
   '인증번호 입력시간이 초과되었습니다. 인증번호 재요청 후 다시 시도해주세요.';
+const INVALID_CERT_MESSAGE =
+  '인증번호가 일치하지 않습니다.\n확인 후 다시 시도해주세요';
 
 const EMAIL_REG = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
 const CERT_NUM_REG = /^[0-9]{6}[0-9]*$/;
@@ -21,7 +23,7 @@ const CERT_NUM_LENGTH = 6;
  * @param {(email: string) => Promise<boolean>} sendEmailCertFunc 이메일 주소로 인증 번호를 발송
  * @param {() => Promise<boolean>} reSendEmailCertFunc 이메일 주소로 인증 번호를 재 발송
  * @param {(message: string) => void} errorFunc 인증번호 입력 제한시간 초과시 실행할 함수
- * @param {() => void} submitFunc 인증번호를 API 서버로 제출
+ * @param {(cert: string, lastChance: boolean) => Promise<boolean>} submitFunc 인증번호를 API 서버로 제출
  * @returns {[HTMLElement, () => void]} 이메일 인증 페이지와 초기화 함수
  */
 function createEmailCertPage(
@@ -32,6 +34,7 @@ function createEmailCertPage(
 ) {
   let emailCertFlag = false; // 현재 인증번호 요청 대기중인지 여부
   let countEmailCert = 0; // 이메일 인증 요청 횟수
+  let countEmailCertVerify = 0; // 이메일 인증 요청 검증 횟수
   let interval = null; // 인증 번호 시간 체크 인터벌
   let email = ''; // 1차로 입력받은 이메일
 
@@ -153,6 +156,16 @@ function createEmailCertPage(
   }
 
   /**
+   * @description 인증번호 오류 횟수 증가
+   */
+  function setCertInpuError() {
+    countEmailCertVerify += 1;
+    const message = `${INVALID_CERT_MESSAGE} (${countEmailCert}/3)`;
+    certInputElement.setAttribute('error-message', message);
+    certInputElement.classList.add('textfield-error textfield-error-message');
+  }
+
+  /**
    * @description 인증 페이지 초기화
    */
   function initPage() {
@@ -161,6 +174,7 @@ function createEmailCertPage(
     email = ''; // 저장된 이메일 초기화
     emailCertFlag = false; // 인증 번호 요청 대기상태 초기화
     countEmailCert = 0; // 인증 번호 요청 횟수 초기화
+    countEmailCertVerify = 0; // 이메일 인증 요청 검증 횟수 초기화
     clearTimeCheck(); // 타임 체크 초기화
     setActiveCertRequestBtn(); // 인증 번호 요청 버튼 초기화
     setActiveSubmitBtn(); // 인증하기 버튼 초기화
@@ -266,10 +280,12 @@ function createEmailCertPage(
   certInput.addEventListener('keyup', setActiveSubmitBtn);
 
   // 인증하기 버튼 onClickEvent
-  submitElement.addEventListener('click', async () => {
-    const result = await submitFunc(certInput.value);
-    if (result) clearTimeCheck();
-    setActiveSubmitBtn();
+  submitElement.addEventListener('click', () => {
+    submitFunc(certInput.value, countEmailCertVerify > 1).then((result) => {
+      if (result) clearTimeCheck();
+      else setCertInpuError();
+      setActiveSubmitBtn();
+    });
   });
 
   return [emailCertPage, initPage];

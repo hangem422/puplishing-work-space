@@ -1,5 +1,5 @@
 import { appendAllChild } from '../../src/js/util/dom';
-import { requestVP, issuedVC, fail } from '../../src/js/util/os';
+import { requestVP, issuedVC, fail, cancel } from '../../src/js/util/os';
 import { post, get } from '../../src/js/util/ajax';
 import Router from '../../src/js/module/RouterWithCB';
 import StackSlider from '../../src/js/layout/StackSlider';
@@ -26,7 +26,8 @@ const REQUEST_PAGE_TITLE = '사원증 발급 요청';
 
 const MODAL_INVALID_ENV = '유효하지 않은 환경에서 실행할 수 없습니다.';
 const MODAL_SERVER_ERROR = '오류가 발생했습니다. 잠시 후에 다시 시도해주세요.';
-const MODAL_CERT_ERROR = '인증코드가 유효하지 않습니다.';
+const MODAL_CERT_ERROR =
+  '인증코드가 일치하지 않습니다.<br />확인 후 다시 시도해주세요.';
 
 let certEmail = '';
 let vpSessionUUID = '';
@@ -39,6 +40,8 @@ const appState = new AppState(); // 로딩과 모달 컴포넌트를 생성합�
 const errorFunc = {
   // 확인 버튼 클릭 시 로딩 헤제
   showModal: (message) => appState.showModal(message),
+  // 확인 버튼 클릭 시 프로세스 취소
+  cancel: (message) => appState.showModal(message, () => cancel()),
   // 확인 버튼 클릭시 프로세스 실패
   fail: (message) => appState.showModal(message, () => fail()),
 };
@@ -136,9 +139,10 @@ function reSendEmailCert() {
 /**
  * @description 이메일 인증 번호를 검증합니다.
  * @param {string} cert 이메일 인증 번호
+ * @param {boolean} lastChance 이메일 인증이 마지막 기회인지 여부
  * @returns {Promise<boolean>} 요청 성공 / 실패 여부 반환하는 비동기 객체
  */
-function verifyEmailCert(cert) {
+function verifyEmailCert(cert, lastChance) {
   // 사전에 이메일 인증 발송을 요청한 적이 없으면 실행을 취소합니다.
   if (!emailSessionUUID) {
     errorFunc.fail(MODAL_SERVER_ERROR);
@@ -163,7 +167,8 @@ function verifyEmailCert(cert) {
       // 이메일 인증 번호 검증 실패
       if (res.id === 'unauthorized') {
         const message = res.message === 'E005' ? MODAL_CERT_ERROR : res.message;
-        errorFunc.showModal(message);
+        if (lastChance) errorFunc.cancel(message);
+        else errorFunc.showModal(message);
         return false;
       }
       // 기타 오류

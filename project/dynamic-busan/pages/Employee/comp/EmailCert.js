@@ -4,10 +4,10 @@ import { createElement, wrapping } from '../../../src/js/util/dom';
 /*  Config Data  */
 /* ------------- */
 
-const TITLE = '회사 이메일을 이용해 인증을 해주세요.';
+const TITLE = '회사 이메일을 이용해 인증해주세요.';
 const EMAIL_CHANGE_ERROR = '변경된 이메일로 인증 번호를 재요청 할 수 없습니다.';
 const EMAIL_TIMEOUT_ERROR =
-  '인증번호 입력시간이 초과되었습니다. 인증번호 재요청 후 다시 시도해주세요.';
+  '인증번호 입력시간이 초과되었습니다.<br />인증번호 재요청 후 다시 시도해주세요.';
 const INVALID_CERT_MESSAGE =
   '인증번호가 일치하지 않습니다.\n확인 후 다시 시도해주세요';
 

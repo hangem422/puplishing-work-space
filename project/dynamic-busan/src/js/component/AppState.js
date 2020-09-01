@@ -20,19 +20,25 @@ class AppState {
     this.state = false;
 
     this.onClick = () => {};
+    this.onLinkClick = () => {};
 
     this.text = createElement('p', {
       class: 'modal-text font-text-body1 font-color-dark',
+    });
+    this.link = createElement('p', {
+      class: 'modal-text font-text-body1 font-color-dark font-link',
+      child: undefined,
     });
     this.btn = createElement('button', {
       class: 'modal-btn font-text-body1 font-color-dark font-medium',
       child: '확인',
     });
+    this.link.addEventListener('click', this.onLinkClick);
     this.btn.addEventListener('click', this.onClick);
 
     const modal = createElement('div', {
       class: `single-btn-modal ${isIOS() ? 'ios' : ''}`,
-      child: [this.text, this.btn],
+      child: [this.text, this.link, this.btn],
     });
     this.modalWrapper = createElement('div', {
       class: 'app-state-wrapper modal-wrapper',
@@ -62,9 +68,10 @@ class AppState {
   /**
    * @description 싱글 버튼 모달 컴포넌트 구성
    * @param {string} text 모달 텍스트
-   * @param {() => void} 모달 버튼의 온 클릭 이벤트 콜백함수
+   * @param {() => void} onClick 모달 버튼의 온 클릭 이벤트 콜백함수
+   * @param {{ text: string, url: string }} link 모달 버튼의 온 클릭 이벤트 콜백함수
    */
-  showModal(text = '', onClick = () => {}) {
+  showModal(text = '', onClick = () => {}, link) {
     this.element.classList.add(ACTIVE_POPUP_CLASS);
     this.modalWrapper.classList.add(ACTIVE_POPUP_CLASS);
     this.loadingWrapper.classList.remove(ACTIVE_POPUP_CLASS);
@@ -77,7 +84,20 @@ class AppState {
       onClick();
       this.hide();
     };
+
     this.btn.addEventListener('click', this.onClick);
+
+    if (link) {
+      this.link.innerHTML = link.text;
+
+      this.link.removeEventListener('click', this.onLinkClick);
+      this.onLinkClick = () => {
+        if (typeof link.url === 'string' && link.url) window.open(link.url);
+        setTimeout(() => this.onClick(), 0);
+      };
+
+      this.link.addEventListener('click', this.onLinkClick);
+    }
   }
 
   /**

@@ -6,7 +6,7 @@
   height: 100%;
   background-color: transparent;
   transition: background-color var(--transition-duration)
-  var(--transition-timing-function);
+    var(--transition-timing-function);
 }
 
 .app-state-container.active {
@@ -57,7 +57,13 @@
 
 .modal-wrapper .single-btn-modal > p {
   font-size: 1em;
-  padding: 2em 1.5em;
+  padding: 0em 1.5em;
+  margin-top: 2em;
+}
+
+.modal-wrapper .single-btn-modal > p.font-link {
+  margin-top: 1.25em;
+  margin-bottom: 2em;
 }
 
 .modal-wrapper .single-btn-modal > button {

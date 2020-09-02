@@ -5,8 +5,8 @@ import SecretTextfield from '../../../src/js/component/SecretTextfield';
 /*  Config Data  */
 /* ------------- */
 
-const CERTIFICATION_TITLE = '주민등록번호를 이용해 인증을 해주세요.';
-const CERTIFICATION_LABEL = '주민등록번호 뒷자리(7자리 숫자)';
+const CERTIFICATION_TITLE = '주민등록번호를 이용해 인증해주세요.';
+const CERTIFICATION_LABEL = '주민등록번호 뒷자리 (7자리 숫자)';
 const CERTIFICATION_PLACEHOLDER = '주민등록번호 뒷자리 숫자를 입력하세요.';
 const SECRET_INPUT_LENGTH = 7;
 

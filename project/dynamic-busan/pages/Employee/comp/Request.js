@@ -27,20 +27,20 @@ function createRequestPage(notice, submitFunc) {
   });
   const submitElement = createElement('button', {
     class: 'button button-type-a',
-    child: '방문증 발급 요청하기',
+    child: '사원증 발급 요청하기',
     disabled: 'disabled',
   });
 
   // 근무부서 인풋을 생성합니다.
   const departInputLabel = createElement('label', {
     for: 'depart-input',
-    child: '근무부서',
+    child: '소속 부서',
   });
   const departInput = createElement('input', {
     type: 'text',
     id: 'depart-input',
     maxlength: INPUT_MAX_LENGTH.toString(),
-    placeholder: '방문 부서명을 입력하세요.',
+    placeholder: '소속 부서명을 입력하세요.',
   });
   const departElement = createElement('div', {
     class: 'textfield textfield-time',

@@ -1,4 +1,5 @@
-import { requestVP, issuedVC, fail } from '../../src/js/util/os';
+/* eslint-disable no-unused-vars */
+import { requestVP, issuedVC, fail, cancel } from '../../src/js/util/os';
 import { get, post } from '../../src/js/util/ajax';
 import AppState from '../../src/js/component/AppState';
 
@@ -10,9 +11,16 @@ import './style.css';
 
 const SEND_VP_API_URL = '/api/v1/request_required_vp';
 const GET_VC_API_URL = '/api/v1/issue_vc';
+const BUSAN_LIBRARY_URL =
+  'https://library.busan.go.kr/busanlibrary/intro/join/index.do?menu_idx=57';
 
 const ERROR_MESSAGE_01 = '유효하지 않은 환경에서 실행할 수 없습니다.';
 const ERROR_MESSAGE_02 = '오류가 발생했습니다. 잠시 후에 다시 시도 해주세요.';
+const ERROR_MESSAGE_03 =
+  '도서관 회원증은 기존 책이음서비스 회원만 발급받을 수 있습니다';
+const ERROR_MESSAGE_03_SUB = '책이음 서비스 회원가입 바로가기';
+
+const ERROR_CASE = ['EBL001', 'EBL002', 'EBL003', 'EBL004', 'EBL005'];
 
 const appState = new AppState(); // 로딩과 모달 컴포넌트를 생성합니다.
 
@@ -39,11 +47,30 @@ function apiHandler(vp) {
       get({
         url: GET_VC_API_URL,
         headers: { 'referrer-token': res },
-        strict: true,
+        strict: false,
       }),
     )
     // 발급 받은 VC를 모바일 디바이스로 전달합니다.
-    .then((res) => issuedVC(res, () => errorFunc(ERROR_MESSAGE_01)))
+    .then((res) => {
+      // 요청 성공 시 VCS 문자열을 받습니다.
+      if (typeof res === 'string') {
+        issuedVC(res, () => errorFunc(ERROR_MESSAGE_01));
+        return true;
+      }
+
+      // 도서관 회원증 발급 실패
+      if (ERROR_CASE.includes(res.message)) {
+        appState.showModal(ERROR_MESSAGE_03, cancel, {
+          text: ERROR_MESSAGE_03_SUB,
+          url: BUSAN_LIBRARY_URL,
+        });
+        return true;
+      }
+
+      // 기타 오류
+      errorFunc.fail(ERROR_MESSAGE_02);
+      return true;
+    })
     // HTTP Status가 200이 아니면 전부 에러 처리합니다.
     .catch(() => errorFunc.fail(ERROR_MESSAGE_02));
 }

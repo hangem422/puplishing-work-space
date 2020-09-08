@@ -27,7 +27,7 @@ const REQUEST_PAGE_TITLE = '사원증 발급 요청';
 const MODAL_INVALID_ENV = '유효하지 않은 환경에서 실행할 수 없습니다.';
 const MODAL_SERVER_ERROR = '오류가 발생했습니다. 잠시 후에 다시 시도해주세요.';
 const MODAL_CERT_ERROR =
-  '인증코드가 일치하지 않습니다.<br />확인 후 다시 시도해주세요.';
+  '인증번호가 일치하지 않습니다.<br />확인 후 다시 시도해주세요.';
 
 let certEmail = '';
 let vpSessionUUID = '';
@@ -166,9 +166,8 @@ function verifyEmailCert(cert, lastChance) {
       }
       // 이메일 인증 번호 검증 실패
       if (res.id === 'unauthorized') {
-        const message = res.message === 'E005' ? MODAL_CERT_ERROR : res.message;
-        if (lastChance) errorFunc.cancel(message);
-        else errorFunc.showModal(message);
+        if (lastChance) errorFunc.cancel(MODAL_CERT_ERROR);
+        else errorFunc.showModal(MODAL_CERT_ERROR);
         return false;
       }
       // 기타 오류

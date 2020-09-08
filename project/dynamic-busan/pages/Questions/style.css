@@ -1,0 +1,34 @@
+@import url('../../src/style/main.css');
+
+.item-header-container .header-custom-content p {
+  flex: 1;
+  transition: font-weight var(--transition-duration-slow)
+    var(--transition-timing-function);
+}
+
+.active .item-header-container .header-custom-content p {
+  font-weight: 700 !important;
+}
+
+.item-header-container .header-custom-content svg {
+  margin-left: 20px;
+  height: 24px;
+}
+
+.active .item-header-container .header-custom-content svg {
+  transform: rotate(180deg);
+}
+
+.item-content-container .content-custom-list .content-custom-list-item {
+  display: flex;
+}
+
+.item-content-container .content-custom-list .content-custom-list-item p {
+  flex: 1;
+  word-break: keep-all;
+}
+
+.item-content-container .content-custom-list .content-custom-list-item svg {
+  height: 20px;
+  margin-right: 4px;
+}

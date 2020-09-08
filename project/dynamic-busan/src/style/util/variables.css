@@ -1,0 +1,32 @@
+:root {
+  --primary-color-blue: #0056d0;
+  --primary-color-red: #e02020;
+  --primary-color-white: #ffffff;
+  --font-color-dark: #222222;
+  --font-color-medium: #666666;
+  --font-color-regular: #999999;
+  --font-color-light: #a3a3a3;
+  --font-color-placeholder: #cccccc;
+  --bg-color-basic: #f8f8f8;
+  --pop-up-bg-color: rgba(0, 0, 0, 0.4);
+  --pop-up-bg-color-ios: #f1f1f1;
+  --pop-up-text-color-ios: #007aff;
+  --line-color: #ededed;
+  --pop-up-line-color-ios: rgba(60, 60, 67, 0.29);
+  --button-line-color-light: #d9d9d9;
+  --button-disable-color: #e1e2e7;
+  --button-active-color: #8abbff;
+
+  --transition-duration: 0.1s;
+  --transition-duration-slow: 0.2s;
+  --transition-duration-ex-slow: 0.3s;
+  --transition-timing-function: ease-in-out;
+
+  --container-padding: 24px;
+  --container-margin: 24px;
+
+  --textfield-input-height: 50px;
+
+  --board-item-padding-vertical: 16px;
+  --board-item-padding-horizontal: 24px;
+}

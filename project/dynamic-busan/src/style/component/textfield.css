@@ -1,0 +1,90 @@
+.textfield {
+  position: relative;
+}
+
+.textfield::after {
+  position: absolute;
+  margin-top: 8px;
+  white-space: pre-line;
+  content: attr(error-message);
+  color: var(--primary-color-red);
+  opacity: 0;
+  transition: opacity var(--transition-duration)
+    var(--transition-timing-function);
+}
+
+.textfield.textfield-error-message::after {
+  opacity: 1;
+}
+
+.textfield label {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--font-color-dark);
+}
+
+.textfield input {
+  outline: none;
+  -webkit-appearance: none;
+  transition-property: border, color, background-color;
+  transition-duration: var(--transition-duration);
+  transition-timing-function: var(--transition-timing-function);
+}
+
+.textfield input[type='text'],
+.textfield input[type='number'],
+.textfield input[type='email'] {
+  display: block;
+  height: var(--textfield-input-height);
+  width: 100%;
+  box-sizing: border-box;
+  padding-left: 8px;
+  padding-right: 8px;
+  border-radius: 4px;
+  border: solid 1px var(--line-color);
+  color: var(--font-color-dark);
+}
+
+.textfield input[type='text']::placeholder,
+.textfield input[type='number']::placeholder,
+.textfield input[type='email']::placeholder {
+  color: var(--font-color-placeholder);
+}
+
+.textfield input[type='text']:focus,
+.textfield input[type='number']:focus,
+.textfield input[type='email']:focus {
+  border: solid 1px var(--primary-color-blue);
+}
+
+.textfield.textfield-error input[type='text'],
+.textfield.textfield-error input[type='number'],
+.textfield.textfield-error input[type='email'] {
+  border: solid 1px var(--primary-color-red);
+}
+
+.textfield.textfield-error input[type='text']::placeholder,
+.textfield.textfield-error input[type='number']::placeholder,
+.textfield.textfield-error input[type='email']::placeholder {
+  color: var(--primary-color-red);
+}
+
+.textfield.textfield-error input[type='text']:focus,
+.textfield.textfield-error input[type='number']:focus,
+.textfield.textfield-error input[type='email']:focus {
+  border: solid 1px var(--primary-color-red);
+}
+
+.textfield.textfield-time::before {
+  content: attr(time);
+  position: absolute;
+  bottom: 0px;
+  right: 16px;
+  margin: 0px;
+  line-height: var(--textfield-input-height);
+  color: var(--primary-color-blue);
+}
+
+.textfield.textfield-time input {
+  padding-right: 80px;
+}

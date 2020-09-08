@@ -1,0 +1,27 @@
+@import url('../../src/style/main.css');
+
+html,
+body,
+.root {
+  height: 100%;
+}
+
+.certification-input {
+  margin-top: 32px;
+}
+
+.agree-terms-page .agree-terms-submit,
+.certification-page .certification-submit {
+  position: absolute;
+  box-sizing: border-box;
+  width: 100%;
+  bottom: 0px;
+}
+
+.text-post-container .text-post-footer li {
+  margin-left: var(--container-padding);
+}
+
+.text-post-container .text-post-footer li:nth-child(n + 2) {
+  margin-top: 8px;
+}

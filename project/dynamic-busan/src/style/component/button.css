@@ -1,0 +1,95 @@
+.button {
+  display: block;
+  border-radius: 4px;
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+  cursor: pointer;
+  transition-property: border, color, background-color;
+  transition-duration: var(--transition-duration);
+  transition-timing-function: var(--transition-timing-function);
+}
+
+.button.button-small {
+  height: 32px;
+  min-width: 64px;
+  border: solid 1px var(--primary-color-blue);
+  color: var(--primary-color-white);
+  background-color: var(--primary-color-blue);
+}
+
+.button.button-small.button-mono {
+  border: solid 1px var(--line-color);
+  color: var(--font-color-dark);
+  background-color: var(--primary-color-white);
+}
+
+.row > .button.button-small:nth-of-type(n + 2),
+.row-center > .button.button-small:nth-child(n + 2) {
+  margin-left: 12px;
+}
+
+.button.button-type-a {
+  height: 60px;
+  width: 100%;
+  border: none;
+  color: var(--primary-color-white);
+  background-color: var(--primary-color-blue);
+}
+
+.button.button-type-a:disabled {
+  background-color: var(--button-disable-color);
+}
+
+.button.button-type-a:not(.button-mono):active {
+  background-color: var(--button-active-color);
+}
+
+.button.button-type-a.button-mono {
+  border: solid 1px var(--font-color-regular);
+  background-color: var(--primary-color-white);
+  color: var(--primary-color-blue);
+}
+
+.button.button-type-b {
+  height: 52px;
+  width: 100%;
+  border: solid 1px var(--primary-color-blue);
+  color: var(--primary-color-blue);
+  background-color: var(--primary-color-white);
+}
+
+.button.button-type-b:disabled {
+  border: solid 1px var(--font-color-regular);
+  color: var(--font-color-regular);
+}
+
+.button.button-both-normal {
+  height: 60px;
+  width: 100%;
+  border: none;
+  color: var(--primary-color-white);
+  background-color: var(--primary-color-blue);
+}
+
+.button.button-both-normal.button-mono {
+  color: var(--font-color-dark);
+  background-color: var(--button-disable-color);
+}
+
+.row > .button.button-both-normal:nth-of-type(n + 2) {
+  margin-left: 16px;
+}
+
+.button.button-both-floating {
+  height: 60px;
+  width: 100%;
+  border: none;
+  border-radius: 0px;
+  color: var(--primary-color-white);
+  background-color: var(--primary-color-blue);
+}
+
+.button.button-both-floating.button-mono {
+  color: var(--font-color-dark);
+  background-color: var(--button-disable-color);
+}

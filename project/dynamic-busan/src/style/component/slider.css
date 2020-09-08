@@ -1,0 +1,89 @@
+.page-slider-container,
+.page-slider-wrapper,
+.page-slider-item,
+.stack-slider-container,
+.stack-slider-wrapper,
+.stack-slider-item,
+.stack-slider-item-container,
+.stack-slider-item-wrapper {
+  width: 100%;
+  height: 100%;
+}
+
+.page-slider-container {
+  position: relative;
+  overflow: hidden;
+}
+
+.page-slider-container .page-slider-wrapper {
+  position: absolute;
+  overflow-x: visible;
+  left: 0;
+  transition: left var(--transition-duration-slow)
+    var(--transition-timing-function);
+}
+
+.page-slider-wrapper .page-slider-item {
+  overflow-y: scroll;
+}
+
+.page-slider-wrapper .page-slider-item {
+  position: absolute;
+}
+
+.stack-slider-container .stack-slider-wrapper {
+  position: relative;
+  overflow: hidden;
+}
+
+.stack-slider-wrapper .stack-slider-item-container {
+  position: absolute;
+}
+
+.stack-slider-wrapper .stack-slider-item-container::before {
+  display: block;
+  content: '';
+  visibility: hidden;
+  height: 100%;
+  transition: height var(--transition-duration-ex-slow)
+    var(--transition-timing-function);
+}
+
+.stack-slider-wrapper .stack-slider-item-container.active::before,
+.stack-slider-wrapper .stack-slider-item-container.stack::before {
+  height: 0%;
+}
+
+.stack-slider-item-container .stack-slider-item-wrapper {
+  opacity: 0;
+  position: absolute;
+  background-color: var(--primary-color-white);
+  box-shadow: 0 1px 3px 1px rgba(66, 66, 66, 0.2),
+    0 2px 8px 4px rgba(66, 66, 66, 0.1);
+  transition: opacity var(--transition-duration-ex-slow)
+    var(--transition-timing-function);
+}
+
+.stack-slider-item-container .stack-slider-item-wrapper::after {
+  position: absolute;
+  display: block;
+  content: '';
+  visibility: hidden;
+  opacity: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--pop-up-bg-color);
+  transition: opacity var(--transition-duration-ex-slow)
+    var(--transition-timing-function);
+}
+
+.stack-slider-item-container.active .stack-slider-item-wrapper,
+.stack-slider-item-container.stack .stack-slider-item-wrapper {
+  opacity: 1;
+}
+
+.stack-slider-item-container.stack .stack-slider-item-wrapper::after {
+  visibility: visible;
+  opacity: 1;
+}

@@ -7,22 +7,17 @@ const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const safePostCssParser = require('postcss-safe-parser');
 const postcssNormalize = require('postcss-normalize');
 
-const mode = process.env.NODE_ENV || 'development';
-const isProduction = mode === 'production';
-
-const projectPath = './project/dynamic-busan/pages/Questions';
-const projectJs = `${projectPath}/script.js`;
-const projectHtml = `${projectPath}/index.html`;
+const config = require('./config');
 
 module.exports = {
-  mode,
-  entry: projectJs,
+  mode: config.mode,
+  entry: config.jsPath,
   output: {
-    filename: 'script.js',
+    filename: config.jsName,
     path: path.resolve(`${__dirname}/build`),
   },
   optimization: {
-    minimize: isProduction,
+    minimize: config.isProduction,
     minimizer: [
       new TerserPlugin({
         terserOptions: {
@@ -77,7 +72,18 @@ module.exports = {
         test: /\.js$/,
         loader: 'babel-loader',
         exclude: /node_modules/,
-        options: { presets: ['@babel/preset-env'] },
+        options: {
+          presets: [
+            [
+              '@babel/preset-env',
+              {
+                targets: {
+                  node: '8',
+                },
+              },
+            ],
+          ],
+        },
       },
       {
         test: /\.(ico|png|jpg|jpeg|gif|svg|woff|woff2|ttf|eot)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
@@ -114,24 +120,25 @@ module.exports = {
     ],
   },
   devServer: {
-    contentBase: 'index.html',
+    contentBase: path.resolve(__dirname, 'build'),
     publicPath: '/',
     overlay: true,
     host: 'localhost',
     port: 3000,
+    hot: true,
+    stats: 'errors-only',
   },
   plugins: [
     new HtmlWebpackPlugin({
       inject: true,
       inlineSource: '.(js|css)$',
-      template: projectHtml,
-      filename: 'index.html',
-      stats: 'errors-only',
+      template: config.htmlPath,
+      filename: config.isProduction ? config.htmlName : 'index.html',
     }),
-    isProduction && new InlineChunkHtmlPlugin(HtmlWebpackPlugin, [/.*/]),
-    isProduction &&
+    config.isProduction && new InlineChunkHtmlPlugin(HtmlWebpackPlugin, [/.*/]),
+    config.isProduction &&
       new MiniCssExtractPlugin({
-        filename: 'style.css',
+        filename: config.cssName,
       }),
   ].filter(Boolean),
 };

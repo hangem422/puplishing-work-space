@@ -1,0 +1,54 @@
+@import url('../../src/style/main.css');
+
+html,
+body,
+.root {
+  height: 100%;
+}
+
+.empty-page {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  margin: 0px;
+  justify-content: center;
+  align-items: center;
+}
+
+.empty-page::before {
+  content: '';
+  flex: 1;
+}
+
+.empty-page::after {
+  content: '';
+  flex: 2;
+}
+
+.empty-page .empty-page-text {
+  margin-top: 16px;
+}
+
+.list-board.notice-board {
+  padding: 8px 0px;
+}
+
+.notice-board .header-custom-text {
+  flex: 1;
+  max-width: calc(100% - 36px);
+}
+
+.notice-board .header-custom-text p {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.notice-board .header-custom-text p:nth-child(n + 2) {
+  margin-top: 8px;
+}
+
+.notice-board .header-custom-content svg {
+  height: 24px;
+  margin-left: 20px;
+}

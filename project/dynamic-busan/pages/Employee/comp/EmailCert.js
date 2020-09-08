@@ -53,6 +53,7 @@ function createEmailCertPage(
    * @@returns {string} MM : SS 포멧 문자열
    */
   function secToString(_sec) {
+    if (_sec < 0) return '';
     const min = Math.floor(_sec / 60);
     const sec = Math.floor(_sec % 60);
     const numToString = (num) => (num < 10 ? `0${num}` : num.toString());
@@ -160,9 +161,15 @@ function createEmailCertPage(
    */
   function setCertInpuError() {
     countEmailCertVerify += 1;
-    const message = `${INVALID_CERT_MESSAGE} (${countEmailCert}/3)`;
+    const message = `${INVALID_CERT_MESSAGE} (${countEmailCertVerify}/3)`;
     certInputElement.setAttribute('error-message', message);
-    certInputElement.classList.add('textfield-error textfield-error-message');
+
+    if (!certInputElement.classList.contains('textfield-error')) {
+      certInputElement.classList.add('textfield-error');
+    }
+    if (!certInputElement.classList.contains('textfield-error-message')) {
+      certInputElement.classList.add('textfield-error-message');
+    }
   }
 
   /**
@@ -265,8 +272,10 @@ function createEmailCertPage(
     interval = setInterval(() => {
       const remainTime = CERT_LIMIT_TIME + sendEmailTime - Date.now();
       const remainTimeStr = secToString(Math.round(remainTime / 1000));
-      certInputElement.setAttribute('time', remainTimeStr);
-      if (remainTimeStr === '0 : 00') {
+
+      if (remainTimeStr) {
+        certInputElement.setAttribute('time', remainTimeStr);
+      } else {
         clearTimeCheck();
         submitElement.setAttribute('disabled', 'disabled');
         errorFunc(EMAIL_TIMEOUT_ERROR);

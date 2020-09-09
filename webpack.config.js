@@ -14,6 +14,7 @@ module.exports = {
   entry: config.jsPath,
   output: {
     filename: config.jsName,
+    publicPath: '/',
     path: path.resolve(`${__dirname}/build`),
   },
   optimization: {
@@ -123,10 +124,11 @@ module.exports = {
     contentBase: path.resolve(__dirname, 'build'),
     publicPath: '/',
     overlay: true,
-    host: 'localhost',
+    host: '0.0.0.0',
     port: 3000,
     hot: true,
     stats: 'errors-only',
+    historyApiFallback: true,
   },
   plugins: [
     new HtmlWebpackPlugin({

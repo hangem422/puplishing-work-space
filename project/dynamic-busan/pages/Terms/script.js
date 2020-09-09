@@ -43,7 +43,7 @@ if (window) {
     pageSlider.addPage(detailPage.element);
 
     // 라우터에 함수를 추가합니다.
-    router.setRouterFunc('detail', ({ query }) => {
+    router.setRouterFunc('/detail', ({ query }) => {
       const index = query.index || 0;
       document.title = data[index].title;
       detailPage.renderDetail(index);

@@ -10,9 +10,13 @@ import createDetailPage from './comp/Detail';
 
 const DOCUMENT_TITLE = '이용약관';
 const DOCUMENT_DETAIL_TITLE = '공지사항 상세내용';
+const PATHNAME = '/html/notice.html';
 
 // Callback으로 동작하는 라우터를 생성합니다.
-const router = new Router();
+const router = new Router(
+  undefined,
+  process.env.NODE_ENV === 'development' ? '/' : PATHNAME,
+);
 
 /**
  * @description Window Onload Callback
@@ -35,14 +39,11 @@ if (window) {
     );
     pageSlider.addPage(listBoardPage.element);
 
-    // Page Slider에 리스트 페이지와 상세 페이지를 추가합니다.
-    root.appendChild(pageSlider.element);
-
     const detailPage = createDetailPage(data);
     pageSlider.addPage(detailPage.element);
 
     // 라우터에 함수를 추가합니다.
-    router.setRouterFunc('detail', ({ query }) => {
+    router.setRouterFunc('/detail', ({ query }) => {
       const index = query.index || 0;
       document.title = DOCUMENT_DETAIL_TITLE;
       detailPage.renderDetail(index);
@@ -53,5 +54,10 @@ if (window) {
       document.title = DOCUMENT_TITLE;
       if (pageSlider.current !== 0) pageSlider.movePage(0);
     });
+
+    router.refresh();
+
+    // Page Slider에 리스트 페이지와 상세 페이지를 추가합니다.
+    root.appendChild(pageSlider.element);
   };
 }

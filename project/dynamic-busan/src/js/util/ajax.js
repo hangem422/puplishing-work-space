@@ -108,7 +108,7 @@ export function get(option) {
   const headers = typeof option.headers === 'object' ? option.headers : {};
   const data = typeof option.data === 'object' ? option.data : {};
 
-  return fetch(`${option.url}?${objToQueryURL(data)}`, {
+  return fetch(`${option.url}${objToQueryURL(data)}`, {
     method: 'GET',
     headers,
   }).then((res) => {

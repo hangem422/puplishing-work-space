@@ -137,7 +137,11 @@ class TextPost {
    */
   set contents(contents) {
     this.contentWrapper.innerHTML = '';
-    this.contentWrapper.appendChild(contents);
+    if (contents instanceof HTMLElement || Array.isArray(contents)) {
+      this.contentWrapper.appendChild(contents);
+    } else if (typeof contents === 'string') {
+      this.contentWrapper.innerHTML = contents;
+    }
   }
 
   /**

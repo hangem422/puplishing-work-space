@@ -121,7 +121,7 @@ module.exports = {
     ],
   },
   devServer: {
-    contentBase: path.resolve(__dirname, 'build'),
+    contentBase: [path.resolve(__dirname, 'build'), config.staticPath],
     publicPath: '/',
     overlay: true,
     host: '0.0.0.0',

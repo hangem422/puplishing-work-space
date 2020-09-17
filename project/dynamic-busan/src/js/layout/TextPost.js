@@ -6,6 +6,7 @@ import { createElement, appendAllChild } from '../util/dom';
  * @property {string?} title 문단의 제목
  * @property {contents | string[]} contents 문단의 내용
  * @param {contents} contents HTMLElement로 파싱할 약관 데이터
+ * @returns {HTMLElement} TextPost Content에 알맞는 포멧의 Element
  */
 export function contentParser(contents) {
   const stack = [[contents, 0]];

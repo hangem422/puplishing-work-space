@@ -78,7 +78,7 @@ function createEmailCertPage(
   // 이메일 인풋을 생성합니다.
   const emailInputLabel = createElement('label', {
     for: 'email-input',
-    child: '이메일',
+    child: '회사 이메일',
   });
   const emailInput = createElement('input', {
     type: 'email',

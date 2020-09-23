@@ -64,7 +64,7 @@ function sendVpToApi(vp) {
       return true;
     })
     .catch(() => {
-      errorFunc.fail(MODAL_SERVER_ERROR);
+      errorFunc.cancel(MODAL_SERVER_ERROR);
       return false;
     });
 }
@@ -81,7 +81,7 @@ window.sendVpToApi = (vp) => sendVpToApi(vp);
 function sendEmailCert(email) {
   // 사전에 VP를 API 서버에 등록하지 않았으면 실행을 취소합니다.
   if (!vpSessionUUID) {
-    errorFunc.fail(MODAL_SERVER_ERROR);
+    errorFunc.cancel(MODAL_SERVER_ERROR);
     return Promise.resolve(false);
   }
 
@@ -100,7 +100,7 @@ function sendEmailCert(email) {
       return true;
     })
     .catch(() => {
-      errorFunc.fail(MODAL_SERVER_ERROR);
+      errorFunc.cancel(MODAL_SERVER_ERROR);
       return false;
     });
 }
@@ -112,7 +112,7 @@ function sendEmailCert(email) {
 function reSendEmailCert() {
   // 사전에 이메일 인증 발송을 요청한 적이 없으면 실행을 취소합니다.
   if (!emailSessionUUID) {
-    errorFunc.fail(MODAL_SERVER_ERROR);
+    errorFunc.cancel(MODAL_SERVER_ERROR);
     return Promise.resolve(false);
   }
 
@@ -129,7 +129,7 @@ function reSendEmailCert() {
       return true;
     })
     .catch(() => {
-      errorFunc.fail(MODAL_SERVER_ERROR);
+      errorFunc.cancel(MODAL_SERVER_ERROR);
       return false;
     });
 }
@@ -142,7 +142,7 @@ function reSendEmailCert() {
 function verifyEmailCert(cert) {
   // 사전에 이메일 인증 발송을 요청한 적이 없으면 실행을 취소합니다.
   if (!emailSessionUUID) {
-    errorFunc.fail(MODAL_SERVER_ERROR);
+    errorFunc.cancel(MODAL_SERVER_ERROR);
     return Promise.resolve(false);
   }
 
@@ -170,7 +170,7 @@ function verifyEmailCert(cert) {
       throw new Error();
     })
     .catch(() => {
-      errorFunc.fail(MODAL_SERVER_ERROR);
+      errorFunc.cancel(MODAL_SERVER_ERROR);
       return false;
     });
 }
@@ -183,7 +183,7 @@ function verifyEmailCert(cert) {
 function requestVcFromApi(department, position) {
   // 사전에 이메일 인증 발송을 요청한 적이 없거나 VP를 등록한 적이 업으면 실행을 취소합니다.
   if (!certEmail || !vpSessionUUID) {
-    errorFunc.fail(MODAL_SERVER_ERROR);
+    errorFunc.cancel(MODAL_SERVER_ERROR);
     return Promise.resolve(false);
   }
 
@@ -198,7 +198,7 @@ function requestVcFromApi(department, position) {
       return true;
     })
     .catch(() => {
-      errorFunc.fail(MODAL_SERVER_ERROR);
+      errorFunc.cancel(MODAL_SERVER_ERROR);
       return false;
     });
 }

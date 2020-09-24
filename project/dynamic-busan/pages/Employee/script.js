@@ -230,7 +230,7 @@ if (window) {
       reSendEmailCert,
       verifyEmailCert,
       errorFunc.showModal,
-      errorFunc.cancel
+      errorFunc.cancel,
     );
     const [requestPage, initRequestPage] = createRequestPage(
       data,

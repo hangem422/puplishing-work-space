@@ -5,6 +5,9 @@ import { createElement, wrapping } from '../../../src/js/util/dom';
 /* ------------- */
 
 const TITLE = '사원 정보를 입력 후 요청을 진행하세요.';
+const INPUT_EMPTY_ERROR = '내용을 입력해주세요.';
+const INPUT_LESS_ERROR = '최소 2글자 이상 입력해주세요.';
+const INPUT_MORE_ERROR = '최대 12글자 이하 입력해주세요.';
 
 const INPUT_MIN_LENGTH = 2;
 const INPUT_MAX_LENGTH = 12;
@@ -96,12 +99,49 @@ function createRequestPage(notice, submitFunc) {
   /* -------------- */
 
   /**
+   * @description 타겟 인풋의 내용에다라 적절한 에러 메시지를 보여줍니다.
+   * @param {HTMLElement} target 검사할 input element
+   */
+  function setErrorMessage(target) {
+    let message = '';
+    const wrapper = target.parentElement;
+
+    // 에러 메시지 설정
+    if (target.value.length === 0) message = INPUT_EMPTY_ERROR;
+    else if (target.value.length < INPUT_MIN_LENGTH) message = INPUT_LESS_ERROR;
+    else if (target.value.length > INPUT_MAX_LENGTH) message = INPUT_MORE_ERROR;
+
+    if (message) {
+      // 에러 사항이 있으면 에러 메시지를 보여줍니다.
+      wrapper.setAttribute('error-message', message);
+
+      if (!wrapper.classList.contains('textfield-error')) {
+        wrapper.classList.add('textfield-error');
+      }
+      if (!wrapper.classList.contains('textfield-error-message')) {
+        wrapper.classList.add('textfield-error-message');
+      }
+    } else {
+      // 에러 사항이 없으면 에러 메시지를 삭제합니다.
+      wrapper.removeAttribute('error-message');
+
+      if (wrapper.classList.contains('textfield-error')) {
+        wrapper.classList.remove('textfield-error');
+      }
+      if (wrapper.classList.contains('textfield-error-message')) {
+        wrapper.classList.remove('textfield-error-message');
+      }
+    }
+  }
+
+  /**
    * @description 사원증 발급 요청하기 버튼 활성화 함수
    */
   function setActiveSubmitBtn() {
     function validValue(str) {
       return str.length >= INPUT_MIN_LENGTH && str.length <= INPUT_MAX_LENGTH;
     }
+
     if (
       validValue(departInput.value) && // 근무 부서가 올바른 포멧이여야 합니다.
       validValue(positionInput.value) // 직위가 올바른 포멧이여야 합니다.
@@ -126,7 +166,15 @@ function createRequestPage(notice, submitFunc) {
   /* ------------------------- */
 
   departInput.addEventListener('keyup', setActiveSubmitBtn);
+  departInput.addEventListener('focusout', (event) =>
+    setErrorMessage(event.target),
+  );
+
   positionInput.addEventListener('keyup', setActiveSubmitBtn);
+  positionInput.addEventListener('focusout', (event) =>
+    setErrorMessage(event.target),
+  );
+
   submitElement.addEventListener('click', () =>
     submitFunc(departInput.value, positionInput.value),
   );

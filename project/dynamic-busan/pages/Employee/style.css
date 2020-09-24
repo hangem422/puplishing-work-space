@@ -39,7 +39,8 @@ body,
   position: absolute;
   width: 100%;
   margin: 0px;
-  padding: 0px var(--container-padding) var(--container-margin) var(--container-padding);
+  padding: 0px var(--container-padding) var(--container-margin)
+    var(--container-padding);
   box-sizing: border-box;
   bottom: 0px;
   background-color: var(--primary-color-white);
@@ -49,11 +50,16 @@ body,
   margin-top: 104px;
 }
 
-.certification-num, .request-notice  {
+.certification-num,
+.request-notice {
   margin-bottom: 108px;
 }
 
 .request-notice li {
   margin-left: var(--container-padding);
   padding: 8px 0px;
+}
+
+.reqeust-page .textfield.textfield-error-message {
+  margin-bottom: 52px;
 }

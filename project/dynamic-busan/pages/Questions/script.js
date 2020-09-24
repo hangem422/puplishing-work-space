@@ -36,7 +36,7 @@ function createItemContent(content) {
     const paragraph = createElement('p', { child: str });
     return createElement('div', {
       class: 'content-custom-list-item',
-      child: [paragraph],
+      child: paragraph,
     });
   });
 

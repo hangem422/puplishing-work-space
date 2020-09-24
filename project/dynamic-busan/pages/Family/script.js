@@ -111,7 +111,7 @@ function getVcFromApi(rrn, lastChance) {
       // 주민번호 불일치 오류
       if (['E004'].includes(res.message)) {
         if (lastChance) errorFunc.cancel(ERROR_MESSAGE_04);
-        else errorFunc.showModal(ERROR_MESSAGE_04);
+        else appState.hide();
         return false;
       }
       // 기타 오류

@@ -26,8 +26,6 @@ const REQUEST_PAGE_TITLE = '사원증 발급 요청';
 
 const MODAL_INVALID_ENV = '유효하지 않은 환경에서 실행할 수 없습니다.';
 const MODAL_SERVER_ERROR = '오류가 발생했습니다. 잠시 후에 다시 시도해주세요.';
-const MODAL_CERT_ERROR =
-  '인증번호가 일치하지 않습니다.<br />확인 후 다시 시도해주세요.';
 
 let certEmail = '';
 let vpSessionUUID = '';
@@ -66,7 +64,7 @@ function sendVpToApi(vp) {
       return true;
     })
     .catch(() => {
-      errorFunc.fail(MODAL_SERVER_ERROR);
+      errorFunc.cancel(MODAL_SERVER_ERROR);
       return false;
     });
 }
@@ -83,7 +81,7 @@ window.sendVpToApi = (vp) => sendVpToApi(vp);
 function sendEmailCert(email) {
   // 사전에 VP를 API 서버에 등록하지 않았으면 실행을 취소합니다.
   if (!vpSessionUUID) {
-    errorFunc.fail(MODAL_SERVER_ERROR);
+    errorFunc.cancel(MODAL_SERVER_ERROR);
     return Promise.resolve(false);
   }
 
@@ -102,7 +100,7 @@ function sendEmailCert(email) {
       return true;
     })
     .catch(() => {
-      errorFunc.fail(MODAL_SERVER_ERROR);
+      errorFunc.cancel(MODAL_SERVER_ERROR);
       return false;
     });
 }
@@ -114,7 +112,7 @@ function sendEmailCert(email) {
 function reSendEmailCert() {
   // 사전에 이메일 인증 발송을 요청한 적이 없으면 실행을 취소합니다.
   if (!emailSessionUUID) {
-    errorFunc.fail(MODAL_SERVER_ERROR);
+    errorFunc.cancel(MODAL_SERVER_ERROR);
     return Promise.resolve(false);
   }
 
@@ -131,7 +129,7 @@ function reSendEmailCert() {
       return true;
     })
     .catch(() => {
-      errorFunc.fail(MODAL_SERVER_ERROR);
+      errorFunc.cancel(MODAL_SERVER_ERROR);
       return false;
     });
 }
@@ -139,13 +137,12 @@ function reSendEmailCert() {
 /**
  * @description 이메일 인증 번호를 검증합니다.
  * @param {string} cert 이메일 인증 번호
- * @param {boolean} lastChance 이메일 인증이 마지막 기회인지 여부
  * @returns {Promise<boolean>} 요청 성공 / 실패 여부 반환하는 비동기 객체
  */
-function verifyEmailCert(cert, lastChance) {
+function verifyEmailCert(cert) {
   // 사전에 이메일 인증 발송을 요청한 적이 없으면 실행을 취소합니다.
   if (!emailSessionUUID) {
-    errorFunc.fail(MODAL_SERVER_ERROR);
+    errorFunc.cancel(MODAL_SERVER_ERROR);
     return Promise.resolve(false);
   }
 
@@ -166,15 +163,14 @@ function verifyEmailCert(cert, lastChance) {
       }
       // 이메일 인증 번호 검증 실패
       if (res.id === 'unauthorized') {
-        if (lastChance) errorFunc.cancel(MODAL_CERT_ERROR);
-        else errorFunc.showModal(MODAL_CERT_ERROR);
+        appState.hide();
         return false;
       }
       // 기타 오류
       throw new Error();
     })
     .catch(() => {
-      errorFunc.fail(MODAL_SERVER_ERROR);
+      errorFunc.cancel(MODAL_SERVER_ERROR);
       return false;
     });
 }
@@ -187,7 +183,7 @@ function verifyEmailCert(cert, lastChance) {
 function requestVcFromApi(department, position) {
   // 사전에 이메일 인증 발송을 요청한 적이 없거나 VP를 등록한 적이 업으면 실행을 취소합니다.
   if (!certEmail || !vpSessionUUID) {
-    errorFunc.fail(MODAL_SERVER_ERROR);
+    errorFunc.cancel(MODAL_SERVER_ERROR);
     return Promise.resolve(false);
   }
 
@@ -202,7 +198,7 @@ function requestVcFromApi(department, position) {
       return true;
     })
     .catch(() => {
-      errorFunc.fail(MODAL_SERVER_ERROR);
+      errorFunc.cancel(MODAL_SERVER_ERROR);
       return false;
     });
 }
@@ -232,8 +228,9 @@ if (window) {
     const [emailCertPage, initEmailCertPage] = createEmailCertPage(
       sendEmailCert,
       reSendEmailCert,
-      errorFunc.showModal,
       verifyEmailCert,
+      errorFunc.showModal,
+      errorFunc.cancel,
     );
     const [requestPage, initRequestPage] = createRequestPage(
       data,

@@ -162,7 +162,7 @@ if (window) {
 
     // 이용 약관 동의 페이지를 생성합니다.
     const termsOfUsePage = new PageSlider('terms-and-condition');
-    const [agreeTermsPage, initAgreeTermsPage] = createAgreePage(
+    const [agreeTermsPage] = createAgreePage(
       data.map(({ title }) => title),
       agreePageOnDetail,
       agreePageOnSubmint,
@@ -201,7 +201,7 @@ if (window) {
       document.title = TERM_OF_USE_TITLE;
       if (termsOfUsePage.current !== 0) termsOfUsePage.movePage(0);
       if (stackSlider.current !== 0) {
-        initAgreeTermsPage();
+        // initAgreeTermsPage();
         initCertificationPage();
       }
       while (stackSlider.current !== 0) stackSlider.movePrev();

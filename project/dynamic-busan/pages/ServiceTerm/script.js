@@ -1,60 +1,57 @@
 import { createElement } from '../../src/js/util/dom';
-import TextPost, { contentParser } from '../../src/js/layout/TextPost';
+import Router from '../../src/js/module/RouterWithCB';
+import StackSlider from '../../src/js/layout/StackSlider';
 
 import './style.css';
 import data from './data.json';
 
-/**
- * @description YYYY.MM.DD를 YYYY년 MM월 DD일로 변경합니다.
- * @param {string} date YYYY.MM.DD
- * @returns {string} YYYY년 MM월 DD일
- */
-function converDate(date) {
-  const dateArr = date.split('.');
-  dateArr[0] = `${dateArr[0]}년`;
-  dateArr[1] = dateArr[1].length < 2 ? `0${dateArr[1]}월` : `${dateArr[1]}월`;
-  dateArr[2] = dateArr[2].length < 2 ? `0${dateArr[2]}일` : `${dateArr[2]}일`;
-  return dateArr.join(' ');
-}
+import createMainPage from './comp/Main';
 
-/**
- * @description 약관 Date Element 생성합니다.
- * @param {string} notice 약관 고지일
- * @param {string} enforce 약관 시행일
- * @return {HTMLLIElement} Date Element
- */
-function createFooterElement(notice, enforce) {
-  // Component Element를 생성합니다.
-  const noticeElement = createElement('li', { child: notice });
-  const enforceElement = createElement('li', { child: enforce });
-  return createElement('ul', {
-    class: 'font-text-body2 font-color-dark',
-    child: [noticeElement, enforceElement],
-  });
-}
+/* ------------- */
+/*  Config Data  */
+/* ------------- */
+
+const PATHNAME_DEV = '/';
+const PATHNAME_PROD = '/html/serviceterm.html';
+
+const RECORD_PATH_DEV = '/record';
+const RECORD_PATH_PROD = '/record/serviceterm';
+
+const PATHNAME =
+  process.env.NODE_ENV === 'development' ? PATHNAME_DEV : PATHNAME_PROD;
+const RECORD_PATH =
+  process.env.NODE_ENV === 'development' ? RECORD_PATH_DEV : RECORD_PATH_PROD;
+
+const router = new Router(undefined, PATHNAME);
 
 /**
  * @description Window Onload Callback
  */
 if (window) {
   window.onload = function () {
-    // Page를 Render할 Element를 생성합니다.
-    const subTitle = `시행일 ${data.enforceDate}`;
-    const footerElement = createFooterElement(
-      converDate(`고지일: ${data.noticeDate}`),
-      converDate(`시행일: ${data.enforceDate}`),
-    );
+    const stackSlider = new StackSlider('service-term');
+
+    const main = createMainPage(data, (file) => {
+      router.redirect('/history', { file });
+    });
+    const iframe = createElement('iframe');
+
+    stackSlider.addPage(main);
+    stackSlider.addPage(iframe);
+
+    // 라우터에 함수를 추가합니다.
+    router.setRouterFunc('/history', ({ query }) => {
+      iframe.src = `${RECORD_PATH}/${query.file}.html`;
+      stackSlider.moveNext();
+    });
+
+    router.setRouterFunc('default', () => {
+      while (stackSlider.current !== 0) stackSlider.movePrev();
+    });
+
+    router.refresh();
 
     // Page를 구성합니다.
-    document
-      .getElementsByClassName('root')[0]
-      .appendChild(
-        new TextPost(
-          data.title,
-          subTitle,
-          contentParser({ contents: data.contents }),
-          footerElement,
-        ).element,
-      );
+    document.getElementsByClassName('root')[0].appendChild(stackSlider.element);
   };
 }

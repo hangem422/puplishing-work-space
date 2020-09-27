@@ -243,7 +243,7 @@ if (window) {
     stackSlider.addPage(requestPage);
 
     // 라우터에 함수를 추가합니다.
-    router.setRouterFunc('request', () => {
+    router.setRouterFunc('/request', () => {
       document.title = REQUEST_PAGE_TITLE;
       stackSlider.moveNext();
       initEmailCertPage();

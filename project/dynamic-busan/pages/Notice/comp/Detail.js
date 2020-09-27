@@ -18,7 +18,6 @@ function createDetailPage(data) {
     textPostPage.title = notice.title;
     textPostPage.subtitle = notice.date;
     textPostPage.contents = notice.contents;
-    textPostPage.footer = notice.from;
     textPostList[notice.id] = textPostPage.element;
   });
 

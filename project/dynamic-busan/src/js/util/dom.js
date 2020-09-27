@@ -27,9 +27,9 @@ export function appendAllChild(element, child) {
  * @param {{ [propName: string]: string }} attrObj 추가할 Attribute
  */
 export function setAttributeAll(element, attrObj) {
-  Object.entries(attrObj).forEach(([key, value]) =>
-    element.setAttribute(key, value),
-  );
+  Object.entries(attrObj).forEach(([key, value]) => {
+    if (value !== undefined) element.setAttribute(key, value);
+  });
 }
 
 /**

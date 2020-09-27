@@ -78,7 +78,7 @@ class TextPost {
    * @param {string | HTMLElement} contents 게시글 내용 문자열 혹은 HTMLElemnt
    * @param {string | HTMLElement} footer 게시글 푸터 문자열 혹은 HTMLElement
    */
-  constructor(title = '', subtitle = '', contents, footer = '') {
+  constructor(title, subtitle, contents, footer) {
     // Component Element를 생성합니다.
     const titleElement = createElement('p', {
       class: 'font-text-body1 font-medium font-color-dark header-title',
@@ -96,7 +96,7 @@ class TextPost {
       child: [titleElement, subtitleElement],
     });
     const contentWrapper = createElement('div', {
-      class: 'wrapper text-post-content',
+      class: 'wrapper text-post-content font-text-body2 font-color-medium',
       child: contents,
     });
     const footerWrapper = createElement('div', {

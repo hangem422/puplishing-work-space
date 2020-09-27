@@ -33,7 +33,7 @@
   margin-right: 4px;
 } */
 
-.item-content-container .content-custom-list .content-custom-list-item a {
+.item-content-container .content-custom-list a {
   word-break: break-all;
   cursor: pointer;
   outline: none;

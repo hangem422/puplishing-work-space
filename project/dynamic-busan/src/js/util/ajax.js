@@ -40,6 +40,7 @@ export function removePath(_target, _path) {
  * @returns {string} Query String
  */
 export function objToQueryURL(obj) {
+  if (Object.keys(obj).length < 1) return '';
   const queryUrl = Object.entries(obj)
     .map((keyValue) => keyValue.join('='))
     .join('&');
@@ -88,8 +89,8 @@ export function post(option) {
     }
 
     const contentType = res.headers.get('content-type');
-    if (contentType.startsWith('application/json;')) return res.json();
-    if (contentType.startsWith('text/plain;')) return res.text();
+    if (contentType.startsWith('application/json')) return res.json();
+    if (contentType.startsWith('text/plain')) return res.text();
     throw new Error(`Unsupported response content-type: ${contentType}`);
   });
 }
@@ -118,8 +119,8 @@ export function get(option) {
     }
 
     const contentType = res.headers.get('content-type');
-    if (contentType.startsWith('application/json;')) return res.json();
-    if (contentType.startsWith('text/plain;')) return res.text();
+    if (contentType.startsWith('application/json')) return res.json();
+    if (contentType.startsWith('text/plain')) return res.text();
     throw new Error(`Unsupported response content-type: ${contentType}`);
   });
 }

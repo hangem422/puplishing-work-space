@@ -1,82 +1,57 @@
 import { createElement } from '../../../src/js/util/dom';
-import TextPost, { contentParser } from '../../../src/js/layout/TextPost';
+import TextPost from '../../../src/js/layout/TextPost';
 
 /**
- *
+ * @description 현재 시행중인 서비스 이용 약관 페이지를 생성합니다.
  * @param {{ 
     title: string,
-    contents: Array,
-    history: Object,
-    enforceDate: string,
-    enforceDate: string,
+    date: string,
+    history: { [propName: string]: string },
+    contents: string,
   }} data
- * @param {(file: string) => void}historyOnclick 이력 항목 온클릭 이벤트 콜백 함수
+ * @param {(file: string) => void} historyOnclick 이력 항목 온클릭 이벤트 콜백 함수
  */
 function createMainPage(data, historyOnclick) {
-  /* --------------- */
-  /*  Util Function  */
-  /* --------------- */
-
-  /**
-   * @description YYYY.MM.DD를 YYYY년 MM월 DD일로 변경합니다.
-   * @param {string} date YYYY.MM.DD
-   * @returns {string} YYYY년 MM월 DD일
-   */
-  function converDate(date) {
-    const dateArr = date.split('.');
-    dateArr[0] = `${dateArr[0]}년`;
-    dateArr[1] = dateArr[1].length < 2 ? `0${dateArr[1]}월` : `${dateArr[1]}월`;
-    dateArr[2] = dateArr[2].length < 2 ? `0${dateArr[2]}일` : `${dateArr[2]}일`;
-    return dateArr.join(' ');
-  }
-
   /* ------------ */
   /*  Create View */
   /* ------------ */
 
   // Subtitle 생성
-  const subTitle = `시행일 ${data.enforceDate}`;
+  const subTitle = `시행일 ${data.date}`;
 
   // Footer 생성
-  const noticeDate = createElement('li', {
-    child: converDate(`고지일: ${data.noticeDate}`),
+  const [year, month, date] = data.date.split('.');
+  const enforceDate = createElement('span', {
+    style: 'color: red',
+    child: `${year}년 ${month}월 ${date}일`,
   });
-  const enforceDate = createElement('li', {
-    child: converDate(`시행일: ${data.enforceDate}`),
-  });
-  const footerElement = createElement('ul', {
-    class: 'font-text-body2 font-color-dark',
-    child: [noticeDate, enforceDate],
+  const footerEnforce = createElement('li', {
+    child: ['이 약관은 ', enforceDate, '부터 적용됩니다.'],
   });
 
-  // Content 생성
-  const contentElement = contentParser({ contents: data.contents });
-
-  // 이력 보기 생성
-  if (typeof historyOnclick === 'function') {
-    const historyTitle = createElement('p', {
-      class: 'content-item-title font-text-body2 font-color-dark font-medium',
-      child: data.history.title,
+  const historyListItem = Object.keys(data.history).map((key) => {
+    const item = createElement('li', {
+      class: 'font-link',
+      child: `비패스(B PASS)앱 서비스 이용약관 (${key})`,
     });
-    const historyContainer = createElement('div', {
-      class: 'content-item depth-1',
-      child: historyTitle,
-    });
+    item.addEventListener('click', () => historyOnclick(key));
+    return item;
+  });
+  const historyList = createElement('ul', { child: historyListItem });
+  const footerHistory = createElement('li', {
+    child: [
+      '이전의 개인정보 처리방침은 아래에서 확인할 수 있습니다.',
+      historyList,
+    ],
+  });
 
-    data.history.links.forEach((option) => {
-      const element = createElement('p', {
-        class: 'font-text-body2 font-color-medium font-link',
-        child: `○ ${option.title} (${option.start} - ${option.end})`,
-      });
-      element.addEventListener('click', () => historyOnclick(option.file));
-      historyContainer.appendChild(element);
-    });
+  const footerTitle = createElement('p', { child: '부칙' });
+  const footerContents = createElement('ul', {
+    child: [footerEnforce, footerHistory],
+  });
+  const footer = [footerTitle, footerContents];
 
-    contentElement.appendChild(historyContainer);
-  }
-
-  return new TextPost(data.title, subTitle, contentElement, footerElement)
-    .element;
+  return new TextPost(data.title, subTitle, data.contents, footer).element;
 }
 
 export default createMainPage;

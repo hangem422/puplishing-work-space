@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import Router from '../../src/js/module/RouterWithCB';
 import PageSlider from '../../src/js/layout/PageSlider';
 
@@ -9,6 +10,7 @@ import createListBoardPage from './comp/Board';
 import createDetailPage from './comp/Detail';
 
 const DOCUMENT_TITLE = '이용약관';
+const IFRAME_PREFIX = process.env.NODE_ENV === 'development' ? '' : '/html';
 
 // Callback으로 동작하는 라우터를 생성합니다.
 const router = new Router();
@@ -29,22 +31,22 @@ if (window) {
 
     // Page Slide를 생성합니다.
     const pageSlider = new PageSlider('term-slider');
-    const listBoardPage = createListBoardPage(data, (index) => {
-      // 링크가 있는 약관이면 링크로 리다이렉션 시킵니다.
-      if (data[index].link) window.location.href = data[index].link;
-      else router.redirect('/detail', { index });
-    });
-    pageSlider.addPage(listBoardPage.element);
+    const listBoardPage = createListBoardPage(data, (index) =>
+      router.redirect('/detail', { index }),
+    );
 
+    pageSlider.addPage(listBoardPage.element);
     root.appendChild(pageSlider.element);
 
     // 약관 상세 페이지는 랜더에 다소 시간이 걸릴 수 있으니, 마지막에 진행합니다.
-    const detailPage = createDetailPage(data);
+    const detailPage = createDetailPage(data, IFRAME_PREFIX);
     pageSlider.addPage(detailPage.element);
 
     // 라우터에 함수를 추가합니다.
     router.setRouterFunc('/detail', ({ query }) => {
       const index = query.index || 0;
+      // 링크가 있는 약관이면 링크로 리다이렉션 시킵니다.
+      if (data[index].link) window.location.replace(data[index].link);
       document.title = data[index].title;
       detailPage.renderDetail(index);
       pageSlider.movePage(1);

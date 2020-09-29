@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import Router from '../../src/js/module/RouterWithCB';
 import PageSlider from '../../src/js/layout/PageSlider';
 

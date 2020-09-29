@@ -1,0 +1,35 @@
+.toast-container {
+  position: fixed;
+  height: 0px;
+  width: 100%;
+  bottom: 0px;
+  overflow: visible;
+  opacity: 0;
+  z-index: 9999;
+
+  transition: opacity var(--transition-duration)
+    var(--transition-timing-function);
+}
+
+.toast-container.activate {
+  opacity: 1;
+}
+
+.toast-container .toast-wrapper {
+  position: absolute;
+  top: 0px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+
+  transition: top var(--transition-duration-slow)
+    var(--transition-timing-function);
+}
+
+.toast-container .toast-wrapper .font-text-body2 {
+  padding: 8px 16px;
+  margin: 0px 16px;
+  border-radius: 4px;
+  color: var(--primary-color-white);
+  background-color: var(--font-color-medium);
+}

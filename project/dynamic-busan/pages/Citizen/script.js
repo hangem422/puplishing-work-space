@@ -136,8 +136,7 @@ function getVcFromApi(rrn, lastChance) {
  * @param {number} index
  */
 function agreePageOnDetail(index) {
-  if (data[index].link) window.location.href = data[index].link;
-  else router.redirect('/detail', { index });
+  router.redirect('/detail', { index });
 }
 
 /**
@@ -199,6 +198,8 @@ if (window) {
     // 라우터에 함수를 추가합니다.
     router.setRouterFunc('/detail', ({ query }) => {
       const index = query.index || 0;
+      // 링크가 있는 약관이면 링크로 리다이렉션 시킵니다.
+      if (data[index].link) window.location.replace(data[index].link);
       document.title = data[index].title;
       detailPage.renderDetail(index);
       termsOfUsePage.movePage(1);

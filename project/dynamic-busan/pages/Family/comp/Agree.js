@@ -6,7 +6,7 @@ import { createElement, wrapping } from '../../../src/js/util/dom';
 /* ------------- */
 
 const TERM_OF_USE_TITLE =
-  '모바일 가족사랑 카드를 발급하기 위해 약관을 확인해주세요.';
+  '모바일 가족사랑카드를 발급하기 위해 약관을 확인해주세요.';
 
 /**
  * @description 약관 동의 페이지를 생성합니다.

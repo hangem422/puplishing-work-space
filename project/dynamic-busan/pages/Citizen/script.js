@@ -1,4 +1,5 @@
 import { appendAllChild } from '../../src/js/util/dom';
+import { useOnlyBackForwardType, saveLocal } from '../../src/js/util/storage';
 import { requestVP, issuedVC, fail, cancel } from '../../src/js/util/os';
 import { get, post } from '../../src/js/util/ajax';
 import Router from '../../src/js/module/RouterWithCB';
@@ -16,6 +17,8 @@ import createCertificationPage from './comp/Certification';
 /* ------------- */
 /*  Config Data  */
 /* ------------- */
+
+const LOCAL_STORAGE_KEY = '@bskp_ctas';
 
 const SEND_VP_API_URL = '/api/v1/request_required_vp';
 const GET_VC_API_URL = '/api/v1/issue_vc';
@@ -160,13 +163,22 @@ if (window) {
     // Page를 Render할 Element를 가져옵니다.
     const root = document.getElementsByClassName('root')[0];
 
+    // local storage value를 초기화하거나 가져옵니다.
+    const initAgreeVal = useOnlyBackForwardType(LOCAL_STORAGE_KEY, {
+      isValidFnc: (val) => Array.isArray(val) && val.length === data.length,
+      defVal: Array(data.length).fill(false),
+    });
+
     // 이용 약관 동의 페이지를 생성합니다.
     const termsOfUsePage = new PageSlider('terms-and-condition');
-    const [agreeTermsPage] = createAgreePage(
-      data.map(({ title }) => title),
-      agreePageOnDetail,
-      agreePageOnSubmint,
-    );
+    const agreePageTitles = data.map(({ title }) => title);
+    const agreePageOptions = {
+      onDetailFunc: agreePageOnDetail,
+      submitFunc: agreePageOnSubmint,
+      saveLocalStorage: (val) => saveLocal(LOCAL_STORAGE_KEY, val),
+      initAgreeVal,
+    };
+    const [agreeTermsPage] = createAgreePage(agreePageTitles, agreePageOptions);
     termsOfUsePage.addPage(agreeTermsPage);
 
     // 주민번호 인증 페이지를 생성합니다.

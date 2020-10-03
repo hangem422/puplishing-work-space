@@ -1,5 +1,13 @@
 @import url('../../src/style/main.css');
 
+html,
+body,
+.root,
+iframe {
+  width: 100%;
+  height: 100%;
+}
+
 .text-post-container .text-post-footer li {
   margin-left: var(--container-padding);
 }

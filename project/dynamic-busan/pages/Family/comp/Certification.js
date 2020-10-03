@@ -86,6 +86,7 @@ function createCertificationPage(submitFunc) {
     submitFunc(secretTextfield.text, rrnInvalidCount >= 4).then((result) => {
       if (!result) {
         rrnInvalidCount += 1;
+        secretTextfield.deleteAll();
         secretTextfield.error(`${INVALID_RRN_MESSAGE} (${rrnInvalidCount}/5)`);
       }
     });

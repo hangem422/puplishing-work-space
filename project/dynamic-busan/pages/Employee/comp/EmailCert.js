@@ -18,6 +18,7 @@ const INVALID_CERT_MESSAGE =
 const EMAIL_REG = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
 const CERT_NUM_REG = /^[0-9]{6}$/;
 
+const EMAIL_SUFFIX = '%EMAIL_CERT_SUFFIX%';
 const RE_CERT_EMAIL_TIME = 30 * 1000;
 const CERT_LIMIT_TIME = 3 * 60 * 1000;
 const CERT_NUM_LENGTH = 6;
@@ -82,12 +83,13 @@ function createEmailCertPage(
     child: '회사 이메일',
   });
   const emailInput = createElement('input', {
-    type: 'email',
+    type: 'text',
     id: 'email-input',
     placeholder: '회사 이메일을 입력하세요.',
   });
   const emailInputElement = createElement('div', {
-    class: 'textfield',
+    class: `textfield ${EMAIL_SUFFIX && 'textfield-time'}`,
+    time: EMAIL_SUFFIX,
     child: [emailInputLabel, emailInput],
   });
 
@@ -137,7 +139,7 @@ function createEmailCertPage(
   function setActiveCertReqBtn() {
     if (
       timeout === null && // 한번 요청 후 30초 후에 재 요청이 가능합니다.
-      EMAIL_REG.test(emailInput.value) // 이메일이 올바른 포멧이야 합니다.
+      EMAIL_REG.test(emailInput.value + EMAIL_SUFFIX) // 이메일이 올바른 포멧이야 합니다.
     ) {
       requestCertNumBtn.removeAttribute('disabled');
     } else {
@@ -255,7 +257,7 @@ function createEmailCertPage(
   function firstCertNumReq() {
     requestCertNumBtn.innerHTML = '인증번호 재요청';
     emailInput.setAttribute('disabled', 'disabled');
-    email = emailInput.value;
+    email = emailInput.value + EMAIL_SUFFIX;
     return sendEmailCertFunc(email);
   }
 

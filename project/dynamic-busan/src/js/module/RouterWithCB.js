@@ -1,40 +1,54 @@
-import { objToQueryURL } from '../util/ajax';
-
-/**
- * @description URL Path의 앞뒤 '/'를 제거합니다.
- * @param {string} path URL Path
- * @returns {string} 앞뒤 '/'를 제거한 URL Path
- */
-function clearSlashes(path) {
-  return path.replace(/\/$/, '').replace(/^\//, '');
-}
+import {
+  clearSlashes,
+  mergePath,
+  removePath,
+  objToQueryURL,
+  queryURLToObj,
+} from '../util/ajax';
 
 /**
  * @description Callback 함수를 기반으로 작동하는 Router
- * @property {string} orginPath Origin Path
- * @property {string} root Root Path
- * @property {{ [propName: string]: ({ path: string, query: object }) => void }} routerFunc Root Path
+ * @property {string} protocol
+ * @property {string} host
+ * @property {string} originPathname 고정 Pathname 값
+ * @property {string} pathname
+ * @property {string} search
+ * @property {string} url (Get Only) 현재 URL 주소
+ * @property {{ [propName: string]: ({ path: string, query: object }) => void }} routerFunc 라우터 함수
  */
 class RouterWithCB {
   /**
    * @description RouterWithCB의 생성자
    * @param {({ path: string, query: object }) => void} defaultFunc 기본 라우터 함수
+   * @param {string} originPathname 고정 Pathname 값. 마 입력시 현재 Pathname으로 고정
    * @param {string} root Root Path
    */
-  constructor(defaultFunc = () => {}) {
-    this.orginPath = window.location.pathname;
-    this.root = this.orginPath.split('/').pop();
-    this.currentPath = `/${this.root}`;
+  constructor(defaultFunc = () => {}, originPathname) {
+    this.protocol = window.location.protocol;
+    this.host = window.location.host;
+    this.originPathname = originPathname
+      ? `/${clearSlashes(originPathname)}`
+      : window.location.pathname;
+    this.pathname = window.location.pathname;
+    this.search = window.location.search;
     this.routerFunc = { default: defaultFunc };
 
     // popstate 이벤트 리스너에 라우터 함수를 적용합니다.
     window.addEventListener('popstate', (event) => {
-      const path = clearSlashes(
-        window.location.pathname.replace(this.orginPath, ''),
-      );
-      this.currentPath = `/${path}`;
-      this.routerCallback({ path, query: event.state || {} });
+      const { query = {}, path = '/' } = event.state || {};
+      this.search = objToQueryURL(query);
+      this.pathname = window.location.pathname;
+
+      this.routerCallback({ path, query });
     });
+  }
+
+  /**
+   * @description 현재 URL을 반환합니다.
+   * @returns {string} URL
+   */
+  get url() {
+    return `${this.protocol}//${this.host}${this.pathname}${this.search}`;
   }
 
   /**
@@ -51,21 +65,24 @@ class RouterWithCB {
    * @param {string} path Redirect할 URL Path
    * @param {object} query URL Query Parameter
    */
-  redirect(path, query) {
-    // 현재 Path와 URL을 재설정합니다.
-    const clearPath = clearSlashes(path);
-    let url = `${this.root}/${clearPath}`;
+  redirect(_path, query) {
+    const prevUrl = this.url;
 
-    // Query Parameter가 존재하면 Query와 URL을 재설정 합니다.
-    if (typeof query === 'object') url += `?${objToQueryURL(query)}`;
+    // pathname 설정
+    const path = `/${clearSlashes(_path)}`;
+    this.pathname = mergePath(this.originPathname, path);
+
+    // Query Parameter가 존재하면 search를 재설정 합니다.
+    if (typeof query === 'object') this.search = objToQueryURL(query);
 
     // 같은 페이지로 이동시 아무런 동작을 하지 않습ㄴ다.
-    if (this.currentPath === url) return;
+    const nextUrl = this.url;
+    if (prevUrl === nextUrl) return;
 
     // 브라우저의 세션 기록 스택에 상태를 추가합니다.
-    this.currentPath = url;
-    window.history.pushState(query, null, url);
-    this.routerCallback({ path: clearPath, query });
+    const state = { path, query };
+    window.history.pushState(state, null, nextUrl);
+    this.routerCallback(state);
   }
 
   /**
@@ -81,6 +98,12 @@ class RouterWithCB {
     });
     // 알맞은 함수가 없을 시 Default 함수가 실행됩니다.
     if (!isComplete) this.routerFunc.default({ path, query });
+  }
+
+  refresh() {
+    const query = this.search ? queryURLToObj(this.search) : {};
+    const path = removePath(this.pathname, this.originPathname);
+    this.routerCallback({ path, query });
   }
 }
 

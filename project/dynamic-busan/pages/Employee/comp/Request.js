@@ -42,7 +42,6 @@ function createRequestPage(notice, submitFunc) {
   const departInput = createElement('input', {
     type: 'text',
     id: 'depart-input',
-    maxlength: INPUT_MAX_LENGTH.toString(),
     placeholder: '소속 부서명을 입력하세요.',
   });
   const departElement = createElement('div', {
@@ -58,7 +57,6 @@ function createRequestPage(notice, submitFunc) {
   const positionInput = createElement('input', {
     type: 'text',
     id: 'position-input',
-    maxlength: INPUT_MAX_LENGTH.toString(),
     placeholder: '담당자 이름을 입력하세요.',
   });
   const positionElement = createElement('div', {
@@ -153,6 +151,18 @@ function createRequestPage(notice, submitFunc) {
   }
 
   /**
+   * @description input max를 유지하고, submint 버튼을 활성화 시킵니다.
+   * @param {Event} event
+   */
+  function inputKeyupFunc(event) {
+    if (event.target.value.length > INPUT_MAX_LENGTH) {
+      event.target.value = event.target.value.slice(0, INPUT_MAX_LENGTH);
+    } else {
+      setActiveSubmitBtn();
+    }
+  }
+
+  /**
    * @description 사원증 발급 요청 페이지 초가화 함수
    */
   function initPage() {
@@ -165,12 +175,12 @@ function createRequestPage(notice, submitFunc) {
   /*  Event Callback Function  */
   /* ------------------------- */
 
-  departInput.addEventListener('keyup', setActiveSubmitBtn);
+  departInput.addEventListener('keyup', inputKeyupFunc);
   departInput.addEventListener('focusout', (event) =>
     setErrorMessage(event.target),
   );
 
-  positionInput.addEventListener('keyup', setActiveSubmitBtn);
+  positionInput.addEventListener('keyup', inputKeyupFunc);
   positionInput.addEventListener('focusout', (event) =>
     setErrorMessage(event.target),
   );

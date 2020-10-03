@@ -3,6 +3,10 @@
   margin-top: 4px;
 }
 
+.text-post-container li {
+  margin-left: var(--container-padding);
+}
+
 .text-post-container .text-post-content {
   margin-top: 32px;
 }

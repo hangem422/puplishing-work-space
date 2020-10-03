@@ -64,6 +64,7 @@ class AgreeTerms {
       class: 'container agree-terms',
       child: [titleElement, this.agreeAllBtn, this.termsWrapper],
     });
+
     this.render(terms);
   }
 
@@ -73,6 +74,12 @@ class AgreeTerms {
    */
   get isDone() {
     return this.count === this.size;
+  }
+
+  get json() {
+    return Array.from(this.termsWrapper.childNodes).map((termElement) =>
+      termElement.classList.contains(ACTIVE_TERM_CLASS),
+    );
   }
 
   /**
@@ -127,6 +134,15 @@ class AgreeTerms {
   changeAll() {
     if (this.isDone) this.disagreeAll();
     else this.agreeAll();
+  }
+
+  clickWithIndex(index) {
+    if (index < this.size) {
+      const event = new Event('click');
+      this.termsWrapper.children[index]
+        .getElementsByClassName('agree-terms-item-check')[0]
+        .dispatchEvent(event);
+    }
   }
 
   /**

@@ -18,6 +18,10 @@ body,
   margin-top: 32px;
 }
 
+.certification-email .textfield-time input {
+  padding-right: 98px;
+}
+
 .certification-email .button-type-b {
   margin-top: 24px;
 }

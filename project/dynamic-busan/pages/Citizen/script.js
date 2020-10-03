@@ -1,4 +1,5 @@
 import { appendAllChild } from '../../src/js/util/dom';
+import { useOnlyBackForwardType, saveLocal } from '../../src/js/util/storage';
 import { requestVP, issuedVC, fail, cancel } from '../../src/js/util/os';
 import { get, post } from '../../src/js/util/ajax';
 import Router from '../../src/js/module/RouterWithCB';
@@ -16,6 +17,8 @@ import createCertificationPage from './comp/Certification';
 /* ------------- */
 /*  Config Data  */
 /* ------------- */
+
+const LOCAL_STORAGE_KEY = '@bskp_ctas';
 
 const SEND_VP_API_URL = '/api/v1/request_required_vp';
 const GET_VC_API_URL = '/api/v1/issue_vc';
@@ -111,7 +114,7 @@ function getVcFromApi(rrn, lastChance) {
       // 주민번호 불일치 오류
       if (['E004'].includes(res.message)) {
         if (lastChance) errorFunc.cancel(ERROR_MESSAGE_04);
-        else errorFunc.showModal(ERROR_MESSAGE_04);
+        else appState.hide();
         return false;
       }
       // 기타 오류
@@ -133,8 +136,7 @@ function getVcFromApi(rrn, lastChance) {
  * @param {number} index
  */
 function agreePageOnDetail(index) {
-  if (data[index].link) window.location.href = data[index].link;
-  else router.redirect('/detail', { index });
+  router.redirect('/detail', { index });
 }
 
 /**
@@ -160,13 +162,22 @@ if (window) {
     // Page를 Render할 Element를 가져옵니다.
     const root = document.getElementsByClassName('root')[0];
 
+    // local storage value를 초기화하거나 가져옵니다.
+    const initAgreeVal = useOnlyBackForwardType(LOCAL_STORAGE_KEY, {
+      isValidFnc: (val) => Array.isArray(val) && val.length === data.length,
+      defVal: Array(data.length).fill(false),
+    });
+
     // 이용 약관 동의 페이지를 생성합니다.
     const termsOfUsePage = new PageSlider('terms-and-condition');
-    const [agreeTermsPage, initAgreeTermsPage] = createAgreePage(
-      data.map(({ title }) => title),
-      agreePageOnDetail,
-      agreePageOnSubmint,
-    );
+    const agreePageTitles = data.map(({ title }) => title);
+    const agreePageOptions = {
+      onDetailFunc: agreePageOnDetail,
+      submitFunc: agreePageOnSubmint,
+      saveLocalStorage: (val) => saveLocal(LOCAL_STORAGE_KEY, val),
+      initAgreeVal,
+    };
+    const [agreeTermsPage] = createAgreePage(agreePageTitles, agreePageOptions);
     termsOfUsePage.addPage(agreeTermsPage);
 
     // 주민번호 인증 페이지를 생성합니다.
@@ -185,14 +196,16 @@ if (window) {
     termsOfUsePage.addPage(detailPage.element);
 
     // 라우터에 함수를 추가합니다.
-    router.setRouterFunc('detail', ({ query }) => {
+    router.setRouterFunc('/detail', ({ query }) => {
       const index = query.index || 0;
+      // 링크가 있는 약관이면 링크로 리다이렉션 시킵니다.
+      if (data[index].link) window.location.replace(data[index].link);
       document.title = data[index].title;
       detailPage.renderDetail(index);
       termsOfUsePage.movePage(1);
     });
 
-    router.setRouterFunc('certification', () => {
+    router.setRouterFunc('/certification', () => {
       document.title = CERTIFICATION_TITLE;
       stackSlider.moveNext();
     });
@@ -201,7 +214,7 @@ if (window) {
       document.title = TERM_OF_USE_TITLE;
       if (termsOfUsePage.current !== 0) termsOfUsePage.movePage(0);
       if (stackSlider.current !== 0) {
-        initAgreeTermsPage();
+        // initAgreeTermsPage();
         initCertificationPage();
       }
       while (stackSlider.current !== 0) stackSlider.movePrev();

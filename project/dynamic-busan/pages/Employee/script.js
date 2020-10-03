@@ -4,6 +4,7 @@ import { post, get } from '../../src/js/util/ajax';
 import Router from '../../src/js/module/RouterWithCB';
 import StackSlider from '../../src/js/layout/StackSlider';
 import AppState from '../../src/js/component/AppState';
+import Toast from '../../src/js/component/Toast';
 
 import data from './data.json';
 import './style.css';
@@ -27,12 +28,16 @@ const REQUEST_PAGE_TITLE = '사원증 발급 요청';
 const MODAL_INVALID_ENV = '유효하지 않은 환경에서 실행할 수 없습니다.';
 const MODAL_SERVER_ERROR = '오류가 발생했습니다. 잠시 후에 다시 시도해주세요.';
 
+const EMAIL_TOAST_MESSAGE = '이메일로 인증번호가 발송되었습니다.';
+const EMAIL_TOAST_TIME = 3000;
+
 let certEmail = '';
 let vpSessionUUID = '';
 let emailSessionUUID = '';
 
 const router = new Router(); // Callback으로 동작하는 라우터를 생성합니다.
 const appState = new AppState(); // 로딩과 모달 컴포넌트를 생성합니다.
+const toast = new Toast(); // 토스트 메시지 컴포넌트를 생성합니다.
 
 // 에러 발생시 에러 모달을 보여주는 함수입니다.
 const errorFunc = {
@@ -97,6 +102,7 @@ function sendEmailCert(email) {
       certEmail = email;
       emailSessionUUID = res.data.referrer_token;
       appState.hide();
+      toast.show(EMAIL_TOAST_MESSAGE, EMAIL_TOAST_TIME);
       return true;
     })
     .catch(() => {
@@ -126,6 +132,7 @@ function reSendEmailCert() {
     .then((res) => {
       emailSessionUUID = res.data.referrer_token;
       appState.hide();
+      toast.show(EMAIL_TOAST_MESSAGE, EMAIL_TOAST_TIME);
       return true;
     })
     .catch(() => {
@@ -243,7 +250,7 @@ if (window) {
     stackSlider.addPage(requestPage);
 
     // 라우터에 함수를 추가합니다.
-    router.setRouterFunc('request', () => {
+    router.setRouterFunc('/request', () => {
       document.title = REQUEST_PAGE_TITLE;
       stackSlider.moveNext();
       initEmailCertPage();
@@ -256,6 +263,10 @@ if (window) {
       initRequestPage();
     });
 
-    appendAllChild(root, [appState.element, stackSlider.element]);
+    appendAllChild(root, [
+      toast.element,
+      appState.element,
+      stackSlider.element,
+    ]);
   };
 }

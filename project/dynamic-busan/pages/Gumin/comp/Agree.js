@@ -9,21 +9,27 @@ const TERM_OF_USE_TITLE = '해운대구민카드를 발급하기 위해 약관�
 
 /**
  * @description 약관 동의 페이지를 생성합니다.
+ * @typedef {object} options
+ * @property {(index: number, item: HTMLElement) => void} onDetailFunc 약관 상세보기 이벤트 콜백 함수
+ * @property {() => void} submitFunc 약관 동의 제출 이벤트 콜백 함수
+ * @property {(val: any) => void} saveLocalStorage value를 local storage에 저장하는 함수
+ * @property {boolean[]} initAgreeVal 약관 동의 초기 값
  * @param {string[]} titles 약관 제목 리스트
- * @param {(index: number, item: HTMLElement) => void} onDetailFunc 약관 상세보기 이벤트 콜백 함수
- * @param {() => void} submitFunc 약관 동의 제출 이벤트 콜백 함수
+ * @param {options} options option 값
  * @returns {[HTMLElement, () => void]}  약관 동의 페이지와 초기화 함수
  */
-function createAgreePage(titles, onDetailFunc, submitFunc) {
+function createAgreePage(titles, options) {
+  const onDetailFunc = options.onDetailFunc || function () {};
+  const submitFunc = options.submitFunc || function () {};
+  const saveLocalStorage = options.saveLocalStorage || function () {};
+  const initAgreeVal = options.initAgreeVal || [];
+
   /* ------------ */
   /*  Create View */
   /* ------------ */
 
   // 약관 동의 버튼을 생성합니다.
-  const agreeTerms = new AgreeTerms(titles, {
-    title: TERM_OF_USE_TITLE,
-    onDetail: onDetailFunc,
-  });
+  const agreeTerms = new AgreeTerms(titles, { title: TERM_OF_USE_TITLE });
 
   // 확인 버튼을 생성합니다.
   const submitElement = createElement('button', {
@@ -66,6 +72,18 @@ function createAgreePage(titles, onDetailFunc, submitFunc) {
 
   submitElement.addEventListener('click', submitFunc);
   agreeTerms.onClick = setSubmitBtnActive;
+  agreeTerms.onDetail = function (index) {
+    saveLocalStorage(agreeTerms.json);
+    onDetailFunc(index);
+  };
+
+  /* ----------- */
+  /*  Init Page  */
+  /* ----------- */
+
+  initAgreeVal.forEach((val, index) => {
+    if (val) agreeTerms.clickWithIndex(index);
+  });
 
   return [agreeTermsPage, initPage];
 }

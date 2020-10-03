@@ -17,7 +17,7 @@ const BUSAN_LIBRARY_URL =
 const ERROR_MESSAGE_01 = '유효하지 않은 환경에서 실행할 수 없습니다.';
 const ERROR_MESSAGE_02 = '오류가 발생했습니다. 잠시 후에 다시 시도 해주세요.';
 const ERROR_MESSAGE_03 =
-  '도서관 회원증은 기존 책이음서비스 회원만 발급받을 수 있습니다';
+  '도서관 회원증은 부산도서관 회원만 발급받을 수 있습니다';
 const ERROR_MESSAGE_03_SUB = '책이음 서비스 회원가입 바로가기';
 
 const ERROR_CASE = ['EBL001', 'EBL002', 'EBL003', 'EBL004', 'EBL005'];

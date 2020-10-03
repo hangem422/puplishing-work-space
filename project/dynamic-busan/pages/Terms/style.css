@@ -53,10 +53,8 @@ body,
   margin-left: 20px;
 }
 
-.text-post-container .text-post-footer li {
-  margin-left: var(--container-padding);
-}
-
-.text-post-container .text-post-footer li:nth-child(n + 2) {
-  margin-top: 8px;
+.term-detail iframe {
+  border: none;
+  width: 100%;
+  height: 100%;
 }

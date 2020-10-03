@@ -18,8 +18,7 @@ const INVALID_CERT_MESSAGE =
 const EMAIL_REG = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
 const CERT_NUM_REG = /^[0-9]{6}$/;
 
-// const EMAIL_SUFFIX = '@btp.or.kr';
-const EMAIL_SUFFIX = '';
+const EMAIL_SUFFIX = '%EMAIL_CERT_SUFFIX%';
 const RE_CERT_EMAIL_TIME = 30 * 1000;
 const CERT_LIMIT_TIME = 3 * 60 * 1000;
 const CERT_NUM_LENGTH = 6;
@@ -84,7 +83,7 @@ function createEmailCertPage(
     child: '회사 이메일',
   });
   const emailInput = createElement('input', {
-    type: 'email',
+    type: 'text',
     id: 'email-input',
     placeholder: '회사 이메일을 입력하세요.',
   });

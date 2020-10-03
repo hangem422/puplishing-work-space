@@ -7,8 +7,11 @@ export function appendAllChild(element, child) {
   // ChildList가 List로 제대로 왔을 떄
   if (Array.isArray(child)) {
     child.forEach((node) => {
-      if (node instanceof HTMLElement || node instanceof Element)
+      if (node instanceof HTMLElement || node instanceof Element) {
         element.appendChild(node);
+      } else if (typeof node === 'string') {
+        element.innerHTML += node;
+      }
     });
   }
   // ChildList가 단일 Element일 때
@@ -27,9 +30,9 @@ export function appendAllChild(element, child) {
  * @param {{ [propName: string]: string }} attrObj 추가할 Attribute
  */
 export function setAttributeAll(element, attrObj) {
-  Object.entries(attrObj).forEach(([key, value]) =>
-    element.setAttribute(key, value),
-  );
+  Object.entries(attrObj).forEach(([key, value]) => {
+    if (value !== undefined) element.setAttribute(key, value);
+  });
 }
 
 /**

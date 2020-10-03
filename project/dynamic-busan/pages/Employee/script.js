@@ -4,6 +4,7 @@ import { post, get } from '../../src/js/util/ajax';
 import Router from '../../src/js/module/RouterWithCB';
 import StackSlider from '../../src/js/layout/StackSlider';
 import AppState from '../../src/js/component/AppState';
+import Toast from '../../src/js/component/Toast';
 
 import data from './data.json';
 import './style.css';
@@ -26,8 +27,9 @@ const REQUEST_PAGE_TITLE = '사원증 발급 요청';
 
 const MODAL_INVALID_ENV = '유효하지 않은 환경에서 실행할 수 없습니다.';
 const MODAL_SERVER_ERROR = '오류가 발생했습니다. 잠시 후에 다시 시도해주세요.';
-const MODAL_CERT_ERROR =
-  '인증번호가 일치하지 않습니다.<br />확인 후 다시 시도해주세요.';
+
+const EMAIL_TOAST_MESSAGE = '이메일로 인증번호가 발송되었습니다.';
+const EMAIL_TOAST_TIME = 3000;
 
 let certEmail = '';
 let vpSessionUUID = '';
@@ -35,6 +37,7 @@ let emailSessionUUID = '';
 
 const router = new Router(); // Callback으로 동작하는 라우터를 생성합니다.
 const appState = new AppState(); // 로딩과 모달 컴포넌트를 생성합니다.
+const toast = new Toast(); // 토스트 메시지 컴포넌트를 생성합니다.
 
 // 에러 발생시 에러 모달을 보여주는 함수입니다.
 const errorFunc = {
@@ -66,7 +69,7 @@ function sendVpToApi(vp) {
       return true;
     })
     .catch(() => {
-      errorFunc.fail(MODAL_SERVER_ERROR);
+      errorFunc.cancel(MODAL_SERVER_ERROR);
       return false;
     });
 }
@@ -83,7 +86,7 @@ window.sendVpToApi = (vp) => sendVpToApi(vp);
 function sendEmailCert(email) {
   // 사전에 VP를 API 서버에 등록하지 않았으면 실행을 취소합니다.
   if (!vpSessionUUID) {
-    errorFunc.fail(MODAL_SERVER_ERROR);
+    errorFunc.cancel(MODAL_SERVER_ERROR);
     return Promise.resolve(false);
   }
 
@@ -99,10 +102,11 @@ function sendEmailCert(email) {
       certEmail = email;
       emailSessionUUID = res.data.referrer_token;
       appState.hide();
+      toast.show(EMAIL_TOAST_MESSAGE, EMAIL_TOAST_TIME);
       return true;
     })
     .catch(() => {
-      errorFunc.fail(MODAL_SERVER_ERROR);
+      errorFunc.cancel(MODAL_SERVER_ERROR);
       return false;
     });
 }
@@ -114,7 +118,7 @@ function sendEmailCert(email) {
 function reSendEmailCert() {
   // 사전에 이메일 인증 발송을 요청한 적이 없으면 실행을 취소합니다.
   if (!emailSessionUUID) {
-    errorFunc.fail(MODAL_SERVER_ERROR);
+    errorFunc.cancel(MODAL_SERVER_ERROR);
     return Promise.resolve(false);
   }
 
@@ -128,10 +132,11 @@ function reSendEmailCert() {
     .then((res) => {
       emailSessionUUID = res.data.referrer_token;
       appState.hide();
+      toast.show(EMAIL_TOAST_MESSAGE, EMAIL_TOAST_TIME);
       return true;
     })
     .catch(() => {
-      errorFunc.fail(MODAL_SERVER_ERROR);
+      errorFunc.cancel(MODAL_SERVER_ERROR);
       return false;
     });
 }
@@ -139,13 +144,12 @@ function reSendEmailCert() {
 /**
  * @description 이메일 인증 번호를 검증합니다.
  * @param {string} cert 이메일 인증 번호
- * @param {boolean} lastChance 이메일 인증이 마지막 기회인지 여부
  * @returns {Promise<boolean>} 요청 성공 / 실패 여부 반환하는 비동기 객체
  */
-function verifyEmailCert(cert, lastChance) {
+function verifyEmailCert(cert) {
   // 사전에 이메일 인증 발송을 요청한 적이 없으면 실행을 취소합니다.
   if (!emailSessionUUID) {
-    errorFunc.fail(MODAL_SERVER_ERROR);
+    errorFunc.cancel(MODAL_SERVER_ERROR);
     return Promise.resolve(false);
   }
 
@@ -166,15 +170,14 @@ function verifyEmailCert(cert, lastChance) {
       }
       // 이메일 인증 번호 검증 실패
       if (res.id === 'unauthorized') {
-        if (lastChance) errorFunc.cancel(MODAL_CERT_ERROR);
-        else errorFunc.showModal(MODAL_CERT_ERROR);
+        appState.hide();
         return false;
       }
       // 기타 오류
       throw new Error();
     })
     .catch(() => {
-      errorFunc.fail(MODAL_SERVER_ERROR);
+      errorFunc.cancel(MODAL_SERVER_ERROR);
       return false;
     });
 }
@@ -187,7 +190,7 @@ function verifyEmailCert(cert, lastChance) {
 function requestVcFromApi(department, position) {
   // 사전에 이메일 인증 발송을 요청한 적이 없거나 VP를 등록한 적이 업으면 실행을 취소합니다.
   if (!certEmail || !vpSessionUUID) {
-    errorFunc.fail(MODAL_SERVER_ERROR);
+    errorFunc.cancel(MODAL_SERVER_ERROR);
     return Promise.resolve(false);
   }
 
@@ -202,7 +205,7 @@ function requestVcFromApi(department, position) {
       return true;
     })
     .catch(() => {
-      errorFunc.fail(MODAL_SERVER_ERROR);
+      errorFunc.cancel(MODAL_SERVER_ERROR);
       return false;
     });
 }
@@ -232,8 +235,9 @@ if (window) {
     const [emailCertPage, initEmailCertPage] = createEmailCertPage(
       sendEmailCert,
       reSendEmailCert,
-      errorFunc.showModal,
       verifyEmailCert,
+      errorFunc.showModal,
+      errorFunc.cancel,
     );
     const [requestPage, initRequestPage] = createRequestPage(
       data,
@@ -246,7 +250,7 @@ if (window) {
     stackSlider.addPage(requestPage);
 
     // 라우터에 함수를 추가합니다.
-    router.setRouterFunc('request', () => {
+    router.setRouterFunc('/request', () => {
       document.title = REQUEST_PAGE_TITLE;
       stackSlider.moveNext();
       initEmailCertPage();
@@ -259,6 +263,10 @@ if (window) {
       initRequestPage();
     });
 
-    appendAllChild(root, [appState.element, stackSlider.element]);
+    appendAllChild(root, [
+      toast.element,
+      appState.element,
+      stackSlider.element,
+    ]);
   };
 }

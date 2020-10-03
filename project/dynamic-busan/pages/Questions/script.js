@@ -1,6 +1,6 @@
 import { createElement } from '../../src/js/util/dom';
 import DrawerBoard from '../../src/js/layout/DrawerBoard';
-import { dropDownIcon, circleIcon } from '../../src/js/component/Icon';
+import { dropDownIcon } from '../../src/js/component/Icon';
 
 import './style.css';
 import data from './data.json';
@@ -31,20 +31,10 @@ function createItemHeader(title) {
  * @return {HTMLLIElement} Item의 Content Element
  */
 function createItemContent(content) {
-  // Item Contet 내부를 구성 Element를 만듭니다.
-  const contentElements = content.map((str) => {
-    const icon = circleIcon(4, '#cccccc');
-    const paragraph = createElement('p', { child: str });
-    return createElement('div', {
-      class: 'content-custom-list-item',
-      child: [icon, paragraph],
-    });
-  });
-
   // Item의 Layout을 만듭니다.
   return createElement('div', {
     class: 'font-text-body2 font-color-medium  content-custom-list',
-    child: contentElements,
+    child: content,
   });
 }
 

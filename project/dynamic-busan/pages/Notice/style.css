@@ -52,3 +52,12 @@ body,
   height: 24px;
   margin-left: 20px;
 }
+
+.notice-board .header-custom-content svg {
+  height: 24px;
+  margin-left: 20px;
+}
+
+.notice-detail .text-post-container .text-post-footer {
+  display: none;
+}

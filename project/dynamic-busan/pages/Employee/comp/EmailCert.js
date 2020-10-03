@@ -5,15 +5,20 @@ import { createElement, wrapping } from '../../../src/js/util/dom';
 /* ------------- */
 
 const TITLE = '회사 이메일을 이용해 인증해주세요.';
+
 const EMAIL_CHANGE_ERROR = '변경된 이메일로 인증 번호를 재요청 할 수 없습니다.';
 const EMAIL_TIMEOUT_ERROR =
   '인증번호 입력시간이 초과되었습니다.<br />인증번호 재요청 후 다시 시도해주세요.';
+const INVALID_CERT_ERROR =
+  '인증번호가 일치하지 않습니다.<br />확인 후 다시 시도해주세요';
+
 const INVALID_CERT_MESSAGE =
   '인증번호가 일치하지 않습니다.\n확인 후 다시 시도해주세요';
 
 const EMAIL_REG = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
-const CERT_NUM_REG = /^[0-9]{6}[0-9]*$/;
+const CERT_NUM_REG = /^[0-9]{6}$/;
 
+const EMAIL_SUFFIX = '%EMAIL_CERT_SUFFIX%';
 const RE_CERT_EMAIL_TIME = 30 * 1000;
 const CERT_LIMIT_TIME = 3 * 60 * 1000;
 const CERT_NUM_LENGTH = 6;
@@ -22,35 +27,32 @@ const CERT_NUM_LENGTH = 6;
  * @description 이메일 인증 페이지를 만듭니다.
  * @param {(email: string) => Promise<boolean>} sendEmailCertFunc 이메일 주소로 인증 번호를 발송
  * @param {() => Promise<boolean>} reSendEmailCertFunc 이메일 주소로 인증 번호를 재 발송
- * @param {(message: string) => void} errorFunc 인증번호 입력 제한시간 초과시 실행할 함수
  * @param {(cert: string, lastChance: boolean) => Promise<boolean>} submitFunc 인증번호를 API 서버로 제출
+ * @param {(message: string) => void} modalFunc 이메일 인증 과정중에 Modal을 소환하는 함수
+ * @param {(message: string) => void} errorFunc 이메일 인증 과정 실패시 프로세스를 종료하는 함수
  * @returns {[HTMLElement, () => void]} 이메일 인증 페이지와 초기화 함수
  */
 function createEmailCertPage(
   sendEmailCertFunc,
   reSendEmailCertFunc,
-  errorFunc,
   submitFunc,
+  modalFunc,
+  errorFunc,
 ) {
-  let emailCertFlag = false; // 현재 인증번호 요청 대기중인지 여부
   let countEmailCert = 0; // 이메일 인증 요청 횟수
-  let countEmailCertVerify = 0; // 이메일 인증 요청 검증 횟수
-  let interval = null; // 인증 번호 시간 체크 인터벌
+  let countEmailCertError = 0; // 이메일 인증 요청 검증 횟수
+  let timeout = null; // 인증 번호 재용청 버튼 활성화 타이머
+  let interval = null; // 인증 번호 제한 시간 체크 인터벌
   let email = ''; // 1차로 입력받은 이메일
 
   /* -------------- */
   /*  Util Function */
   /* -------------- */
 
-  function clearTimeCheck() {
-    clearInterval(interval);
-    interval = null;
-  }
-
   /**
    * @description 초 단위의 시간을 MM : SS 포멧 문자열로 변경합니다.
    * @param {number} _sec 변경할 초 단위의 시간
-   * @@returns {string} MM : SS 포멧 문자열
+   * @returns {string} MM : SS 포멧 문자열
    */
   function secToString(_sec) {
     if (_sec < 0) return '';
@@ -78,15 +80,16 @@ function createEmailCertPage(
   // 이메일 인풋을 생성합니다.
   const emailInputLabel = createElement('label', {
     for: 'email-input',
-    child: '이메일',
+    child: '회사 이메일',
   });
   const emailInput = createElement('input', {
-    type: 'email',
+    type: 'text',
     id: 'email-input',
     placeholder: '회사 이메일을 입력하세요.',
   });
   const emailInputElement = createElement('div', {
-    class: 'textfield',
+    class: `textfield ${EMAIL_SUFFIX && 'textfield-time'}`,
+    time: EMAIL_SUFFIX,
     child: [emailInputLabel, emailInput],
   });
 
@@ -133,11 +136,10 @@ function createEmailCertPage(
   /**
    * @description 인증 번호 요청 버튼 활성화 함수
    */
-  function setActiveCertRequestBtn() {
+  function setActiveCertReqBtn() {
     if (
-      countEmailCert < 5 && // 최대 5번까지 요청할 수 있습ㄴ디ㅏ.
-      !emailCertFlag && // 한번 요청 후 30초 후에 재 요청이 가능합니다.
-      EMAIL_REG.test(emailInput.value) // 이메일이 올바른 포멧이야 합니다.
+      timeout === null && // 한번 요청 후 30초 후에 재 요청이 가능합니다.
+      EMAIL_REG.test(emailInput.value + EMAIL_SUFFIX) // 이메일이 올바른 포멧이야 합니다.
     ) {
       requestCertNumBtn.removeAttribute('disabled');
     } else {
@@ -149,7 +151,10 @@ function createEmailCertPage(
    * @description 인증하기 버튼 활성화 함수
    */
   function setActiveSubmitBtn() {
-    if (interval && CERT_NUM_REG.test(certInput.value)) {
+    if (
+      interval && // 인증 번호가 발급된 후 3분동안 활성화 됩니다.
+      CERT_NUM_REG.test(certInput.value) // 인증번호가 올바른 포멧이여야 합니다.
+    ) {
       submitElement.removeAttribute('disabled');
     } else {
       submitElement.setAttribute('disabled', 'disabled');
@@ -157,11 +162,28 @@ function createEmailCertPage(
   }
 
   /**
+   * @description 인증번호 재요청 버튼을 대기시간보다 빠르게 활성화 시킵니다.
+   */
+  function endTimeout() {
+    if (timeout) clearTimeout(timeout);
+    timeout = null;
+    setActiveCertReqBtn();
+  }
+
+  function endIterval() {
+    if (interval) clearInterval(interval);
+    interval = null;
+    certInputElement.removeAttribute('time');
+  }
+
+  /**
    * @description 인증번호 오류 횟수 증가
    */
-  function setCertInpuError() {
-    countEmailCertVerify += 1;
-    const message = `${INVALID_CERT_MESSAGE} (${countEmailCertVerify}/3)`;
+  function setErrorCertInput() {
+    countEmailCertError += 1;
+    certInput.value = ''; // 인증 번호 인풋 초기화
+
+    const message = `${INVALID_CERT_MESSAGE} (${countEmailCertError}/3)`;
     certInputElement.setAttribute('error-message', message);
 
     if (!certInputElement.classList.contains('textfield-error')) {
@@ -170,23 +192,58 @@ function createEmailCertPage(
     if (!certInputElement.classList.contains('textfield-error-message')) {
       certInputElement.classList.add('textfield-error-message');
     }
+
+    // 오류 횟수가 3번 이상이면 더 이상 인증번호를 입력할 수 없다.
+    if (countEmailCertError > 2) {
+      modalFunc(INVALID_CERT_ERROR);
+      certInput.setAttribute('disabled', 'disabled');
+      endIterval();
+      endTimeout();
+    }
+  }
+
+  /**
+   * @description 인증 번호 인풋을 초기화합니다.
+   * @param {boolean} bool 인증 번호 인풋을 보여줄지 말지 여부
+   */
+  function initCertInput(bool) {
+    certInput.removeAttribute('disabled'); // 이메일 인풋 활성화
+    certInput.value = ''; // 인증 번호 인풋 초기화
+    countEmailCertError = 0; // 이메일 인증 요청 검증 횟수 초기화
+
+    endIterval();
+    setActiveSubmitBtn();
+
+    // 인증 번호 인풋 생성/제거
+    if (bool && !certNumContainer.classList.contains('show')) {
+      certNumContainer.classList.add('show');
+    }
+    if (!bool && certNumContainer.classList.contains('show')) {
+      certNumContainer.classList.remove('show');
+    }
+
+    // 인증 번호 오류 메시지 초기화
+    if (certInputElement.classList.contains('textfield-error')) {
+      certInputElement.classList.remove('textfield-error');
+    }
+    if (certInputElement.classList.contains('textfield-error-message')) {
+      certInputElement.classList.remove('textfield-error-message');
+    }
   }
 
   /**
    * @description 인증 페이지 초기화
    */
   function initPage() {
-    emailInput.value = ''; // 이메일 인풋 초기화
-    certInput.value = ''; // 인증 번호 인풋 초기화
-    email = ''; // 저장된 이메일 초기화
-    emailCertFlag = false; // 인증 번호 요청 대기상태 초기화
-    countEmailCert = 0; // 인증 번호 요청 횟수 초기화
-    countEmailCertVerify = 0; // 이메일 인증 요청 검증 횟수 초기화
-    clearTimeCheck(); // 타임 체크 초기화
-    setActiveCertRequestBtn(); // 인증 번호 요청 버튼 초기화
-    setActiveSubmitBtn(); // 인증하기 버튼 초기화
+    // emailInput.removeAttribute('disabled'); // 이메일 인풋 활성화
+    // emailInput.value = ''; // 이메일 인풋 초기화
 
-    certNumContainer.classList.remove('show'); // 인증 번호 인풋 숨김
+    // email = ''; // 저장된 이메일 초기화
+    // countEmailCert = 0; // 인증 번호 요청 횟수 초기화
+
+    endTimeout();
+    initCertInput(false);
+    setActiveCertReqBtn();
   }
 
   /* ------------- */
@@ -197,9 +254,10 @@ function createEmailCertPage(
    * @description 이메일 인증 번호 요청 함수
    * @returns {Promise<boolean>} 요청 성공 / 실패 여부 반환하는 비동기 객체
    */
-  function firstCertNumRequest() {
+  function firstCertNumReq() {
+    requestCertNumBtn.innerHTML = '인증번호 재요청';
     emailInput.setAttribute('disabled', 'disabled');
-    email = emailInput.value;
+    email = emailInput.value + EMAIL_SUFFIX;
     return sendEmailCertFunc(email);
   }
 
@@ -207,7 +265,7 @@ function createEmailCertPage(
    * @description 이메일 인증 번호 재요청 함수
    * @returns {Promise<boolean>} 요청 성공 / 실패 여부 반환하는 비동기 객체
    */
-  function reCertNumRequest() {
+  function reCertNumReq() {
     if (email !== emailInput.value) {
       errorFunc(EMAIL_CHANGE_ERROR);
       return Promise.resolve(false);
@@ -219,9 +277,9 @@ function createEmailCertPage(
    * @description 아매알 안중 번호 발송을 요청합니다.
    * @returns {Promise<boolean>} 요청 성공 / 실패 여부 반환하는 비동기 객체
    */
-  function certNumRequest() {
+  function certNumReq() {
     countEmailCert += 1;
-    return countEmailCert === 1 ? firstCertNumRequest() : reCertNumRequest();
+    return countEmailCert > 1 ? reCertNumReq() : firstCertNumReq();
   }
 
   /* ------------------------- */
@@ -229,70 +287,63 @@ function createEmailCertPage(
   /* ------------------------- */
 
   // 이메일 입력 onChangeEvent
-  emailInput.addEventListener('keyup', setActiveCertRequestBtn);
+  emailInput.addEventListener('input', setActiveCertReqBtn);
 
   // 인증 번호 입력 onChangeEvent
   certInput.addEventListener('input', (event) => {
     if (event.target.value.length > CERT_NUM_LENGTH) {
       event.target.value = event.target.value.slice(0, CERT_NUM_LENGTH);
+    } else {
+      setActiveSubmitBtn();
     }
   });
 
   // 인증 번호 요청 onClickEvent
-  requestCertNumBtn.addEventListener('click', async (event) => {
-    if (interval) clearTimeCheck();
-
-    // 버튼 텍스트를 변경하고 대기 시간동안 비활성화
-    emailCertFlag = true;
-    event.target.innerHTML = '인증번호 재요청';
-    setActiveCertRequestBtn();
+  requestCertNumBtn.addEventListener('click', async () => {
+    if (interval) endIterval();
 
     // 대기시간이 지나면 입력된 이메일의 값에 따라 버튼 활성화
-    const certReauestBtnTimeout = setTimeout(() => {
-      emailCertFlag = false;
-      setActiveCertRequestBtn();
-    }, RE_CERT_EMAIL_TIME);
+    timeout = setTimeout(endTimeout, RE_CERT_EMAIL_TIME);
+    setActiveCertReqBtn();
 
     // 이메일 인증 요청
-    const emailRequest = await certNumRequest();
-    if (!emailRequest) {
-      clearTimeout(certReauestBtnTimeout);
+    const certNumReqRes = await certNumReq();
+    if (!certNumReqRes) {
+      endTimeout();
       return;
     }
 
     // 인증 번호 인풋 생성
-    certNumContainer.classList.add('show');
+    initCertInput(true);
     certInput.focus();
 
     // 인증 번호 입력 대기시간을 카운트 다운 합니다.
-    const sendEmailTime = Date.now();
-    const limitTimeStr = secToString(Math.round(CERT_LIMIT_TIME / 1000));
-    certInputElement.setAttribute('time', limitTimeStr);
+    const startTime = Date.now();
+    const initTimeStr = secToString(Math.round(CERT_LIMIT_TIME / 1000));
+    certInputElement.setAttribute('time', initTimeStr);
 
     interval = setInterval(() => {
-      const remainTime = CERT_LIMIT_TIME + sendEmailTime - Date.now();
+      const remainTime = CERT_LIMIT_TIME + startTime - Date.now();
       const remainTimeStr = secToString(Math.round(remainTime / 1000));
 
       if (remainTimeStr) {
         certInputElement.setAttribute('time', remainTimeStr);
       } else {
-        clearTimeCheck();
-        submitElement.setAttribute('disabled', 'disabled');
-        errorFunc(EMAIL_TIMEOUT_ERROR);
+        initCertInput(false); // 인증번호 인풋을 초기화
+        endTimeout(); // 인증본호 재요청 버튼 초기화
+        modalFunc(EMAIL_TIMEOUT_ERROR); // 팝업 띄우기
       }
     }, 1000);
 
     setActiveSubmitBtn();
   });
 
-  // 인증 번호 입력 onChangeEvent
-  certInput.addEventListener('keyup', setActiveSubmitBtn);
-
   // 인증하기 버튼 onClickEvent
   submitElement.addEventListener('click', () => {
-    submitFunc(certInput.value, countEmailCertVerify > 1).then((result) => {
-      if (result) clearTimeCheck();
-      else setCertInpuError();
+    submitFunc(certInput.value).then((result) => {
+      if (result) clearInterval();
+      else setErrorCertInput();
+
       setActiveSubmitBtn();
     });
   });

@@ -19,7 +19,7 @@
   transform: rotate(180deg);
 }
 
-.item-content-container .content-custom-list .content-custom-list-item {
+/* .item-content-container .content-custom-list .content-custom-list-item {
   display: flex;
 }
 
@@ -31,4 +31,13 @@
 .item-content-container .content-custom-list .content-custom-list-item svg {
   height: 20px;
   margin-right: 4px;
+} */
+
+.item-content-container .content-custom-list a {
+  word-break: break-all;
+  cursor: pointer;
+  outline: none;
+  color: var(--primary-color-blue);
+  text-decoration: underline;
+  -webkit-tap-highlight-color: transparent;
 }

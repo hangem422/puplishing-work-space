@@ -6,6 +6,7 @@ import { createElement, appendAllChild } from '../util/dom';
  * @property {string?} title 문단의 제목
  * @property {contents | string[]} contents 문단의 내용
  * @param {contents} contents HTMLElement로 파싱할 약관 데이터
+ * @returns {HTMLElement} TextPost Content에 알맞는 포멧의 Element
  */
 export function contentParser(contents) {
   const stack = [[contents, 0]];
@@ -74,10 +75,10 @@ class TextPost {
    * @description TextPost Component 생성자
    * @param {string} title 게시글의 제목 문자열
    * @param {string} subtitle 게시글의 부제목 문자열
-   * @param {string | HTMLElement} contents 게시글 내용 문자열 혹은 HTMLElemnt
-   * @param {string | HTMLElement} footer 게시글 푸터 문자열 혹은 HTMLElement
+   * @param {string | HTMLElement | string[] | HTMLElement[]} contents 게시글 내용 문자열 혹은 HTMLElemnt
+   * @param {string | HTMLElement | string[] | HTMLElement[]} footer 게시글 푸터 문자열 혹은 HTMLElement
    */
-  constructor(title = '', subtitle = '', contents, footer = '') {
+  constructor(title, subtitle, contents, footer) {
     // Component Element를 생성합니다.
     const titleElement = createElement('p', {
       class: 'font-text-body1 font-medium font-color-dark header-title',
@@ -95,11 +96,11 @@ class TextPost {
       child: [titleElement, subtitleElement],
     });
     const contentWrapper = createElement('div', {
-      class: 'wrapper text-post-content',
+      class: 'wrapper text-post-content font-text-body2 font-color-medium',
       child: contents,
     });
     const footerWrapper = createElement('div', {
-      class: 'wrapper font-text-body2 font-color-dark text-post-footer',
+      class: 'wrapper text-post-footer font-text-body2 font-color-medium',
       child: footer,
     });
 
@@ -137,7 +138,11 @@ class TextPost {
    */
   set contents(contents) {
     this.contentWrapper.innerHTML = '';
-    this.contentWrapper.appendChild(contents);
+    if (contents instanceof HTMLElement || Array.isArray(contents)) {
+      this.contentWrapper.appendChild(contents);
+    } else if (typeof contents === 'string') {
+      this.contentWrapper.innerHTML = contents;
+    }
   }
 
   /**

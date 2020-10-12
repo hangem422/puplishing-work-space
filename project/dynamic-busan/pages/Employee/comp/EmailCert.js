@@ -1,4 +1,6 @@
 import { createElement, wrapping } from '../../../src/js/util/dom';
+import { onlyNumLimitLength } from '../../../src/js/util/string';
+import { isIOS } from '../../../src/js/util/os';
 
 /* ------------- */
 /*  Config Data  */
@@ -6,7 +8,6 @@ import { createElement, wrapping } from '../../../src/js/util/dom';
 
 const TITLE = '회사 이메일을 이용해 인증해주세요.';
 
-const EMAIL_CHANGE_ERROR = '변경된 이메일로 인증 번호를 재요청 할 수 없습니다.';
 const EMAIL_TIMEOUT_ERROR =
   '인증번호 입력시간이 초과되었습니다.<br />인증번호 재요청 후 다시 시도해주세요.';
 const INVALID_CERT_ERROR =
@@ -26,24 +27,15 @@ const CERT_NUM_LENGTH = 6;
 /**
  * @description 이메일 인증 페이지를 만듭니다.
  * @param {(email: string) => Promise<boolean>} sendEmailCertFunc 이메일 주소로 인증 번호를 발송
- * @param {() => Promise<boolean>} reSendEmailCertFunc 이메일 주소로 인증 번호를 재 발송
  * @param {(cert: string, lastChance: boolean) => Promise<boolean>} submitFunc 인증번호를 API 서버로 제출
  * @param {(message: string) => void} modalFunc 이메일 인증 과정중에 Modal을 소환하는 함수
  * @param {(message: string) => void} errorFunc 이메일 인증 과정 실패시 프로세스를 종료하는 함수
  * @returns {[HTMLElement, () => void]} 이메일 인증 페이지와 초기화 함수
  */
-function createEmailCertPage(
-  sendEmailCertFunc,
-  reSendEmailCertFunc,
-  submitFunc,
-  modalFunc,
-  errorFunc,
-) {
-  let countEmailCert = 0; // 이메일 인증 요청 횟수
+function createEmailCertPage(sendEmailCertFunc, submitFunc, modalFunc) {
   let countEmailCertError = 0; // 이메일 인증 요청 검증 횟수
   let timeout = null; // 인증 번호 재용청 버튼 활성화 타이머
   let interval = null; // 인증 번호 제한 시간 체크 인터벌
-  let email = ''; // 1차로 입력받은 이메일
 
   /* -------------- */
   /*  Util Function */
@@ -99,7 +91,7 @@ function createEmailCertPage(
     child: '인증번호',
   });
   const certInput = createElement('input', {
-    type: 'number',
+    type: isIOS ? 'tel' : 'number',
     id: 'certification-input',
     placeholder: '인증번호를 입력하세요.',
   });
@@ -238,9 +230,6 @@ function createEmailCertPage(
     // emailInput.removeAttribute('disabled'); // 이메일 인풋 활성화
     // emailInput.value = ''; // 이메일 인풋 초기화
 
-    // email = ''; // 저장된 이메일 초기화
-    // countEmailCert = 0; // 인증 번호 요청 횟수 초기화
-
     endTimeout();
     initCertInput(false);
     setActiveCertReqBtn();
@@ -251,35 +240,12 @@ function createEmailCertPage(
   /* ------------- */
 
   /**
-   * @description 이메일 인증 번호 요청 함수
-   * @returns {Promise<boolean>} 요청 성공 / 실패 여부 반환하는 비동기 객체
-   */
-  function firstCertNumReq() {
-    requestCertNumBtn.innerHTML = '인증번호 재요청';
-    emailInput.setAttribute('disabled', 'disabled');
-    email = emailInput.value + EMAIL_SUFFIX;
-    return sendEmailCertFunc(email);
-  }
-
-  /**
-   * @description 이메일 인증 번호 재요청 함수
-   * @returns {Promise<boolean>} 요청 성공 / 실패 여부 반환하는 비동기 객체
-   */
-  function reCertNumReq() {
-    if (email !== emailInput.value) {
-      errorFunc(EMAIL_CHANGE_ERROR);
-      return Promise.resolve(false);
-    }
-    return reSendEmailCertFunc();
-  }
-
-  /**
    * @description 아매알 안중 번호 발송을 요청합니다.
    * @returns {Promise<boolean>} 요청 성공 / 실패 여부 반환하는 비동기 객체
    */
   function certNumReq() {
-    countEmailCert += 1;
-    return countEmailCert > 1 ? reCertNumReq() : firstCertNumReq();
+    requestCertNumBtn.innerHTML = '인증번호 재요청';
+    return sendEmailCertFunc(emailInput.value + EMAIL_SUFFIX);
   }
 
   /* ------------------------- */
@@ -291,11 +257,9 @@ function createEmailCertPage(
 
   // 인증 번호 입력 onChangeEvent
   certInput.addEventListener('input', (event) => {
-    if (event.target.value.length > CERT_NUM_LENGTH) {
-      event.target.value = event.target.value.slice(0, CERT_NUM_LENGTH);
-    } else {
-      setActiveSubmitBtn();
-    }
+    const str = onlyNumLimitLength(event.target.value, CERT_NUM_LENGTH);
+    event.target.value = str;
+    setActiveSubmitBtn();
   });
 
   // 인증 번호 요청 onClickEvent

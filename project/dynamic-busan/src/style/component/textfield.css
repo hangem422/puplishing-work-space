@@ -40,6 +40,7 @@
 
 .textfield input[type='text'],
 .textfield input[type='number'],
+.textfield input[type='tel'],
 .textfield input[type='email'] {
   display: block;
   height: var(--textfield-input-height);
@@ -54,30 +55,35 @@
 
 .textfield input[type='text']::placeholder,
 .textfield input[type='number']::placeholder,
+.textfield input[type='tel']::placeholder,
 .textfield input[type='email']::placeholder {
   color: var(--font-color-placeholder);
 }
 
 .textfield input[type='text']:focus,
 .textfield input[type='number']:focus,
+.textfield input[type='tel']:focus,
 .textfield input[type='email']:focus {
   border: solid 1px var(--primary-color-blue);
 }
 
 .textfield.textfield-error input[type='text'],
 .textfield.textfield-error input[type='number'],
+.textfield.textfield-error input[type='tel'],
 .textfield.textfield-error input[type='email'] {
   border: solid 1px var(--primary-color-red);
 }
 
 .textfield.textfield-error input[type='text']::placeholder,
 .textfield.textfield-error input[type='number']::placeholder,
+.textfield.textfield-error input[type='tel']::placeholder,
 .textfield.textfield-error input[type='email']::placeholder {
   color: var(--primary-color-red);
 }
 
 .textfield.textfield-error input[type='text']:focus,
 .textfield.textfield-error input[type='number']:focus,
+.textfield.textfield-error input[type='tel']:focus,
 .textfield.textfield-error input[type='email']:focus {
   border: solid 1px var(--primary-color-red);
 }

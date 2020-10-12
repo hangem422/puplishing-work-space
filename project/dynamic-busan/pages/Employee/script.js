@@ -18,7 +18,6 @@ import createRequestPage from './comp/Request';
 
 const SEND_VP_API_URL = '/api/v1/request_required_vp';
 const EMAIL_CERT_API_URL = '/api/v1/auth/email/request';
-const RE_EMAIL_CERT_API_URL = '/api/v1/auth/email/resend';
 const VERIFY_EMAIL_CERT_API_URL = '/api/v1/auth/email/verify';
 const REQUEST_VC_API_URL = '/api/v1/issue_vc';
 
@@ -100,36 +99,6 @@ function sendEmailCert(email) {
   })
     .then((res) => {
       certEmail = email;
-      emailSessionUUID = res.data.referrer_token;
-      appState.hide();
-      toast.show(EMAIL_TOAST_MESSAGE, EMAIL_TOAST_TIME);
-      return true;
-    })
-    .catch(() => {
-      errorFunc.cancel(MODAL_SERVER_ERROR);
-      return false;
-    });
-}
-
-/**
- * @description Api 서버로 이메일 인증 재 발솔 요청을 전달합니다.
- * @returns {Promise<bolean>} 요청 성공 / 실패 여부 반환하는 비동기 객체
- */
-function reSendEmailCert() {
-  // 사전에 이메일 인증 발송을 요청한 적이 없으면 실행을 취소합니다.
-  if (!emailSessionUUID) {
-    errorFunc.cancel(MODAL_SERVER_ERROR);
-    return Promise.resolve(false);
-  }
-
-  appState.showLoading();
-
-  return post({
-    url: RE_EMAIL_CERT_API_URL,
-    headers: { 'referrer-token': emailSessionUUID },
-    strict: true,
-  })
-    .then((res) => {
       emailSessionUUID = res.data.referrer_token;
       appState.hide();
       toast.show(EMAIL_TOAST_MESSAGE, EMAIL_TOAST_TIME);
@@ -234,10 +203,8 @@ if (window) {
     // 페이지를 생성합니다.
     const [emailCertPage, initEmailCertPage] = createEmailCertPage(
       sendEmailCert,
-      reSendEmailCert,
       verifyEmailCert,
       errorFunc.showModal,
-      errorFunc.cancel,
     );
     const [requestPage, initRequestPage] = createRequestPage(
       data,

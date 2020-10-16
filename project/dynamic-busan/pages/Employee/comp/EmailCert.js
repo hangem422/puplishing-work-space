@@ -75,7 +75,7 @@ function createEmailCertPage(sendEmailCertFunc, submitFunc, modalFunc) {
     child: '회사 이메일',
   });
   const emailInput = createElement('input', {
-    type: 'text',
+    type: 'email',
     id: 'email-input',
     placeholder: '회사 이메일을 입력하세요.',
   });

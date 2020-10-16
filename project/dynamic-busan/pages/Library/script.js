@@ -15,7 +15,8 @@ const BUSAN_LIBRARY_URL =
   'https://library.busan.go.kr/portal/intro/join/index.do?menu_idx=45';
 
 const ERROR_MESSAGE_01 = '유효하지 않은 환경에서 실행할 수 없습니다.';
-const ERROR_MESSAGE_02 = '오류가 발생했습니다. 잠시 후에 다시 시도 해주세요.';
+const ERROR_MESSAGE_02 =
+  '페이지를 연결할 수 없습니다. 잠시 후 다시 시도해주세요.';
 const ERROR_MESSAGE_03 =
   '도서관 회원증은 부산도서관 회원만 발급받을 수 있습니다';
 const ERROR_MESSAGE_03_SUB = '부산도서관 회원가입 바로가기';

@@ -1,0 +1,69 @@
+@import url('../../src/style/main.css');
+
+html,
+body,
+.root {
+  height: 100%;
+}
+
+.reqeust-page,
+.certification-page {
+  height: 100%;
+  overflow: scroll;
+}
+
+.certification-email,
+.certification-num,
+.request-depart {
+  margin-top: 32px;
+}
+
+.certification-email .textfield-time input {
+  padding-right: 98px;
+}
+
+.certification-email .button-type-b {
+  margin-top: 24px;
+}
+
+.certification-num {
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity var(--transition-duration)
+    var(--transition-timing-function);
+}
+
+.certification-num.show {
+  visibility: visible;
+  opacity: 1;
+}
+
+.certification-submit,
+.request-submit {
+  position: absolute;
+  width: 100%;
+  margin: 0px;
+  padding: 0px var(--container-padding) var(--container-margin)
+    var(--container-padding);
+  box-sizing: border-box;
+  bottom: 0px;
+  background-color: var(--primary-color-white);
+}
+
+.request-notice {
+  margin-top: 104px;
+}
+
+.certification-num,
+.request-notice {
+  margin-bottom: 108px;
+}
+
+.request-notice li {
+  margin-left: var(--container-padding);
+  padding: 8px 0px;
+}
+
+.reqeust-page .textfield.textfield-error-message {
+  margin-bottom: 52px;
+}

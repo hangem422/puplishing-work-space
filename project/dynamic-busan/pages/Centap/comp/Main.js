@@ -22,12 +22,8 @@ function createMainPage(data, historyOnclick) {
 
   // Footer 생성
   const [year, month, date] = data.date.split('.');
-  const enforceDate = createElement('span', {
-    // style: 'color: red',
-    child: `${year}년 ${month}월 ${date}일`,
-  });
   const footerEnforce = createElement('li', {
-    child: ['이 약관은 ', enforceDate, '부터 적용됩니다.'],
+    child: `이 약관은 ${year}년 ${month}월 ${date}일부터 적용됩니다.`,
   });
 
   // const historyListItem = Object.keys(data.history).map((key) => {

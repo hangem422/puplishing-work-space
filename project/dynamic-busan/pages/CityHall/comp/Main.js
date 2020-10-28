@@ -22,11 +22,8 @@ function createMainPage(data, historyOnclick) {
 
   // Footer 생성
   const [year, month, date] = data.date.split('.');
-  const enforceDate = createElement('span', {
-    child: `${year}년 ${month}월 ${date}일`,
-  });
   const footerEnforce = createElement('li', {
-    child: ['이 약관은 ', enforceDate, '부터 적용됩니다.'],
+    child: `이 약관은 ${year}년 ${month}월 ${date}일부터 적용됩니다.`,
   });
 
   // const historyListItem = Object.keys(data.history).map((key) => {
@@ -45,17 +42,12 @@ function createMainPage(data, historyOnclick) {
   //   ],
   // });
 
-  const footerTitle = createElement('p', {
-    // child: '이전 약관 이력은 아래에서 확인할 수 있습니다.',
-    child: ' ',
-  });
-  const footerContents = createElement('ul', {
+  const footer = createElement('ul', {
     child: [
       footerEnforce,
       // footerHistory
     ],
   });
-  const footer = [footerTitle, footerContents];
 
   return new TextPost(data.title, subTitle, data.contents, footer).element;
 }

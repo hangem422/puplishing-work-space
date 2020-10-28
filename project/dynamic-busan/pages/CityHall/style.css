@@ -36,7 +36,11 @@ iframe {
   color: #666666;
 }
 
+.itemdesc.v1 {
+  text-indent: 20px;
+}
+
 .ref.v1 {
-  text-indent: -1.5em;
-  padding-left: 1.5em;
+  text-indent: -1.3em;
+  padding-left: 1.3em;
 }

@@ -1,12 +1,14 @@
 [
   {
     "title": "행정정보공동이용 사전동의 (필수)",
-    "date": "2020.09.01",
     "iframe": "https://bstatic.mykeepin.com/html/administration.html"
   },
   {
+    "title": "개인정보 수집 및 이용동의 (필수)",
+    "iframe": "https://bstatic.mykeepin.com/html/agreement/mfl/index.html"
+  },
+  {
     "title": "개인정보처리방침 (필수)",
-    "date": "2020.09.01",
     "link": "https://www.busan.go.kr/vprivacy1"
   }
 ]

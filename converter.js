@@ -6,6 +6,7 @@ const DEV_CC = {
   '\\[\\[': '[ [', // For Springboot
   '\\]\\]': '] ]', // For Springboot
   '%EMAIL_CERT_SUFFIX%': '', // For Certification Email Suffix
+  '%EMAIL_CERT_SUFFIX_KISA%': '@kisa.or.kr', // For Certification KISA Email Suffix
 };
 
 const PROD_CC = {
@@ -14,6 +15,7 @@ const PROD_CC = {
   'https://bstatic.mykeepin.com': 'https://static.blockchainbusan.kr', // For Static Web Server Link
   'https://svc.mykeepin.com': 'https://svc.blockchainbusan.kr', // For Notice List Api Server Link
   '%EMAIL_CERT_SUFFIX%': '@btp.or.kr', // For Certification Email Suffix
+  '%EMAIL_CERT_SUFFIX_KISA%': '@kisa.or.kr', // For Certification KISA Email Suffix
 };
 
 function readFile(path, file) {

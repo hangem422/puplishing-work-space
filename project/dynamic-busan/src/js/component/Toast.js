@@ -41,7 +41,7 @@ class Toast {
   /**
    * @description Toast Message를 보여줍니다.
    * @param {string} str Message 내용
-   * @param {string} time Message가 보여지는 시간
+   * @param {number} time Message가 보여지는 시간
    */
   show(str, time) {
     this.text.innerHTML = str;

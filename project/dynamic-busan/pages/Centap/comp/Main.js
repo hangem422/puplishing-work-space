@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-vars */
 import { createElement } from '../../../src/js/util/dom';
 import TextPost from '../../../src/js/layout/TextPost';
+// import History from '../../../src/js/component/History';
 
 /**
  * @description 현재 시행중인 서비스 이용 약관 페이지를 생성합니다.
@@ -22,37 +23,26 @@ function createMainPage(data, historyOnclick) {
 
   // Footer 생성
   const [year, month, date] = data.date.split('.');
-  const footerEnforce = createElement('li', {
-    child: `이 약관은 ${year}년 ${month}월 ${date}일부터 적용됩니다.`,
+  const footerEnforce = createElement('p', {
+    child: `본 개인정보 수집 및 이용은 ${year}년${month}월${date}일부터 적용됩니다.`,
   });
 
-  // const historyListItem = Object.keys(data.history).map((key) => {
-  //   const item = createElement('li', {
-  //     class: 'font-link',
-  //     child: `비패스(B PASS)앱 서비스 이용약관 (${key})`,
-  //   });
-  //   item.addEventListener('click', () => historyOnclick(key));
-  //   return item;
-  // });
-  // const historyList = createElement('ul', { child: historyListItem });
-  // const footerHistory = createElement('li', {
-  //   child: [
-  //     '이전의 개인정보 처리방침은 아래에서 확인할 수 있습니다.',
-  //     historyList,
-  //   ],
-  // });
+  // const line = createElement('hr');
 
-  const footerTitle = createElement('p', {
-    // child: '이전 약관 이력은 아래에서 확인할 수 있습니다.',
-    child: ' ',
-  });
-  const footerContents = createElement('ul', {
+  // const footerHistory = new History(
+  //   'administarion',
+  //   '개인정보 수집 및 이용 동의',
+  //   historyOnclick,
+  //   data.history,
+  // ).element;
+
+  const footer = createElement('div', {
     child: [
       footerEnforce,
-      // footerHistory
+      // line,
+      // footerHistory,
     ],
   });
-  const footer = [footerTitle, footerContents];
 
   return new TextPost(data.title, subTitle, data.contents, footer).element;
 }

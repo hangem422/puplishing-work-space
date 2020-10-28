@@ -8,14 +8,6 @@ iframe {
   height: 100%;
 }
 
-.text-post-container .text-post-footer li {
-  margin-left: var(--container-padding);
-}
-
-.text-post-container .text-post-footer li:nth-child(n + 2) {
-  margin-top: 8px;
-}
-
 .detail.v1 {
   font-size: 14px;
   padding: 16px;
@@ -41,6 +33,7 @@ iframe {
 }
 
 .ref.v1 {
+  font-size: 12px;
   text-indent: -1.3em;
   padding-left: 1.3em;
 }

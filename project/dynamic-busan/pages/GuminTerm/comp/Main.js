@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-vars */
 import { createElement } from '../../../src/js/util/dom';
 import TextPost from '../../../src/js/layout/TextPost';
+// import History from '../../../src/js/component/History';
 
 /**
  * @description 현재 시행중인 서비스 이용 약관 페이지를 생성합니다.

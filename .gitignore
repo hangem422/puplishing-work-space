@@ -2,5 +2,3 @@
 /node_modules
 /build
 /config.js
-package.json
-package-lock.json

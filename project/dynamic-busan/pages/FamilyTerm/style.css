@@ -1,0 +1,39 @@
+@import url('../../src/style/main.css');
+
+html,
+body,
+.root,
+iframe {
+  width: 100%;
+  height: 100%;
+}
+
+.detail.v1 {
+  font-size: 14px;
+  padding: 16px;
+  background-color: #f8f8f8;
+}
+
+.title.v1,
+.item.v1 {
+  font-weight: bold;
+  margin: 8px;
+}
+
+.title.v1 {
+  color: #222222;
+}
+
+.item.v1 {
+  color: #666666;
+}
+
+.itemdesc.v1 {
+  padding-left: 20px;
+}
+
+.ref.v1 {
+  font-size: 12px;
+  text-indent: -1.3em;
+  padding-left: 1.3em;
+}

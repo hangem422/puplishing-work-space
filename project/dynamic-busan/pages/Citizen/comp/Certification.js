@@ -8,6 +8,8 @@ import SecretTextfield from '../../../src/js/component/SecretTextfield';
 const CERTIFICATION_TITLE = '주민등록번호를 이용해 인증해주세요.';
 const CERTIFICATION_LABEL = '주민등록번호 뒷자리 (7자리 숫자)';
 const CERTIFICATION_PLACEHOLDER = '주민등록번호 뒷자리 숫자를 입력하세요.';
+const CERTIFICATION_DESCRIPTION =
+  '입력하신 개인정보는 인증서 발급을 위해 사용되며, 다른 목적으로 사용되지 않습니다.';
 const SECRET_INPUT_LENGTH = 7;
 
 const INVALID_RRN_MESSAGE =
@@ -43,14 +45,18 @@ function createCertificationPage(submitFunc) {
     validateCharFunc: (char) => /[0-9]/.test(char),
     validateStringFunc: (str) => /^[0-9]{7}$/.test(str),
   });
+  const descElement = createElement('p', {
+    class: 'font-text-body2 font-color-regular resident-description',
+    child: CERTIFICATION_DESCRIPTION,
+  });
 
   // Layout을 구성합니다.
   const titleContainer = wrapping('certification-title', titleElement);
   const submitContainer = wrapping('certification-submit', submitElement);
-  const secretTextfieldContainer = wrapping(
-    'certification-input',
+  const secretTextfieldContainer = wrapping('certification-input', [
     secretTextfield.element,
-  );
+    descElement,
+  ]);
   const certificationPage = createElement('div', {
     class: 'certification-page',
     child: [titleContainer, secretTextfieldContainer, submitContainer],

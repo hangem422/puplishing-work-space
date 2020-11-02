@@ -35,7 +35,8 @@
 
 .app-state-wrapper::after {
   content: '';
-  flex: 1.6;
+  /* flex: 1.6; */
+  flex: 1;
 }
 
 .app-state-wrapper.active {
@@ -108,16 +109,18 @@
 }
 
 .loading-wrapper .ldio-s5ugu8dwj4l div {
-  left: 97px;
+  left: 98.5px;
   top: 48px;
   position: absolute;
   background: #0056d0;
   animation: ldio-s5ugu8dwj4l linear 1s infinite;
   animation-play-state: paused;
-  width: 6px;
-  height: 24px;
+  /* width: 6px; */
+  /* height: 24px; */
+  width: 5px;
+  height: 11px;
   border-radius: 3px / 3.6px;
-  transform-origin: 3px 52px;
+  transform-origin: 2px 18px;
 }
 
 .loading-wrapper.active .ldio-s5ugu8dwj4l div {
@@ -126,61 +129,41 @@
 
 .ldio-s5ugu8dwj4l div:nth-child(1) {
   transform: rotate(0deg);
-  animation-delay: -0.9166666666666666s;
+  animation-delay: -0.875s;
   background: #0056d0;
 }
 .ldio-s5ugu8dwj4l div:nth-child(2) {
-  transform: rotate(30deg);
-  animation-delay: -0.8333333333333334s;
-  background: #0056d0;
-}
-.ldio-s5ugu8dwj4l div:nth-child(3) {
-  transform: rotate(60deg);
+  transform: rotate(45deg);
   animation-delay: -0.75s;
   background: #0056d0;
 }
-.ldio-s5ugu8dwj4l div:nth-child(4) {
+.ldio-s5ugu8dwj4l div:nth-child(3) {
   transform: rotate(90deg);
-  animation-delay: -0.6666666666666666s;
+  animation-delay: -0.625s;
   background: #0056d0;
 }
-.ldio-s5ugu8dwj4l div:nth-child(5) {
-  transform: rotate(120deg);
-  animation-delay: -0.5833333333333334s;
-  background: #0056d0;
-}
-.ldio-s5ugu8dwj4l div:nth-child(6) {
-  transform: rotate(150deg);
+.ldio-s5ugu8dwj4l div:nth-child(4) {
+  transform: rotate(135deg);
   animation-delay: -0.5s;
   background: #0056d0;
 }
-.ldio-s5ugu8dwj4l div:nth-child(7) {
+.ldio-s5ugu8dwj4l div:nth-child(5) {
   transform: rotate(180deg);
-  animation-delay: -0.4166666666666667s;
+  animation-delay: -0.375s;
   background: #0056d0;
 }
-.ldio-s5ugu8dwj4l div:nth-child(8) {
-  transform: rotate(210deg);
-  animation-delay: -0.3333333333333333s;
-  background: #0056d0;
-}
-.ldio-s5ugu8dwj4l div:nth-child(9) {
-  transform: rotate(240deg);
+.ldio-s5ugu8dwj4l div:nth-child(6) {
+  transform: rotate(225deg);
   animation-delay: -0.25s;
   background: #0056d0;
 }
-.ldio-s5ugu8dwj4l div:nth-child(10) {
+.ldio-s5ugu8dwj4l div:nth-child(7) {
   transform: rotate(270deg);
-  animation-delay: -0.16666666666666666s;
+  animation-delay: -0.125s;
   background: #0056d0;
 }
-.ldio-s5ugu8dwj4l div:nth-child(11) {
-  transform: rotate(300deg);
-  animation-delay: -0.08333333333333333s;
-  background: #0056d0;
-}
-.ldio-s5ugu8dwj4l div:nth-child(12) {
-  transform: rotate(330deg);
+.ldio-s5ugu8dwj4l div:nth-child(8) {
+  transform: rotate(315deg);
   animation-delay: 0s;
   background: #0056d0;
 }

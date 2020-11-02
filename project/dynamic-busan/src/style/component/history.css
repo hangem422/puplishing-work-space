@@ -1,0 +1,17 @@
+.term-history .term-history-list {
+  line-height: 1.5;
+  margin-top: 16px;
+}
+
+.term-history .term-history-list li {
+  margin-top: 16px;
+  margin-left: 16px;
+}
+
+.term-history .term-history-list li p {
+  margin-top: 4px;
+}
+
+.term-history .term-history-list li p:nth-of-type(2) {
+  text-decoration: underline;
+}

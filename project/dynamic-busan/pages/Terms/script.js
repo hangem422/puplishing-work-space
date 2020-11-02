@@ -46,7 +46,13 @@ if (window) {
       const index = query.index || 0;
       // 링크가 있는 약관이면 링크로 리다이렉션 시킵니다.
       if (data[index].link) window.location.replace(data[index].link);
-      document.title = data[index].title;
+
+      const titleElement = detailPage.details[
+        index
+      ].contentWindow.document.getElementsByTagName('title')[0];
+      const title = titleElement.innerHTML;
+      document.title = title || data[index].title.slice(0, 15);
+
       detailPage.renderDetail(index);
       pageSlider.movePage(1);
     });

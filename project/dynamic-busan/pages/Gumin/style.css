@@ -18,6 +18,14 @@ body,
   bottom: 0px;
 }
 
+.certification-page .certification-input .resident-description {
+  margin-top: 8px;
+}
+
+.certification-page .certification-input .secret-textfield-error {
+  margin-bottom: 56px;
+}
+
 .term-detail iframe {
   border: none;
   width: 100%;

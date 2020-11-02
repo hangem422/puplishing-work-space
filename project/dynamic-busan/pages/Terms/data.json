@@ -8,5 +8,25 @@
     "title": "개인정보처리방침",
     "date": "2020. 9. 1.",
     "link": "https://www.busan.go.kr/vprivacy1"
+  },
+  {
+    "title": "CENTAP 개인정보 수집 및 이용 동의",
+    "date": "2020. 10. 29.",
+    "iframe": "/agreement/ctv/index.html"
+  },
+  {
+    "title": "해운대구민카드 개인정보 수집 및 이용 동의",
+    "date": "2020. 10. 29.",
+    "iframe": "/agreement/hdc/index.html"
+  },
+  {
+    "title": "부산시청 방문증 개인정보 수집 및 이용 동의",
+    "date": "2020. 10. 29.",
+    "iframe": "/agreement/chv/index.html"
+  },
+  {
+    "title": "모바일 가족사랑카드 개인정보 수집 및 이용 동의",
+    "date": "2020. 10. 29.",
+    "iframe": "/agreement/mfl/index.html"
   }
 ]

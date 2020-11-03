@@ -62,8 +62,8 @@ function apiHandler(vp) {
       // 도서관 회원증 발급 실패
       if (ERROR_CASE.includes(res.message)) {
         appState.showModal(ERROR_MESSAGE_03, cancel, {
-          text: ERROR_MESSAGE_03_SUB,
-          url: BUSAN_LIBRARY_URL,
+          linkText: ERROR_MESSAGE_03_SUB,
+          linkUrl: BUSAN_LIBRARY_URL,
         });
         return true;
       }

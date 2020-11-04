@@ -1,4 +1,4 @@
-import * as controller from './controller/AppState.controller';
+import * as model from './model/AppState.model';
 
 /**
  * @description App State 컴포넌트를 생성합니다.
@@ -7,27 +7,21 @@ import * as controller from './controller/AppState.controller';
  */
 export default class AppState {
   constructor() {
-    controller.createModalComp(this);
-    controller.createLoadingComp(this);
-    controller.createAppState(
-      controller.getLoadingWrapper(this),
-      controller.getModalWrapper(this),
-      this,
-    );
+    model.createAppState(this);
   }
 
   /**
-   * @returns {boolean} Lodaing 혹은 Modal이 활성화 상태인지 여부 (Read Only)
+   * @returns {boolean} Lodaing 혹은 Modal이 활성화 상태인지 여부
    */
   get state() {
-    return controller.getState(this);
+    return model.getState(this);
   }
 
   /**
-   * @returns {HTMLLIElement} App State Element (Read Only)
+   * @returns {HTMLLIElement} App State Element
    */
   get element() {
-    return controller.getElement(this);
+    return model.getElement(this);
   }
 
   /**
@@ -42,19 +36,19 @@ export default class AppState {
     }} options 모달 컴포넌트 옵션 값
    */
   showModal(text, onClick, options = {}) {
-    controller.showModalBasic(
+    model.showModalBasic(
       typeof text === 'string' ? text : '',
       typeof onClick === 'function' ? onClick : () => {},
       this,
     );
 
-    controller.showModalLink(
+    model.showModalLink(
       typeof options.linkText === 'string' ? options.linkText : '',
       typeof options.linkUrl === 'string' ? options.linkUrl : '',
       this,
     );
 
-    controller.showModalSubBtn(
+    model.showModalSubBtn(
       typeof options.subBtnText === 'string' ? options.subBtnText : '',
       typeof options.onSubClick === 'function' ? options.onSubClick : () => {},
       this,
@@ -65,13 +59,13 @@ export default class AppState {
    * @description 로딩 컴포넌트를 생성합니다.
    */
   showLoading() {
-    controller.showLoading(this);
+    model.showLoading(this);
   }
 
   /**
    * @description App State를 비활성화합니다.
    */
   hide() {
-    controller.hideAppState(this);
+    model.hideAppState(this);
   }
 }

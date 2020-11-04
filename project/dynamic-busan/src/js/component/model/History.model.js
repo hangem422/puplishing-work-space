@@ -72,7 +72,7 @@ export function getOnclick(thisArg) {
 }
 
 /**
- * @param {string} separatorClass 다른 Secret Textfield와 구분할 수 있는 고유 class
+ * @param {string} separatorClass 다른 History와 구분할 수 있는 고유 class
  * @param {this} thisArg
  */
 export function setSeparatorClass(separatorClass, thisArg) {
@@ -81,7 +81,7 @@ export function setSeparatorClass(separatorClass, thisArg) {
 
 /**
  * @param {this} thisArg
- * @returns {string} 다른 Secret Textfield와 구분할 수 있는 고유 class
+ * @returns {string} 다른 History와와 구분할 수 있는 고유 class
  */
 export function getSeparatorClass(thisArg) {
   return _separatorClass.get(thisArg);

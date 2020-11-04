@@ -1,15 +1,7 @@
 import * as model from './model/AgreeTerns.model';
 
-/**
- * @description 약관 동의 컴포넌트입니다.
- * @property {number} count 현재 동의한 약관의 수
- * @property {number} size 전체 약관의 수
- * @property {(index: number, item: HTMLElement) => void} onClick 약관 상세보기 온 클릭 이벤트 콜백
- * @property {HTMLLIElement} agreeAllBtn 약관 전체 동의 버튼
- * @property {HTMLLIElement} termsWrapper 약관들을 감싸고있는 container element
- * @property {HTMLLIElement} element List Board Element
- * @property {boolean} isDone 전체 동의 여부 (GET ONLY)
- */
+/* 약관 동의 컴포넌트입니다. */
+
 export default class AgreeTerms {
   /**
    * @param {string[]} terms 약관 제목 리스트

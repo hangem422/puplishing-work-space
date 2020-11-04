@@ -1,10 +1,7 @@
 import * as model from './model/AppState.model';
 
-/**
- * @description App State 컴포넌트를 생성합니다.
- * @property {boolean} state Lodaing 혹은 Modal이 활성화 상태인지 여부 (Read Only)
- * @property {HTMLLIElement} element App State Element (Read Only)
- */
+/* 모달과 로딩 등의 맵 상태를 관리하는 컴포넌트입니다. */
+
 export default class AppState {
   constructor() {
     model.createAppState(this);

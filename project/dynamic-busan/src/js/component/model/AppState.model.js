@@ -28,6 +28,7 @@ export function setState(state, thisArg) {
 
 /**
  * @param {this} thisArg
+ * @returns {boolean} Lodaing 혹은 Modal이 활성화 상태인지 여부
  */
 export function getState(thisArg) {
   return _state.get(thisArg);
@@ -47,6 +48,7 @@ export function setOnClick(onClick, thisArg) {
 
 /**
  * @param {this} thisArg
+ * @returns {() => void} 모달 버튼의 온 클릭 이벤트 콜백함수
  */
 export function getOnClick(thisArg) {
   return _onClick.get(thisArg);
@@ -66,6 +68,7 @@ export function setOnSubClick(onSubClick, thisArg) {
 
 /**
  * @param {this} thisArg
+ * @returns {() => void} 모달 보조 버튼 온 클릭 이벤트 콜백함수
  */
 export function getOnSubClick(thisArg) {
   return _onSubClick.get(thisArg);
@@ -85,6 +88,7 @@ export function setOnLinkClick(onLinkClick, thisArg) {
 
 /**
  * @param {this} thisArg
+ * @returns {() => void} 모달 링크 택스트 온 클릭 이벤트 콜백함수
  */
 export function getOnLinkClick(thisArg) {
   return _onLinkClick.get(thisArg);
@@ -100,6 +104,7 @@ export function setModalText(modalText, thisArg) {
 
 /**
  * @param {this} thisArg
+ * @returns {string} 모달 택스트
  */
 export function getModalText(thisArg) {
   return _modalText.get(thisArg);
@@ -115,6 +120,7 @@ export function setModalBtn(modalBtn, thisArg) {
 
 /**
  * @param {this} thisArg
+ * @returns {HTMLElement} 모달 메인 버튼 Element
  */
 export function getModalBtn(thisArg) {
   return _modalBtn.get(thisArg);
@@ -130,6 +136,7 @@ export function setModalSubBtn(modalSubBtn, thisArg) {
 
 /**
  * @param {this} thisArg
+ * @returns {HTMLElement} 모달 보조 버튼 Element
  */
 export function getModalSubBtn(thisArg) {
   return _modalSubBtn.get(thisArg);
@@ -145,6 +152,7 @@ export function setModalLink(modalLink, thisArg) {
 
 /**
  * @param {this} thisArg
+ * @returns {HTMLElement} 모달 링크 Element
  */
 export function getModalLink(thisArg) {
   return _modalLink.get(thisArg);
@@ -160,6 +168,7 @@ export function setModalWrapper(modalWrapper, thisArg) {
 
 /**
  * @param {this} thisArg
+ * @returns {HTMLElement} 모달 Element
  */
 export function getModalWrapper(thisArg) {
   return _modalWrapper.get(thisArg);
@@ -175,6 +184,7 @@ export function setLoadingWrapper(loadingWrapper, thisArg) {
 
 /**
  * @param {this} thisArg
+ * @returns {HTMLElement} 로딩 Element
  */
 export function getLoadingWrapper(thisArg) {
   return _loadingWrapper.get(thisArg);
@@ -190,6 +200,7 @@ export function setElement(element, thisArg) {
 
 /**
  * @param {this} thisArg
+ * @returns {HTMLElement} App State Element
  */
 export function getElement(thisArg) {
   return _element.get(thisArg);

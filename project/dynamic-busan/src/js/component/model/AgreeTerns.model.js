@@ -22,6 +22,7 @@ export function setCount(count, thisArg) {
 
 /**
  * @param {this} thisArg
+ * @returns {number} 동의한 약관 숫자
  */
 export function getCount(thisArg) {
   return _count.get(thisArg);
@@ -37,6 +38,7 @@ export function setSize(size, thisArg) {
 
 /**
  * @param {this} thisArg
+ * @returns {number} 전체 약관 수
  */
 export function getSize(thisArg) {
   return _size.get(thisArg);
@@ -52,6 +54,7 @@ export function setOnClick(onClick, thisArg) {
 
 /**
  * @param {this} thisArg
+ * @returns {(isDone: boolean, index: number, item: HTMLElement) => void} 야관 동의 클릭 콜백 함수
  */
 export function getOnClick(thisArg) {
   return _onClick.get(thisArg);
@@ -67,6 +70,7 @@ export function setOnDetail(onDetail, thisArg) {
 
 /**
  * @param {this} thisArg
+ * @returns {(index: number, item: HTMLElement) => void} 상세 보기 클릭 콜백 함수
  */
 export function getOnDetail(thisArg) {
   return _onDetail.get(thisArg);
@@ -82,6 +86,7 @@ export function setAgreeAllBtn(agreeAllBtn, thisArg) {
 
 /**
  * @param {this} thisArg
+ * @returns {HTMLElement} 전체 동의 버튼 Element
  */
 export function getAgreeAllBtn(thisArg) {
   return _agreeAllBtn.get(thisArg);
@@ -97,6 +102,7 @@ export function setTermWrapper(termWrapper, thisArg) {
 
 /**
  * @param {this} thisArg
+ * @returns {HTMLElement} 약관 Element를 감싼 Wrapper Element
  */
 export function getTermWrapper(thisArg) {
   return _termWrapper.get(thisArg);
@@ -112,6 +118,7 @@ export function setElement(element, thisArg) {
 
 /**
  * @param {this} thisArg
+ * @returns {HTMLElement} AgreeTerms Element
  */
 export function getElement(thisArg) {
   return _element.get(thisArg);

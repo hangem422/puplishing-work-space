@@ -3,123 +3,100 @@ import { checkIcon, moreRight, checkCircle } from '../Icon';
 
 const ACTIVE_TERM_CLASS = 'active';
 
+/**
+ * @description 동의한 약관 숫자
+ * @type {WeakMap<object, number>}
+ */
 const _count = new WeakMap();
-const _size = new WeakMap();
-const _onClick = new WeakMap();
-const _onDetail = new WeakMap();
-
-const _agreeAllBtn = new WeakMap();
-const _termWrapper = new WeakMap();
-const _element = new WeakMap();
 
 /**
- * @param {number} count 동의한 약관 숫자
- * @param {this} thisArg
+ * @description 전체 약관 수
+ * @type {WeakMap<object, number>}
  */
+const _size = new WeakMap();
+
+/**
+ * @description 약관 동의 클릭 콜백 함수
+ * @type {WeakMap<object, (isDone: boolean, index: number, item: HTMLElement) => void>}
+ */
+const _onClick = new WeakMap();
+
+/**
+ * @description 상세 보기 클릭 콜백 함수
+ * @type {WeakMap<object, (index: number, item: HTMLElement) => void>}
+ */
+const _onDetail = new WeakMap();
+
+/**
+ * @description 전체 동의 버튼 Element
+ * @type {WeakMap<object, HTMLElement>}
+ */
+const _agreeAllBtn = new WeakMap();
+
+/**
+ * @description 약관 Element를 감싼 Wrapper Element
+ * @type {WeakMap<object, HTMLElement>}
+ */
+const _termWrapper = new WeakMap();
+
+/**
+ * @description AgreeTerms Element
+ * @type {WeakMap<object, HTMLElement>}
+ */
+const _element = new WeakMap();
+
 export function setCount(count, thisArg) {
   _count.set(thisArg, count);
 }
 
-/**
- * @param {this} thisArg
- * @returns {number} 동의한 약관 숫자
- */
 export function getCount(thisArg) {
   return _count.get(thisArg);
 }
 
-/**
- * @param {number} size 전체 약관 수
- * @param {this} thisArg
- */
 export function setSize(size, thisArg) {
   _size.set(thisArg, size);
 }
 
-/**
- * @param {this} thisArg
- * @returns {number} 전체 약관 수
- */
 export function getSize(thisArg) {
   return _size.get(thisArg);
 }
 
-/**
- * @param {(isDone: boolean, index: number, item: HTMLElement) => void} onClick 야관 동의 클릭 콜백 함수
- * @param {this} thisArg
- */
 export function setOnClick(onClick, thisArg) {
   _onClick.set(thisArg, onClick);
 }
 
-/**
- * @param {this} thisArg
- * @returns {(isDone: boolean, index: number, item: HTMLElement) => void} 야관 동의 클릭 콜백 함수
- */
 export function getOnClick(thisArg) {
   return _onClick.get(thisArg);
 }
 
-/**
- * @param {(index: number, item: HTMLElement) => void} onDetail 상세 보기 클릭 콜백 함수
- * @param {this} thisArg
- */
 export function setOnDetail(onDetail, thisArg) {
   _onDetail.set(thisArg, onDetail);
 }
 
-/**
- * @param {this} thisArg
- * @returns {(index: number, item: HTMLElement) => void} 상세 보기 클릭 콜백 함수
- */
 export function getOnDetail(thisArg) {
   return _onDetail.get(thisArg);
 }
 
-/**
- * @param {HTMLElement} agreeAllBtn 전체 동의 버튼 Element
- * @param {this} thisArg
- */
 export function setAgreeAllBtn(agreeAllBtn, thisArg) {
   _agreeAllBtn.set(thisArg, agreeAllBtn);
 }
 
-/**
- * @param {this} thisArg
- * @returns {HTMLElement} 전체 동의 버튼 Element
- */
 export function getAgreeAllBtn(thisArg) {
   return _agreeAllBtn.get(thisArg);
 }
 
-/**
- * @param {HTMLElement} termWrapper 약관 Element를 감싼 Wrapper Element
- * @param {this} thisArg
- */
 export function setTermWrapper(termWrapper, thisArg) {
   _termWrapper.set(thisArg, termWrapper);
 }
 
-/**
- * @param {this} thisArg
- * @returns {HTMLElement} 약관 Element를 감싼 Wrapper Element
- */
 export function getTermWrapper(thisArg) {
   return _termWrapper.get(thisArg);
 }
 
-/**
- * @param {HTMLElement} element AgreeTerms Element
- * @param {this} thisArg
- */
 export function setElement(element, thisArg) {
   return _element.set(thisArg, element);
 }
 
-/**
- * @param {this} thisArg
- * @returns {HTMLElement} AgreeTerms Element
- */
 export function getElement(thisArg) {
   return _element.get(thisArg);
 }
@@ -130,7 +107,10 @@ export function getElement(thisArg) {
  * @returns {boolean}
  */
 export function isDone(thisArg) {
-  return _count.get(thisArg) === _size.get(thisArg);
+  const count = _count.get(thisArg);
+  const size = _size.get(thisArg);
+
+  return count === size;
 }
 
 /**
@@ -139,7 +119,9 @@ export function isDone(thisArg) {
  * @return {boolean[]}
  */
 export function getIsSelectedArr(thisArg) {
-  return [].map.call(_termWrapper.get(thisArg).childNodes, (termElement) =>
+  const termWrapper = _termWrapper.get(thisArg);
+
+  return [].map.call(termWrapper.childNodes, (termElement) =>
     termElement.classList.contains(ACTIVE_TERM_CLASS),
   );
 }
@@ -162,13 +144,17 @@ export function changeAgreeAllBtnStyle(thisArg) {
  * @param {this} thisArg
  */
 export function agreeAll(thisArg) {
-  _count.set(thisArg, _size.get(thisArg));
+  const size = _size.get(thisArg);
+  const agreeAllBtn = _agreeAllBtn.get(thisArg);
+  const termWrapper = _termWrapper.get(thisArg);
 
-  if (!_agreeAllBtn.get(thisArg).classList.contains(ACTIVE_TERM_CLASS)) {
-    _agreeAllBtn.get(thisArg).classList.add(ACTIVE_TERM_CLASS);
+  _count.set(thisArg, size);
+
+  if (!agreeAllBtn.classList.contains(ACTIVE_TERM_CLASS)) {
+    agreeAllBtn.classList.add(ACTIVE_TERM_CLASS);
   }
 
-  [].forEach.call(_termWrapper.get(thisArg).childNodes, (termElement) => {
+  [].forEach.call(termWrapper.childNodes, (termElement) => {
     if (!termElement.classList.contains(ACTIVE_TERM_CLASS)) {
       termElement.classList.add(ACTIVE_TERM_CLASS);
     }
@@ -180,13 +166,16 @@ export function agreeAll(thisArg) {
  * @param {this} thisArg
  */
 export function disagreeAll(thisArg) {
+  const agreeAllBtn = _agreeAllBtn.get(thisArg);
+  const termWrapper = _termWrapper.get(thisArg);
+
   _count.set(thisArg, 0);
 
-  if (_agreeAllBtn.get(thisArg).classList.contains(ACTIVE_TERM_CLASS)) {
-    _agreeAllBtn.get(thisArg).classList.remove(ACTIVE_TERM_CLASS);
+  if (agreeAllBtn.classList.contains(ACTIVE_TERM_CLASS)) {
+    agreeAllBtn.classList.remove(ACTIVE_TERM_CLASS);
   }
 
-  [].forEach.call(_termWrapper.get(thisArg).childNodes, (termElement) => {
+  [].forEach.call(termWrapper.childNodes, (termElement) => {
     if (termElement.classList.contains(ACTIVE_TERM_CLASS)) {
       termElement.classList.remove(ACTIVE_TERM_CLASS);
     }
@@ -208,8 +197,10 @@ export function changeAll(thisArg) {
  * @param {this} thisArg
  */
 export function clickWithIdnex(index, thisArg) {
+  const termWrapper = _termWrapper.get(thisArg);
+
   const event = new Event('click');
-  const termElement = _termWrapper.get(thisArg).children[index];
+  const termElement = termWrapper.children[index];
   const checkElement = termElement.getElementsByClassName(
     'agree-terms-item-check',
   )[0];
@@ -253,6 +244,7 @@ function createTermItem(term) {
 function setCheckIconOnClick(checkIconElement, container, index, thisArg) {
   checkIconElement.addEventListener('click', () => {
     const count = _count.get(thisArg);
+    const onClick = _onClick.get(thisArg);
 
     // 동의한 상태의 약관이면 동의를 헤지합니다.
     if (container.classList.contains(ACTIVE_TERM_CLASS)) {
@@ -267,7 +259,7 @@ function setCheckIconOnClick(checkIconElement, container, index, thisArg) {
 
     // 모두 동의한 상태이면 전체 동의 버튼 스타일을 변경합니다.
     changeAgreeAllBtnStyle(thisArg);
-    _onClick.get(thisArg)(isDone(thisArg), index, container);
+    onClick(isDone(thisArg), index, container);
   });
 }
 
@@ -280,7 +272,9 @@ function setCheckIconOnClick(checkIconElement, container, index, thisArg) {
  */
 function setDetailOnClick(detialWrapper, container, index, thisArg) {
   detialWrapper.addEventListener('click', () => {
-    _onDetail.get(thisArg)(index, container);
+    const onDetail = _onDetail.get(thisArg);
+
+    onDetail(index, container);
   });
 }
 
@@ -291,12 +285,14 @@ function setDetailOnClick(detialWrapper, container, index, thisArg) {
  */
 export function addTerm(term, thisArg) {
   const curSize = _size.get(thisArg);
+  const termWrapper = _termWrapper.get(thisArg);
+
   const [checkIconElement, detialWrapper, container] = createTermItem(term);
 
   setCheckIconOnClick(checkIconElement, container, curSize, thisArg);
   setDetailOnClick(detialWrapper, container, curSize, thisArg);
 
-  _termWrapper.get(thisArg).appendChild(container);
+  termWrapper.appendChild(container);
   _size.set(thisArg, curSize + 1);
 }
 
@@ -329,8 +325,10 @@ function initAgreeAllBtn(thisArg) {
   });
 
   agreeAllBtn.addEventListener('click', () => {
+    const onClick = _onClick.get(thisArg);
+
     changeAll(thisArg);
-    _onClick.get(thisArg)(isDone(thisArg));
+    onClick(isDone(thisArg));
   });
 
   _agreeAllBtn.set(thisArg, agreeAllBtn);
@@ -342,6 +340,8 @@ function initAgreeAllBtn(thisArg) {
  * @param {this} thisArg
  */
 function initElement(title, thisArg) {
+  const agreeAllBtn = _agreeAllBtn.get(thisArg);
+
   const termsWrapper = createElement('div', {
     class: 'wrapper agree-terms-list',
   });
@@ -351,7 +351,7 @@ function initElement(title, thisArg) {
   });
   const element = createElement('div', {
     class: 'container agree-terms',
-    child: [titleElement, _agreeAllBtn.get(thisArg), termsWrapper],
+    child: [titleElement, agreeAllBtn, termsWrapper],
   });
 
   _termWrapper.set(thisArg, termsWrapper);

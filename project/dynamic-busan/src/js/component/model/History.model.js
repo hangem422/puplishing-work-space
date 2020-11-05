@@ -1,91 +1,34 @@
 import { createElement, appendAllChild } from '../../util/dom';
 
+/**
+ * @description History List Element
+ * @type {WeakMap<object, HTMLElement>}
+ */
 const _list = new WeakMap();
+
+/**
+ * @description History Element
+ * @type {WeakMap<object, HTMLElement>}
+ */
 const _element = new WeakMap();
 
+/**
+ * @description 각 이력마다 동일하게 붙을 접두어
+ * @type {WeakMap<object, string>}
+ */
 const _prefix = new WeakMap();
+
+/**
+ * @description 아이템 온 클릭 콜백 이벤트
+ * @type {WeakMap<object, (file: string) => void>}
+ */
 const _onClick = new WeakMap();
+
+/**
+ * @description 다른 History와 구분할 수 있는 고유 class
+ * @type {WeakMap<object, string>}
+ */
 const _separatorClass = new WeakMap();
-
-/**
- * @param {HTMLElement} list History List Element
- * @param {this} thisArg
- */
-export function setList(list, thisArg) {
-  _list.set(thisArg, list);
-}
-
-/**
- * @param {this} thisArg
- * @returns {HTMLElement} History List Element
- */
-export function getList(thisArg) {
-  return _list.get(thisArg);
-}
-
-/**
- * @param {HTMLElement} element History Element
- * @param {this} thisArg
- */
-export function setElement(element, thisArg) {
-  _element.set(thisArg, element);
-}
-
-/**
- * @param {this} thisArg
- * @returns {HTMLElement} History Element
- */
-export function getElement(thisArg) {
-  return _element.get(thisArg);
-}
-
-/**
- * @param {string} prefix 각 이력마다 동일하게 붙을 접두어
- * @param {this} thisArg
- */
-export function setPrefix(prefix, thisArg) {
-  _prefix.set(thisArg, prefix);
-}
-
-/**
- * @param {this} thisArg
- * @returns {string} 각 이력마다 동일하게 붙을 접두어
- */
-export function getPrefix(thisArg) {
-  return _prefix.get(thisArg);
-}
-
-/**
- * @param {(file: string) => void} onClick 아이템 온 클릭 콜백 이벤트
- * @param {this} thisArg
- */
-export function setOnClick(onClick, thisArg) {
-  _onClick.set(thisArg, onClick);
-}
-
-/**
- * @param {this} thisArg
- * @param {(file: string) => void} onClick 아이템 온 클릭 콜백 이벤트
- */
-export function getOnclick(thisArg) {
-  return _onClick.get(thisArg);
-}
-
-/**
- * @param {string} separatorClass 다른 History와 구분할 수 있는 고유 class
- * @param {this} thisArg
- */
-export function setSeparatorClass(separatorClass, thisArg) {
-  _separatorClass.set(thisArg, separatorClass);
-}
-
-/**
- * @param {this} thisArg
- * @returns {string} 다른 History와와 구분할 수 있는 고유 class
- */
-export function getSeparatorClass(thisArg) {
-  return _separatorClass.get(thisArg);
-}
 
 /**
  * @description History List에 아이템을 추가합니다.
@@ -94,13 +37,16 @@ export function getSeparatorClass(thisArg) {
  * @param {this} thisArg
  */
 export function addItem(key, link, thisArg) {
-  const prefix = createElement('p', { child: _prefix.get(thisArg) });
-  const date = createElement('p', { child: key });
+  const prefix = _prefix.get(thisArg);
+  const list = _list.get(thisArg);
 
-  const item = createElement('li', { child: [prefix, date] });
+  const prefixElement = createElement('p', { child: prefix });
+  const dateElement = createElement('p', { child: key });
+
+  const item = createElement('li', { child: [prefixElement, dateElement] });
   item.addEventListener('click', () => _onClick.get(thisArg)(link));
 
-  appendAllChild(_list.get(thisArg), item);
+  appendAllChild(list, item);
 }
 
 /**

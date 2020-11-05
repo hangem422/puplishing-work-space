@@ -3,41 +3,80 @@ import { isIOS } from '../../util/os';
 
 const ACTIVE_POPUP_CLASS = 'active';
 
+/**
+ * @description Lodaing 혹은 Modal이 활성화 상태인지 여부
+ * @type {WeakMap<object, boolean>}
+ */
 const _state = new WeakMap();
 
+/**
+ * @description 모달 버튼의 온 클릭 이벤트 콜백함수
+ * @type {WeakMap<object, () => void>}
+ */
 const _onClick = new WeakMap();
-const _onSubClick = new WeakMap();
-const _onLinkClick = new WeakMap();
-
-const _modalText = new WeakMap();
-const _modalBtn = new WeakMap();
-const _modalSubBtn = new WeakMap();
-const _modalLink = new WeakMap();
-
-const _modalWrapper = new WeakMap();
-const _loadingWrapper = new WeakMap();
-const _element = new WeakMap();
 
 /**
- * @param {boolean} state Lodaing 혹은 Modal이 활성화 상태인지 여부
- * @param {this} thisArg
+ * @description 모달 보조 버튼 온 클릭 이벤트 콜백함수
+ * @type {WeakMap<object, () => void>}
  */
+const _onSubClick = new WeakMap();
+
+/**
+ * @description 모달 링크 택스트 온 클릭 이벤트 콜백함수
+ * @type {WeakMap<object, () => void>}
+ */
+const _onLinkClick = new WeakMap();
+
+/**
+ * @description 모달 택스트
+ * @type {WeakMap<object, string>}
+ */
+const _modalText = new WeakMap();
+
+/**
+ * @description 모달 메인 버튼 Element
+ * @type {WeakMap<object, HTMLElement>}
+ */
+const _modalBtn = new WeakMap();
+
+/**
+ * @description 모달 보조 버튼 Element
+ * @type {WeakMap<object, HTMLElement>}
+ */
+const _modalSubBtn = new WeakMap();
+
+/**
+ * @description 모달 링크 Element
+ * @type {WeakMap<object, HTMLElement>}
+ */
+const _modalLink = new WeakMap();
+
+/**
+ * @description 모달 Element
+ * @type {WeakMap<object, HTMLElement>}
+ */
+const _modalWrapper = new WeakMap();
+
+/**
+ * @description 로딩 Element
+ * @type {WeakMap<object, HTMLElement>}
+ */
+const _loadingWrapper = new WeakMap();
+
+/**
+ * @description App State Element
+ * @type {WeakMap<object, HTMLElement>}
+ */
+const _element = new WeakMap();
+
 export function setState(state, thisArg) {
   _state.set(thisArg, state);
 }
 
-/**
- * @param {this} thisArg
- * @returns {boolean} Lodaing 혹은 Modal이 활성화 상태인지 여부
- */
 export function getState(thisArg) {
   return _state.get(thisArg);
 }
 
-/**
- * @param {() => void} onClick 모달 버튼의 온 클릭 이벤트 콜백함수
- * @param {this} thisArg
- */
 export function setOnClick(onClick, thisArg) {
   _onClick.set(thisArg, () => {
     onClick();
@@ -46,18 +85,10 @@ export function setOnClick(onClick, thisArg) {
   });
 }
 
-/**
- * @param {this} thisArg
- * @returns {() => void} 모달 버튼의 온 클릭 이벤트 콜백함수
- */
 export function getOnClick(thisArg) {
   return _onClick.get(thisArg);
 }
 
-/**
- * @param {() => void} onSubClick 모달 보조 버튼 온 클릭 이벤트 콜백함수
- * @param {this} thisArg
- */
 export function setOnSubClick(onSubClick, thisArg) {
   _onSubClick.set(thisArg, () => {
     onSubClick();
@@ -66,18 +97,10 @@ export function setOnSubClick(onSubClick, thisArg) {
   });
 }
 
-/**
- * @param {this} thisArg
- * @returns {() => void} 모달 보조 버튼 온 클릭 이벤트 콜백함수
- */
 export function getOnSubClick(thisArg) {
   return _onSubClick.get(thisArg);
 }
 
-/**
- * @param {() => void} onLinkClick 모달 링크 택스트 온 클릭 이벤트 콜백함수
- * @param {this} thisArg
- */
 export function setOnLinkClick(onLinkClick, thisArg) {
   _onLinkClick.set(thisArg, () => {
     onLinkClick();
@@ -86,122 +109,62 @@ export function setOnLinkClick(onLinkClick, thisArg) {
   });
 }
 
-/**
- * @param {this} thisArg
- * @returns {() => void} 모달 링크 택스트 온 클릭 이벤트 콜백함수
- */
 export function getOnLinkClick(thisArg) {
   return _onLinkClick.get(thisArg);
 }
 
-/**
- * @param {string} modalText 모달 택스트
- * @param {this} thisArg
- */
 export function setModalText(modalText, thisArg) {
   _modalText.set(thisArg, modalText);
 }
 
-/**
- * @param {this} thisArg
- * @returns {string} 모달 택스트
- */
 export function getModalText(thisArg) {
   return _modalText.get(thisArg);
 }
 
-/**
- * @param {HTMLElement} modalBtn 모달 메인 버튼 Element
- * @param {this} thisArg
- */
 export function setModalBtn(modalBtn, thisArg) {
   _modalBtn.set(thisArg, modalBtn);
 }
 
-/**
- * @param {this} thisArg
- * @returns {HTMLElement} 모달 메인 버튼 Element
- */
 export function getModalBtn(thisArg) {
   return _modalBtn.get(thisArg);
 }
 
-/**
- * @param {HTMLElement} modalSubBtn 모달 보조 버튼 Element
- * @param {this} thisArg
- */
 export function setModalSubBtn(modalSubBtn, thisArg) {
   _modalSubBtn.set(thisArg, modalSubBtn);
 }
 
-/**
- * @param {this} thisArg
- * @returns {HTMLElement} 모달 보조 버튼 Element
- */
 export function getModalSubBtn(thisArg) {
   return _modalSubBtn.get(thisArg);
 }
 
-/**
- * @param {HTMLElement} modalLink 모달 링크 Element
- * @param {this} thisArg
- */
 export function setModalLink(modalLink, thisArg) {
   _modalLink.set(thisArg, modalLink);
 }
 
-/**
- * @param {this} thisArg
- * @returns {HTMLElement} 모달 링크 Element
- */
 export function getModalLink(thisArg) {
   return _modalLink.get(thisArg);
 }
 
-/**
- * @param {HTMLElement} modalWrapper 모달 Element
- * @param {this} thisArg
- */
 export function setModalWrapper(modalWrapper, thisArg) {
   _modalWrapper.set(thisArg, modalWrapper);
 }
 
-/**
- * @param {this} thisArg
- * @returns {HTMLElement} 모달 Element
- */
 export function getModalWrapper(thisArg) {
   return _modalWrapper.get(thisArg);
 }
 
-/**
- * @param {HTMLElement} loadingWrapper 로딩 Element
- * @param {this} thisArg
- */
 export function setLoadingWrapper(loadingWrapper, thisArg) {
   _loadingWrapper.set(thisArg, loadingWrapper);
 }
 
-/**
- * @param {this} thisArg
- * @returns {HTMLElement} 로딩 Element
- */
 export function getLoadingWrapper(thisArg) {
   return _loadingWrapper.get(thisArg);
 }
 
-/**
- * @param {HTMLElement} element App State Element
- * @param {this} thisArg
- */
 export function setElement(element, thisArg) {
   _element.set(thisArg, element);
 }
 
-/**
- * @param {this} thisArg
- * @returns {HTMLElement} App State Element
- */
 export function getElement(thisArg) {
   return _element.get(thisArg);
 }
@@ -211,9 +174,13 @@ export function getElement(thisArg) {
  * @param {this} thisArg
  */
 export function hideAppState(thisArg) {
-  _element.get(thisArg).classList.remove(ACTIVE_POPUP_CLASS);
-  _modalWrapper.get(thisArg).classList.remove(ACTIVE_POPUP_CLASS);
-  _loadingWrapper.get(thisArg).classList.remove(ACTIVE_POPUP_CLASS);
+  const element = _element.get(thisArg);
+  const modalWrapper = _modalWrapper.get(thisArg);
+  const loadingWrapper = _loadingWrapper.get(thisArg);
+
+  element.classList.remove(ACTIVE_POPUP_CLASS);
+  modalWrapper.classList.remove(ACTIVE_POPUP_CLASS);
+  loadingWrapper.classList.remove(ACTIVE_POPUP_CLASS);
 }
 
 /**
@@ -223,26 +190,33 @@ export function hideAppState(thisArg) {
  * @param {this} thisArg
  */
 export function showModalBasic(text, onClick, thisArg) {
+  const state = _state.get(thisArg);
+  const element = _element.get(thisArg);
+  const modalWrapper = _modalWrapper.get(thisArg);
+  const loadingWrapper = _loadingWrapper.get(thisArg);
+  const modalText = _modalText.get(thisArg);
+  const modalBtn = _modalBtn.get(thisArg);
+
   // App State기 비활성화 상태이면 활성화 시켜줍니다.
-  if (!_state.get(thisArg)) {
-    _element.get(thisArg).classList.add(ACTIVE_POPUP_CLASS);
+  if (!state) {
+    element.classList.add(ACTIVE_POPUP_CLASS);
     _state.set(thisArg, true);
   }
 
   // Lodaing을 숨기고 Modal을 보여줍니다.
-  _modalWrapper.get(thisArg).classList.add(ACTIVE_POPUP_CLASS);
-  _loadingWrapper.get(thisArg).classList.remove(ACTIVE_POPUP_CLASS);
+  modalWrapper.classList.add(ACTIVE_POPUP_CLASS);
+  loadingWrapper.classList.remove(ACTIVE_POPUP_CLASS);
 
-  _modalText.get(thisArg).innerHTML = text;
+  modalText.innerHTML = text;
 
   // 기존 이벤트 리스너를 제거하고, 새로운 온클릭 리스너를 저장합니다.
-  _modalBtn.get(thisArg).removeEventListener('click', _onClick.get(thisArg));
+  modalBtn.removeEventListener('click', _onClick.get(thisArg));
   _onClick.set(thisArg, () => {
     onClick();
     hideAppState(thisArg);
   });
 
-  _modalBtn.get(thisArg).addEventListener('click', _onClick.get(thisArg));
+  modalBtn.addEventListener('click', _onClick.get(thisArg));
 }
 
 /**
@@ -273,20 +247,20 @@ export function showModalLink(text, url, thisArg) {
  * @param {this} thisArg
  */
 export function showModalSubBtn(text, onClick, thisArg) {
-  const sub = _modalSubBtn.get(thisArg);
+  const modalSubBtn = _modalSubBtn.get(thisArg);
 
   if (!text) _modalSubBtn.get(thisArg).style.display = 'none';
   else _modalSubBtn.get(thisArg).style.display = null;
-  sub.innerHTML = text;
+  modalSubBtn.innerHTML = text;
 
   // 기존 이벤트 리스너를 제거하고, 새로운 온클릭 리스너를 저장합니다.
-  sub.removeEventListener('click', _onSubClick.get(thisArg));
+  modalSubBtn.removeEventListener('click', _onSubClick.get(thisArg));
   _onSubClick.set(thisArg, () => {
     onClick();
     hideAppState(thisArg);
   });
 
-  sub.addEventListener('click', _onSubClick.get(thisArg));
+  modalSubBtn.addEventListener('click', _onSubClick.get(thisArg));
 }
 
 /**
@@ -294,15 +268,20 @@ export function showModalSubBtn(text, onClick, thisArg) {
  * @param {this} thisArg
  */
 export function showLoading(thisArg) {
+  const state = _state.get(thisArg);
+  const element = _element.get(thisArg);
+  const loadingWrapper = _loadingWrapper.get(thisArg);
+  const modalWrapper = _modalWrapper.get(thisArg);
+
   // App State기 비활성화 상태이면 활성화 시켜줍니다.
-  if (!_state.get(thisArg)) {
-    _element.get(thisArg).classList.add(ACTIVE_POPUP_CLASS);
+  if (!state) {
+    element.classList.add(ACTIVE_POPUP_CLASS);
     _state.set(thisArg, true);
   }
 
   // Modal을 숨기고 Loading을 보여줍니다.
-  _loadingWrapper.get(thisArg).classList.add(ACTIVE_POPUP_CLASS);
-  _modalWrapper.get(thisArg).classList.remove(ACTIVE_POPUP_CLASS);
+  loadingWrapper.classList.add(ACTIVE_POPUP_CLASS);
+  modalWrapper.classList.remove(ACTIVE_POPUP_CLASS);
 }
 
 /**

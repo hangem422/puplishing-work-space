@@ -317,24 +317,25 @@ function initElement(separatorClass, label, type, placeholder, thisArg) {
 function initEventListenr(thisArg) {
   const secret = _secret.get(thisArg);
   const input = _input.get(thisArg);
-  const text = _text.get(thisArg);
 
   // secret을 클릭하면 숨겨진 input에 포커스가 맞춰집니다.
-  secret.addEventListener('click', () => input.focus());
+  secret.addEventListener('click', () => {
+    _input.get(thisArg).focus();
+  });
 
   // input의 focus 여부에 맞춰 secret의 스타일을 변경합니다.
   input.addEventListener('focus', () => {
-    secret.classList.add('focus');
+    _secret.get(thisArg).classList.add('focus');
   });
   input.addEventListener('blur', () => {
-    secret.classList.remove('focus');
+    _secret.get(thisArg).classList.remove('focus');
   });
 
   input.addEventListener('keyup', (event) => {
     // backspace 입력 시 문자 삭제
     if (event.keyCode === 8) deleteChar(thisArg);
     // 허용 범위의 키가 입력됐을 시 문자 추가
-    else if (event.target.value.length > text.length) {
+    else if (event.target.value.length > _text.get(thisArg).length) {
       const char = event.target.value.slice(-1);
       event.target.value = event.target.value.slice(0, -1);
       addChar(char, thisArg);

@@ -41,7 +41,7 @@ function getNoticeList() {
     strict: true,
   })
     .then((res) => {
-      const { list } = res.data;
+      const { list } = res.data.data;
       const dateOption = {
         prefix: false,
         space: true,

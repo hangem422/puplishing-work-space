@@ -28,10 +28,10 @@ const appState = new AppState(); // 로딩과 모달 컴포넌트를 생성합�
 /* ------------- */
 
 /**
- * @description API 서버로부터 공지 정보를 받아옵니다.
+ * @description API 서버로부터 이력 정보를 받아옵니다.
  */
-function getNoticeList(url) {
-  return get({ url, strict: true });
+function getHistory(url) {
+  return get({ url, strict: true }).then((res) => res.data);
 }
 
 /**
@@ -55,7 +55,7 @@ if (window) {
     // 라우터에 함수를 추가합니다.
     router.setRouterFunc('/history', ({ query }) => {
       appState.showLoading();
-      getNoticeList(data.history[query.file])
+      getHistory(data.history[query.file])
         .then((res) => {
           history.title = res.title;
           history.subtitle = `시행일 ${res.date}`;

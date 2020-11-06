@@ -47,30 +47,23 @@ function apiHandler(vp) {
     .then((res) =>
       get({
         url: GET_VC_API_URL,
-        headers: { 'referrer-token': res },
+        headers: { 'referrer-token': res.data },
         strict: false,
       }),
     )
     // 발급 받은 VC를 모바일 디바이스로 전달합니다.
     .then((res) => {
       // 요청 성공 시 VCS 문자열을 받습니다.
-      if (typeof res === 'string') {
-        issuedVC(res, () => errorFunc(ERROR_MESSAGE_01));
-        return true;
-      }
-
+      if (res.ok) issuedVC(res, () => errorFunc(ERROR_MESSAGE_01));
       // 도서관 회원증 발급 실패
-      if (ERROR_CASE.includes(res.message)) {
+      else if (ERROR_CASE.includes(res.data.message)) {
         appState.showModal(ERROR_MESSAGE_03, cancel, {
           linkText: ERROR_MESSAGE_03_SUB,
           linkUrl: BUSAN_LIBRARY_URL,
         });
-        return true;
       }
-
       // 기타 오류
-      errorFunc.fail(ERROR_MESSAGE_02);
-      return true;
+      else errorFunc.fail(ERROR_MESSAGE_02);
     })
     // HTTP Status가 200이 아니면 전부 에러 처리합니다.
     .catch(() => errorFunc.fail(ERROR_MESSAGE_02));

@@ -18,15 +18,18 @@ const SEND_VP_API_URL = '/api/v1/request_required_vp';
 const EMAIL_CERT_API_URL = '/api/v1/auth/email/request';
 const VERIFY_EMAIL_CERT_API_URL = '/api/v1/auth/email/verify';
 const REQUEST_VC_API_URL = '/api/v1/issue_vc';
+const PRECONDITION_API_URL = '/api/v1/precondition';
 
 const EMAIL_CERT_PAGE_TITLE = '이메일 인증';
 
 const MODAL_INVALID_ENV = '유효하지 않은 환경에서 실행할 수 없습니다.';
 const MODAL_SERVER_ERROR = '오류가 발생했습니다. 잠시 후에 다시 시도해주세요.';
+const MODAL_FAIL_PRECONDITION =
+  '이미 사용중인 사원증이 있습니다. 기존 사원증 폐기 후 발급하시겠습니까?';
 
-const ERROR_MESSAGE_01 = '등록되지 않은 사원';
-const ERROR_MESSAGE_02 = '사원정보 불일치';
-const ERROR_MESSAGE_03 = '서버 통신 오류 등';
+const ERROR_MESSAGE_01 =
+  '사용자 정보와 일치하지 않습니다. 모바일사원증 관리자에게 문의해주세요.';
+const ERROR_MESSAGE_02 = '서버 통신 오류 등';
 
 const EMAIL_TOAST_MESSAGE = '이메일로 인증번호가 발송되었습니다.';
 const EMAIL_TOAST_TIME = 3000;
@@ -56,7 +59,7 @@ const errorFunc = {
 /**
  * @description Api 서버로 VP를 전달합니다.
  * @param {string} vp AA VC 밝급을 위한 VP
- * @returns {Promise<bolean>} 요청 성공 / 실패 여부 반환하는 비동기 객체
+ * @returns {Promise}
  */
 function sendVpToApi(vp) {
   appState.showLoading();
@@ -64,13 +67,11 @@ function sendVpToApi(vp) {
   // HTTP Status가 200이 아니면 전부 에러 처리합니다.
   return post({ url: SEND_VP_API_URL, data: { vp }, strict: true })
     .then((res) => {
-      vpSessionUUID = res;
+      vpSessionUUID = res.data;
       appState.hide();
-      return true;
     })
     .catch(() => {
       errorFunc.cancel(MODAL_SERVER_ERROR);
-      return false;
     });
 }
 
@@ -100,9 +101,11 @@ function sendEmailCert(email) {
   })
     .then((res) => {
       certEmail = email;
-      emailSessionUUID = res.data.referrer_token;
+      emailSessionUUID = res.data.data.referrer_token;
+
       appState.hide();
       toast.show(EMAIL_TOAST_MESSAGE, EMAIL_TOAST_TIME);
+
       return true;
     })
     .catch(() => {
@@ -113,6 +116,7 @@ function sendEmailCert(email) {
 
 /**
  * @description API 서버에 사원증 VC를 요청합니다
+ * @returns {Promise}
  */
 function requestVcFromApi() {
   // 사전에 이메일 인증 발송을 요청한 적이 없거나 VP를 등록한 적이 업으면 실행을 취소합니다.
@@ -128,27 +132,50 @@ function requestVcFromApi() {
   })
     .then((res) => {
       // 요청 성공 시 VCS 문자열을 받습니다.
-      if (typeof res === 'string') {
-        issuedVC(res, () => errorFunc(MODAL_INVALID_ENV));
-        return true;
-      }
-
+      if (res.ok) issuedVC(res.data, () => errorFunc(MODAL_INVALID_ENV));
       // 발급 조건 미달 오류
-      if (res.message === 'KE001') {
+      else if (['KE001', 'KE002'].includes(res.data.data.message)) {
         errorFunc.cancel(ERROR_MESSAGE_01);
-        return true;
       }
-      if (res.message === 'KE002') {
-        errorFunc.cancel(ERROR_MESSAGE_02);
-        return true;
-      }
-
       // 기타 오류
-      throw new Error('Undefined Condition');
+      else throw new Error('Undefined Condition');
     })
     .catch(() => {
-      errorFunc.cancel(ERROR_MESSAGE_03);
-      return false;
+      errorFunc.cancel(ERROR_MESSAGE_02);
+    });
+}
+
+/**
+ * @description 사원증 중복 발급을 확인합니다.
+ * @returns {Promise} 요청 성공 / 실패 여부 반환하는 비동기 객체
+ */
+function checkPrecondition() {
+  // 사전에 이메일 인증 발송을 요청한 적이 없으면 실행을 취소합니다.
+  if (!certEmail) {
+    errorFunc.cancel(MODAL_SERVER_ERROR);
+    return Promise.resolve(false);
+  }
+
+  return get({
+    url: PRECONDITION_API_URL,
+    data: { email: certEmail },
+    strict: false,
+  })
+    .then((res) => {
+      // 요청 성공 시 사원증 VC를 요청합니다
+      if (res.ok) requestVcFromApi();
+      // 사원증 중복시 유저의 선택에 따라 후처리
+      else if (res.status === 400 && res.data.message === 'KE003') {
+        appState.showModal(MODAL_FAIL_PRECONDITION, () => requestVcFromApi(), {
+          subBtnText: '취소',
+          onSubClick: cancel,
+        });
+      }
+      // 기타 오류
+      else throw new Error('Undefined Condition');
+    })
+    .catch(() => {
+      errorFunc.cancel(ERROR_MESSAGE_02);
     });
 }
 
@@ -174,15 +201,17 @@ function verifyEmailCert(cert) {
   })
     .then((res) => {
       // 이메일 인증 번호 검증 성공
-      if (res.data) {
-        requestVcFromApi();
+      if (res.ok) {
+        checkPrecondition();
         return true;
       }
+
       // 이메일 인증 번호 검증 실패
-      if (res.id === 'unauthorized') {
+      if (res.data.id === 'unauthorized') {
         appState.hide();
         return false;
       }
+
       // 기타 오류
       throw new Error();
     })

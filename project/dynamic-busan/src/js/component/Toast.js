@@ -7,6 +7,10 @@ export default class Toast {
     model.createToast(this);
   }
 
+  get element() {
+    return model.getElement(this);
+  }
+
   /**
    * @description Toast Message를 보여줍니다.
    * @param {string} str Message 내용

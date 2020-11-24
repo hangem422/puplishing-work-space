@@ -14,8 +14,6 @@ import createDetailPage from './comp/Detail';
 /*  Config Data  */
 /* ------------- */
 
-const DOCUMENT_TITLE = '이용약관';
-const DOCUMENT_DETAIL_TITLE = '공지사항 상세내용';
 const PATHNAME = '/html/notice.html';
 const NOICE_DATA_URL = 'https://svc.mykeepin.com/api/v1/notice';
 
@@ -85,13 +83,11 @@ if (window) {
       // 라우터에 함수를 추가합니다.
       router.setRouterFunc('/detail', ({ query }) => {
         const id = query.id || '0';
-        document.title = DOCUMENT_DETAIL_TITLE;
         detailPage.renderDetail(id);
         pageSlider.movePage(1);
       });
 
       router.setRouterFunc('default', () => {
-        document.title = DOCUMENT_TITLE;
         if (pageSlider.current !== 0) pageSlider.movePage(0);
       });
 

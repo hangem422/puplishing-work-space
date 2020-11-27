@@ -8,7 +8,7 @@ class ListBoard {
    * @param {HTMLLIElement[]} itemList List Board에 들어갈 Item들의 리스트
    * @param {(index: number, item: HTMLElement) => void} onClickFunction Item의 온클릭 이벤트 리스너
    */
-  constructor(separatorClass, itemList = [], onClickFunction) {
+  constructor(separatorClass, itemList, onClickFunction) {
     model.createListBoard(
       typeof separatorClass === 'string' ? separatorClass : '',
       typeof onClickFunction === 'function' ? onClickFunction : () => {},

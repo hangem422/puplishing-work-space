@@ -31,7 +31,7 @@ export function setOnClick(onClick, thisArg) {
 }
 
 export function getOnClick(thisArg) {
-  return _onClick.set(thisArg);
+  return _onClick.get(thisArg);
 }
 
 export function setElement(element, thisArg) {
@@ -45,6 +45,7 @@ export function getElement(thisArg) {
 /**
  * @description List Board에 Item을 추가합니다.
  * @param {HTMLElement} item 추가할 Item
+ * @param {this} thisArg
  */
 export function addItem(item, thisArg) {
   const separatorClass = _separatorClass.get(thisArg);

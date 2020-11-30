@@ -53,7 +53,7 @@ export function getElement(thisArg) {
 
 export function setTimer(timer, thisArg) {
   // eslint-disable-next-line no-use-before-define
-  cancleTimer();
+  cancleTimer(thisArg);
   _timer.set(thisArg, timer);
 }
 
@@ -101,7 +101,7 @@ export function show(str, time, thisArg) {
   element.classList.add(ACTIVE_ELEMENT_CLASS);
 
   // 일정시간이 지나면 자동으로 숨깁니다.
-  const timer = setTimeout(() => hide(), time);
+  const timer = setTimeout(() => hide(thisArg), time);
   _timer.set(thisArg, timer);
 }
 

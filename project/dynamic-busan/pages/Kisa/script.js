@@ -1,8 +1,7 @@
 /* eslint-disable no-unused-vars */
 import { appendAllChild } from '../../src/js/util/dom';
-import { requestVP, issuedVC, fail, cancel } from '../../src/js/util/os';
+import { isIOS, requestVP, issuedVC, fail, cancel } from '../../src/js/util/os';
 import { post, get } from '../../src/js/util/ajax';
-import Router from '../../src/js/module/RouterWithCB';
 import AppState from '../../src/js/component/AppState';
 import Toast from '../../src/js/component/Toast';
 
@@ -26,10 +25,8 @@ const MODAL_INVALID_ENV = '유효하지 않은 환경에서 실행할 수 없습
 const MODAL_SERVER_ERROR = '오류가 발생했습니다. 잠시 후에 다시 시도해주세요.';
 const MODAL_FAIL_PRECONDITION =
   '이미 사용중인 사원증이 있습니다. 기존 사원증 폐기 후 발급하시겠습니까?';
-
-const ERROR_MESSAGE_01 =
+const MODAL_FAIL_VC =
   '사용자 정보와 일치하지 않습니다. 모바일사원증 관리자에게 문의해주세요.';
-const ERROR_MESSAGE_02 = '서버 통신 오류 등';
 
 const EMAIL_TOAST_MESSAGE = '이메일로 인증번호가 발송되었습니다.';
 const EMAIL_TOAST_TIME = 3000;
@@ -38,7 +35,6 @@ let certEmail = '';
 let vpSessionUUID = '';
 let emailSessionUUID = '';
 
-const router = new Router(); // Callback으로 동작하는 라우터를 생성합니다.
 const appState = new AppState(); // 로딩과 모달 컴포넌트를 생성합니다.
 const toast = new Toast(); // 토스트 메시지 컴포넌트를 생성합니다.
 
@@ -127,7 +123,7 @@ function requestVcFromApi() {
 
   return get({
     url: REQUEST_VC_API_URL,
-    data: { email: certEmail },
+    data: { email: certEmail, client_os: isIOS() ? 'IOS' : 'AOS' },
     headers: { 'referrer-token': vpSessionUUID },
   })
     .then((res) => {
@@ -135,13 +131,13 @@ function requestVcFromApi() {
       if (res.ok) issuedVC(res.data, () => errorFunc(MODAL_INVALID_ENV));
       // 발급 조건 미달 오류
       else if (['KE001', 'KE002'].includes(res.data.data.message)) {
-        errorFunc.cancel(ERROR_MESSAGE_01);
+        errorFunc.cancel(MODAL_FAIL_VC);
       }
       // 기타 오류
       else throw new Error('Undefined Condition');
     })
     .catch(() => {
-      errorFunc.cancel(ERROR_MESSAGE_02);
+      errorFunc.cancel(MODAL_SERVER_ERROR);
     });
 }
 
@@ -175,7 +171,7 @@ function checkPrecondition() {
       else throw new Error('Undefined Condition');
     })
     .catch(() => {
-      errorFunc.cancel(ERROR_MESSAGE_02);
+      errorFunc.cancel(MODAL_SERVER_ERROR);
     });
 }
 
@@ -234,10 +230,10 @@ if (window) {
     document.title = EMAIL_CERT_PAGE_TITLE;
 
     // VP를 API 서버에 등록 후 시작합니다.
-    appState.showLoading();
-    requestVP('window.sendVpToApi', () =>
-      errorFunc.showModal(MODAL_INVALID_ENV),
-    );
+    // appState.showLoading();
+    // requestVP('window.sendVpToApi', () =>
+    //   errorFunc.showModal(MODAL_INVALID_ENV),
+    // );
 
     // Page를 Render할 Element를 가져옵니다.
     const root = document.getElementsByClassName('root')[0];
@@ -248,6 +244,8 @@ if (window) {
       verifyEmailCert,
       errorFunc.showModal,
     );
+
+    setTimeout(() => toast.show(EMAIL_TOAST_MESSAGE, 3000), 0);
 
     appendAllChild(root, [toast.element, appState.element, emailCertPage]);
   };

@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import { appendAllChild } from '../../src/js/util/dom';
 import { isIOS, requestVP, issuedVC, fail, cancel } from '../../src/js/util/os';
 import { post, get } from '../../src/js/util/ajax';
@@ -230,10 +229,10 @@ if (window) {
     document.title = EMAIL_CERT_PAGE_TITLE;
 
     // VP를 API 서버에 등록 후 시작합니다.
-    // appState.showLoading();
-    // requestVP('window.sendVpToApi', () =>
-    //   errorFunc.showModal(MODAL_INVALID_ENV),
-    // );
+    appState.showLoading();
+    requestVP('window.sendVpToApi', () =>
+      errorFunc.showModal(MODAL_INVALID_ENV),
+    );
 
     // Page를 Render할 Element를 가져옵니다.
     const root = document.getElementsByClassName('root')[0];
@@ -244,8 +243,6 @@ if (window) {
       verifyEmailCert,
       errorFunc.showModal,
     );
-
-    setTimeout(() => toast.show(EMAIL_TOAST_MESSAGE, 3000), 0);
 
     appendAllChild(root, [toast.element, appState.element, emailCertPage]);
   };

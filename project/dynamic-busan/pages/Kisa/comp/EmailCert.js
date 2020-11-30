@@ -253,7 +253,10 @@ function createEmailCertPage(sendEmailCertFunc, submitFunc, modalFunc) {
   /* ------------------------- */
 
   // 이메일 입력 onChangeEvent
-  emailInput.addEventListener('input', setActiveCertReqBtn);
+  emailInput.addEventListener('input', (event) => {
+    if (event.target.value.length <= 50) setActiveCertReqBtn();
+    else event.target.value = event.target.value.slice(0, -1);
+  });
 
   // 인증 번호 입력 onChangeEvent
   certInput.addEventListener('input', (event) => {

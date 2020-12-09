@@ -181,6 +181,7 @@ export function hideAppState(thisArg) {
   element.classList.remove(ACTIVE_POPUP_CLASS);
   modalWrapper.classList.remove(ACTIVE_POPUP_CLASS);
   loadingWrapper.classList.remove(ACTIVE_POPUP_CLASS);
+  _state.set(thisArg, false);
 }
 
 /**

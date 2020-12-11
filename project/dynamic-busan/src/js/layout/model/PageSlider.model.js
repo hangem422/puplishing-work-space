@@ -54,6 +54,14 @@ export function getSeparatorClass(thisArg) {
   return _separatorClass.get(thisArg);
 }
 
+export function setWrapper(wrapper, thisArg) {
+  _wrapper.set(thisArg, wrapper);
+}
+
+export function getWrapper(thisArg) {
+  return _wrapper.get(thisArg);
+}
+
 export function setElement(element, thisArg) {
   _element.set(thisArg, element);
 }

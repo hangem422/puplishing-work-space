@@ -60,6 +60,10 @@ export function getElement(thisArg) {
   return _element.get(thisArg);
 }
 
+/**
+ * @description 현재 활성화된 Item이 화면에 보이지 않을 경우 스크롤을 강제 이동합니다.
+ * @param {this} thisArg
+ */
 export function focusActiveItem(thisArg) {
   const element = _element.get(thisArg);
   const active = _active.get(thisArg);
@@ -79,6 +83,7 @@ export function focusActiveItem(thisArg) {
   const diff = end - window.innerHeight;
   if (diff <= 0) return;
 
+  // 스크롤을 강제 이동시킵니다.
   window.scrollTo({ top: window.scrollY + diff, behavior: 'smooth' });
 }
 
@@ -122,6 +127,8 @@ export function changeActive(index, thisArg) {
   node.childNodes[1].style.height = `${node.childNodes[2].offsetHeight}px`;
   _active.set(thisArg, index);
 
+  // focusActiveItem 함수를 바로 호출하면 CSS Transition이 끝나지 않아 제대로된 DOM 수치를 가져올 수 없습니다.
+  // 현재 DrawerBoard Item 활성화에 적용된 Transition이 끝난 후에 함수를 호출합니다.
   setTimeout(() => focusActiveItem(thisArg), ANIMATION_DURATION);
 }
 

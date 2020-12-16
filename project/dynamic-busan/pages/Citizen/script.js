@@ -195,7 +195,7 @@ if (window) {
     termsOfUsePage.addPage(detailPage.element);
 
     // 라우터에 함수를 추가합니다.
-    router.setRouterFunc('/detail', ({ query }) => {
+    router.addRouterFunc('/detail', ({ query }) => {
       const index = query.index || 0;
       // 링크가 있는 약관이면 링크로 리다이렉션 시킵니다.
       if (data[index].link) window.location.replace(data[index].link);
@@ -204,12 +204,12 @@ if (window) {
       termsOfUsePage.movePage(1);
     });
 
-    router.setRouterFunc('/certification', () => {
+    router.addRouterFunc('/certification', () => {
       document.title = CERTIFICATION_TITLE;
       stackSlider.moveNext();
     });
 
-    router.setRouterFunc('default', () => {
+    router.addRouterFunc('default', () => {
       document.title = TERM_OF_USE_TITLE;
       if (termsOfUsePage.current !== 0) termsOfUsePage.movePage(0);
       if (stackSlider.current !== 0) {

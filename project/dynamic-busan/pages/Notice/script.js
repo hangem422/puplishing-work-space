@@ -81,13 +81,13 @@ if (window) {
       pageSlider.addPage(detailPage.element);
 
       // 라우터에 함수를 추가합니다.
-      router.setRouterFunc('/detail', ({ query }) => {
+      router.addRouterFunc('/detail', ({ query }) => {
         const id = query.id || '0';
         detailPage.renderDetail(id);
         pageSlider.movePage(1);
       });
 
-      router.setRouterFunc('default', () => {
+      router.addRouterFunc('default', () => {
         if (pageSlider.current !== 0) pageSlider.movePage(0);
       });
 

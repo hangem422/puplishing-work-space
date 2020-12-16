@@ -219,14 +219,14 @@ if (window) {
     stackSlider.addPage(requestPage);
 
     // 라우터에 함수를 추가합니다.
-    router.setRouterFunc('/request', () => {
+    router.addRouterFunc('/request', () => {
       document.title = REQUEST_PAGE_TITLE;
       stackSlider.moveNext();
       initEmailCertPage();
     });
 
     // 라우터의 디폴트 콜백 함수를 추가합니다.
-    router.setRouterFunc('default', () => {
+    router.addRouterFunc('default', () => {
       document.title = EMAIL_CERT_PAGE_TITLE;
       while (stackSlider.current !== 0) stackSlider.movePrev();
       initRequestPage();

@@ -53,7 +53,7 @@ if (window) {
     stackSlider.addPage(history.element);
 
     // 라우터에 함수를 추가합니다.
-    router.setRouterFunc('/history', ({ query }) => {
+    router.addRouterFunc('/history', ({ query }) => {
       appState.showLoading();
       getHistory(data.history[query.file])
         .then((res) => {
@@ -71,7 +71,7 @@ if (window) {
         });
     });
 
-    router.setRouterFunc('default', () => {
+    router.addRouterFunc('default', () => {
       while (stackSlider.current !== 0) stackSlider.movePrev();
     });
 

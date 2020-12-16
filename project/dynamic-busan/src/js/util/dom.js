@@ -1,4 +1,19 @@
 /**
+ * @description data가 Child Property에 적합한 타입인지 검사하고, 아닐경우 적절하게 변형합니다.
+ * @param {*} data Child Property로 사용될 데이터
+ * @returns {HTMLElement | HTMLElement[] | string | string[] | null}
+ */
+export function filterToValidChild(data) {
+  // 데이터가 배열일 경우
+  if (Array.isArray(data)) {
+    return data.filter((val) => val instanceof HTMLElement);
+  }
+
+  // 데이터가 벼열이 아닐 경우
+  return typeof data === 'string' || data instanceof HTMLElement ? data : null;
+}
+
+/**
  * @description HTMl Elemnt에 Child를 한번에 추가하도록 도와줍니다.
  * @param {HTMLElement} element 자식을 추가할 HTML Element
  * @param {HTMLElement | HTMLElement[] | string} child Element 추가할 Child

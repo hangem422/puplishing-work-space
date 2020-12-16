@@ -32,11 +32,11 @@ const LIBRARY_MEMBER_MSG =
 const INTEGRATED_MEMBER_MSG =
   '도서관 회원증은 통합회원인증 후 발급받을 수 있습니다.';
 const EXPIRE_MEMBER_MSG =
-  '귀하는 개인정보이용재동의(2년 주기) 대상자입니다. 재동의절차를 진행하지 않을 경우 도서관서비스 이용이 제한될 수 있습니다.';
+  '귀하는 개인정보이용재동의(2년 주기) 대상자입니다. 개인정보재동의 이후 도서관 회원증을 발급받을 수 있습니다.';
 
 const LIBRARY_MEMBER_SUB = '회원가입 바로가기';
 const INTEGRATED_MEMBER_SUB = '통합회원인증 바로가기';
-const EXPIRE_MEMBER_SUB = '통합회원인증 바로가기';
+const EXPIRE_MEMBER_SUB = '개인정보재동의 바로가기';
 
 const appState = new AppState(); // 로딩과 모달 컴포넌트를 생성합니다.
 

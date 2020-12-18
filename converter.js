@@ -12,6 +12,7 @@ const DEV_CC = {
 const PROD_CC = {
   '\\[\\[': '[ [', // For Springboot
   '\\]\\]': '] ]', // For Springboot
+  // 'https://bstatic.mykeepin.com': 'https://static.metadium.biz', // For KISA Static Web Server Link
   'https://bstatic.mykeepin.com': 'https://static.blockchainbusan.kr', // For Static Web Server Link
   'https://svc.mykeepin.com': 'https://svc.blockchainbusan.kr', // For Notice List Api Server Link
   '%EMAIL_CERT_SUFFIX%': '@btp.or.kr', // For Certification Email Suffix

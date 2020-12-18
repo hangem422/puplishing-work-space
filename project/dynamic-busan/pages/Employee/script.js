@@ -55,7 +55,7 @@ const errorFunc = {
 /**
  * @description Api 서버로 VP를 전달합니다.
  * @param {string} vp AA VC 밝급을 위한 VP
- * @returns {Promise<bolean>} 요청 성공 / 실패 여부 반환하는 비동기 객체
+ * @returns {Promise}
  */
 function sendVpToApi(vp) {
   appState.showLoading();
@@ -63,13 +63,11 @@ function sendVpToApi(vp) {
   // HTTP Status가 200이 아니면 전부 에러 처리합니다.
   return post({ url: SEND_VP_API_URL, data: { vp }, strict: true })
     .then((res) => {
-      vpSessionUUID = res;
+      vpSessionUUID = res.data;
       appState.hide();
-      return true;
     })
     .catch(() => {
       errorFunc.cancel(MODAL_SERVER_ERROR);
-      return false;
     });
 }
 
@@ -99,9 +97,11 @@ function sendEmailCert(email) {
   })
     .then((res) => {
       certEmail = email;
-      emailSessionUUID = res.data.referrer_token;
+      emailSessionUUID = res.data.data.referrer_token;
+
       appState.hide();
       toast.show(EMAIL_TOAST_MESSAGE, EMAIL_TOAST_TIME);
+
       return true;
     })
     .catch(() => {
@@ -132,16 +132,18 @@ function verifyEmailCert(cert) {
   })
     .then((res) => {
       // 이메일 인증 번호 검증 성공
-      if (res.data) {
+      if (res.ok) {
         appState.hide();
         router.redirect('/request');
         return true;
       }
+
       // 이메일 인증 번호 검증 실패
-      if (res.id === 'unauthorized') {
+      if (res.data.id === 'unauthorized') {
         appState.hide();
         return false;
       }
+
       // 기타 오류
       throw new Error();
     })
@@ -170,7 +172,7 @@ function requestVcFromApi(department, position) {
     strict: true,
   })
     .then((res) => {
-      issuedVC(res, () => errorFunc(MODAL_INVALID_ENV));
+      issuedVC(res.data, () => errorFunc(MODAL_INVALID_ENV));
       return true;
     })
     .catch(() => {
@@ -217,14 +219,14 @@ if (window) {
     stackSlider.addPage(requestPage);
 
     // 라우터에 함수를 추가합니다.
-    router.setRouterFunc('/request', () => {
+    router.addRouterFunc('/request', () => {
       document.title = REQUEST_PAGE_TITLE;
       stackSlider.moveNext();
       initEmailCertPage();
     });
 
     // 라우터의 디폴트 콜백 함수를 추가합니다.
-    router.setRouterFunc('default', () => {
+    router.addRouterFunc('default', () => {
       document.title = EMAIL_CERT_PAGE_TITLE;
       while (stackSlider.current !== 0) stackSlider.movePrev();
       initRequestPage();

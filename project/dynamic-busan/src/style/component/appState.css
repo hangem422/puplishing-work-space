@@ -43,7 +43,7 @@
   visibility: visible;
 }
 
-.modal-wrapper .single-btn-modal {
+.modal-wrapper .btn-modal {
   opacity: 0;
   width: 125%;
   font-size: 20px;
@@ -56,20 +56,41 @@
   transition-timing-function: var(--transition-timing-function);
 }
 
-.modal-wrapper .single-btn-modal > p {
+.modal-wrapper .btn-modal.ios {
+  border-radius: 14px;
+  background-color: var(--pop-up-bg-color-ios);
+}
+
+.modal-wrapper.active .btn-modal {
+  visibility: visible;
+  opacity: 1;
+  width: 100%;
+  font-size: 16px;
+  overflow: hidden;
+}
+
+.modal-wrapper .btn-modal .modal-btn-wrapper {
+  display: flex;
+  border-top: 1px solid var(--line-color);
+}
+
+.modal-wrapper .btn-modal.ios .modal-btn-wrapper {
+  border-top: 1px solid var(--pop-up-line-color-ios);
+}
+
+.modal-wrapper .btn-modal > p {
   font-size: 1em;
   padding: 0em 1.5em;
   margin-top: 2em;
 }
 
-.modal-wrapper .single-btn-modal > p.font-link {
+.modal-wrapper .btn-modal > p.font-link {
   margin-top: 1.25em;
   margin-bottom: 2em;
 }
 
-.modal-wrapper .single-btn-modal > button {
+.modal-wrapper .btn-modal .modal-btn-wrapper > button {
   display: block;
-  color: var(--primary-color-blue);
   font-size: 1em;
   width: 100%;
   height: 3.25em;
@@ -77,26 +98,26 @@
   -webkit-tap-highlight-color: transparent;
   background-color: var(--primary-color-white);
   border: none;
-  border-top: 1px solid var(--line-color);
 }
 
-.modal-wrapper .single-btn-modal.ios {
-  border-radius: 14px;
+.modal-wrapper .btn-modal.ios .modal-btn-wrapper > button {
   background-color: var(--pop-up-bg-color-ios);
 }
 
-.modal-wrapper .single-btn-modal.ios > button {
+.modal-wrapper .btn-modal .modal-btn-wrapper .modal-btn {
+  color: var(--primary-color-blue);
+}
+
+.modal-wrapper .btn-modal.ios .modal-btn-wrapper .modal-btn {
   color: var(--pop-up-text-color-ios);
-  background-color: var(--pop-up-bg-color-ios);
-  border-top: 1px solid var(--pop-up-line-color-ios);
 }
 
-.modal-wrapper.active .single-btn-modal {
-  visibility: visible;
-  opacity: 1;
-  width: 100%;
-  font-size: 16px;
-  overflow: hidden;
+.modal-wrapper .btn-modal .modal-btn-wrapper .modal-sub-btn {
+  border-right: 1px solid var(--line-color);
+}
+
+.modal-wrapper .btn-modal.ios .modal-btn-wrapper .modal-sub-btn {
+  border-right: 1px solid var(--pop-up-line-color-ios);
 }
 
 @keyframes ldio-s5ugu8dwj4l {

@@ -1,11 +1,7 @@
-import { createElement } from '../util/dom';
+import * as model from './model/ShowDetail.model';
 
-/**
- * @description 특정영역만 보여줄 수 있는 클래스
- * @property {string} seperatorClassb 다른 Show Detail과 구분할 수 있는 고유 class
- * @property {number | string | null} cur 현재 활성화된 Element의 Key 값
- * @property {HTMLLIElement[] | { [key: string]: HTMLLIElement }} details Show Detail Element
- */
+/* Show Detail Layout 컴포넌트 */
+
 class ShowDetail {
   /**
    * @description Show Detail의 생성자
@@ -13,36 +9,37 @@ class ShowDetail {
    * @param {HTMLLIElement[] | { [key: string]: HTMLLIElement }} details
    */
   constructor(separatorClass, details) {
-    this.details = details;
-    this.cur = null;
-    this.separatorClass = separatorClass || '';
+    const filteredDetails = {};
 
-    this.wrapper = createElement('div', {
-      class: `show-detail-wrapper ${this.separatorClass}`,
-    });
-    this.element = createElement('div', {
-      class: `show-detail-container ${this.separatorClass}`,
-      child: this.wrapper,
-    });
+    if (typeof details === 'object') {
+      Object.entries(details).forEach(([key, item]) => {
+        if (item instanceof HTMLElement) filteredDetails[key] = item;
+      });
+    }
 
-    (Array.isArray(this.details)
-      ? this.details
-      : Object.values(this.details)
-    ).forEach((item) => {
-      item.style.display = 'none';
-      this.wrapper.appendChild(item);
-    });
+    model.createShowDetail(
+      typeof separatorClass === 'string' ? separatorClass : '',
+      filteredDetails,
+      this,
+    );
+  }
+
+  get element() {
+    return model.getElement(this);
+  }
+
+  get details() {
+    return model.getDetails(this);
   }
 
   /**
-   * @description 약관 데이터의 세부 내용을 보여줍니다.
-   * @param {number | string} index
+   * @description 세부 내용을 보여줍니다.
+   * @param {number | string} key
    */
   renderDetail(key) {
-    if (this.cur !== null) this.details[this.cur].style.display = 'none';
-
-    this.details[key].style.display = 'block';
-    this.cur = key;
+    if (model.getDetails(this)[key] instanceof HTMLElement) {
+      model.renderDetail(key, this);
+    }
   }
 }
 

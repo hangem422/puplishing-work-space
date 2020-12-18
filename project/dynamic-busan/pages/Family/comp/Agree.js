@@ -72,11 +72,11 @@ function createAgreePage(titles, options) {
   /* ------------------------- */
 
   submitElement.addEventListener('click', submitFunc);
-  agreeTerms.onClick = setSubmitBtnActive;
-  agreeTerms.onDetail = function (index) {
+  agreeTerms.setOnClick(setSubmitBtnActive);
+  agreeTerms.setOnDetail((index) => {
     saveLocalStorage(agreeTerms.json);
     onDetailFunc(index);
-  };
+  });
 
   /* ----------- */
   /*  Init Page  */

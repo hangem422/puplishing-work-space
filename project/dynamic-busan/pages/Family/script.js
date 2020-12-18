@@ -55,7 +55,7 @@ const errorFunc = {
 /**
  * @description Api 서버로 VP를 전달합니다.
  * @param {string} vp AA VC 발급을 위한 VP
- * @returns {Promise<bolean>} 요청 성공 / 실패 여부 반환하는 비동기 객체
+ * @returns {Promise}
  */
 function sendVpToApi(vp) {
   appState.showLoading();
@@ -63,14 +63,12 @@ function sendVpToApi(vp) {
   // HTTP Status가 200이 아니면 전부 에러 처리합니다.
   return post({ url: SEND_VP_API_URL, data: { vp }, strict: true })
     .then((res) => {
-      sessionUUID = res;
+      sessionUUID = res.data;
       appState.hide();
       router.redirect('certification');
-      return true;
     })
     .catch(() => {
       errorFunc.fail(ERROR_MESSAGE_02);
-      return false;
     });
 }
 
@@ -101,22 +99,23 @@ function getVcFromApi(rrn, lastChance) {
   })
     .then((res) => {
       // 요청 성공 시 VCS 문자열을 받습니다.
-      if (typeof res === 'string') {
-        issuedVC(res, () => errorFunc(ERROR_MESSAGE_01));
+      if (res.ok) {
+        issuedVC(res.data, () => errorFunc(ERROR_MESSAGE_01));
         return true;
       }
 
       // 발급 조건 미달 오류
-      if (['E001', 'E002', 'E003'].includes(res.message)) {
+      if (['E001', 'E002', 'E003'].includes(res.data.message)) {
         errorFunc.fail(ERROR_MESSAGE_03);
         return true;
       }
       // 주민번호 불일치 오류
-      if (['E004'].includes(res.message)) {
+      if (['E004'].includes(res.data.message)) {
         if (lastChance) errorFunc.cancel(ERROR_MESSAGE_04);
         else appState.hide();
         return false;
       }
+
       // 기타 오류
       errorFunc.fail(ERROR_MESSAGE_02);
       return true;
@@ -196,7 +195,7 @@ if (window) {
     termsOfUsePage.addPage(detailPage.element);
 
     // 라우터에 함수를 추가합니다.
-    router.setRouterFunc('/detail', ({ query }) => {
+    router.addRouterFunc('/detail', ({ query }) => {
       const index = query.index || 0;
       // 링크가 있는 약관이면 링크로 리다이렉션 시킵니다.
       if (data[index].link) window.location.replace(data[index].link);
@@ -205,12 +204,12 @@ if (window) {
       termsOfUsePage.movePage(1);
     });
 
-    router.setRouterFunc('/certification', () => {
+    router.addRouterFunc('/certification', () => {
       document.title = CERTIFICATION_TITLE;
       stackSlider.moveNext();
     });
 
-    router.setRouterFunc('default', () => {
+    router.addRouterFunc('default', () => {
       document.title = TERM_OF_USE_TITLE;
       if (termsOfUsePage.current !== 0) termsOfUsePage.movePage(0);
       if (stackSlider.current !== 0) {

@@ -42,7 +42,7 @@ if (window) {
     pageSlider.addPage(detailPage.element);
 
     // 라우터에 함수를 추가합니다.
-    router.setRouterFunc('/detail', ({ query }) => {
+    router.addRouterFunc('/detail', ({ query }) => {
       const index = query.index || 0;
       // 링크가 있는 약관이면 링크로 리다이렉션 시킵니다.
       if (data[index].link) window.location.replace(data[index].link);
@@ -57,7 +57,7 @@ if (window) {
       pageSlider.movePage(1);
     });
 
-    router.setRouterFunc('default', () => {
+    router.addRouterFunc('default', () => {
       document.title = DOCUMENT_TITLE;
       if (pageSlider.current !== 0) pageSlider.movePage(0);
     });

@@ -73,7 +73,7 @@ function apiHandler(vp) {
     .then((res) => {
       // 요청 성공 시 VCS 문자열을 받습니다.
       if (res.ok) {
-        issuedVC(res, () => errorFunc.fail(ERROR_MESSAGE_01));
+        issuedVC(res.data, () => errorFunc.fail(ERROR_MESSAGE_01));
       }
       // 도서관 회원증 발급 실패
       else if (LIBRARY_MEMBER_ERROR.includes(res.data.message)) {

@@ -16,6 +16,7 @@ module.exports = {
     'global-require': 0,
     'no-param-reassign': 0,
     'no-alert': 0,
+    'no-underscore-dangle': 0,
     'func-names': 0,
     'import/prefer-default-export': 0,
   },

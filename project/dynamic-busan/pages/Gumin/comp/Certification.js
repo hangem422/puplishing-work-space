@@ -86,7 +86,7 @@ function createCertificationPage(submitFunc) {
   /* ------------------------- */
   /*  Event Callback Function  */
   /* ------------------------- */
-  secretTextfield.onChangeFunc = setSubmitBtnActive;
+  secretTextfield.setOnChangeFunc(setSubmitBtnActive);
 
   submitElement.addEventListener('click', () => {
     submitFunc(secretTextfield.text, rrnInvalidCount >= 4).then((result) => {

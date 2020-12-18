@@ -1,5 +1,5 @@
 import { createElement, wrapping } from '../../../src/js/util/dom';
-import { emptyAlarmImage } from '../../../src/js/component/Image';
+import { emptyAlarmImage } from '../../../src/js/component/image';
 
 /* ------------- */
 /*  Config Data  */

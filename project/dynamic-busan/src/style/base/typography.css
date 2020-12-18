@@ -2,7 +2,7 @@
 
 @font-face {
   font-family: 'NanumSquare';
-  unicode-range: U+0020-0040;
+  unicode-range: U+0020-0040, U+AC00-D7A3;
   font-display: swap;
   src: local('NanumSquareBold'),
     url('https://bstatic.mykeepin.com/fonts/NanumSquareBold.woff2')
@@ -17,7 +17,7 @@
 
 @font-face {
   font-family: 'NanumSquare';
-  unicode-range: U+0020-0040;
+  unicode-range: U+0020-0040, U+AC00-D7A3;
   font-display: swap;
   src: local('NanumSquareExtraBold'),
     url('https://bstatic.mykeepin.com/fonts/NanumSquareExtraBold.woff2')

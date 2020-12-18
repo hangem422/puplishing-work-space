@@ -1,41 +1,14 @@
-import { createElement } from '../util/dom';
+import * as model from './model/Toast.model';
 
-const PADDING = 16; // 토스트 메시지가 화면 밑과의 마진
-const ACTIVE_ELEMENT_CLASS = 'activate';
+/* Toast 메시지 컴포넌트 */
 
-/**
- * @description Toast Message 컴포넌트를 생성합니다.
- * @property {HTMLLIElement} text Toast 메시지의 텍스트
- * @property {HTMLLIElement} wrapper Toast 메시지의 메시지 박스
- * @property {HTMLLIElement} element Toast Message Element
- */
-class Toast {
-  /**
-   * @description Toast Message 생성자
-   */
+export default class Toast {
   constructor() {
-    this.text = createElement('p', {
-      class: 'font-text-body2',
-      child: ';',
-    });
-    this.wrapper = createElement('div', {
-      class: 'wrapper toast-wrapper',
-      child: this.text,
-    });
-    this.element = createElement('div', {
-      class: 'toast-container',
-      child: this.wrapper,
-    });
-
-    this.timer = null;
+    model.createToast(this);
   }
 
-  /**
-   * @description 일정 시간이 지나면 토스트 메시지가 자동으로 숨겨지는 것을 멈춥니다.
-   */
-  cancleTimer() {
-    if (this.timer) clearTimeout(this.timer);
-    this.timer = null;
+  get element() {
+    return model.getElement(this);
   }
 
   /**
@@ -44,22 +17,10 @@ class Toast {
    * @param {number} time Message가 보여지는 시간
    */
   show(str, time) {
-    this.text.innerHTML = str;
-    this.element.classList.add(ACTIVE_ELEMENT_CLASS);
-    this.wrapper.style.top = `-${this.wrapper.offsetHeight + PADDING}px`;
-
-    // 일정시간이 지나면 자동으로 숨깁니다.
-    setTimeout(() => this.hide(), time);
-  }
-
-  /**
-   * @description Toast Message를 강제로 숨깁니다.
-   */
-  hide() {
-    this.cancleTimer();
-    this.element.classList.remove(ACTIVE_ELEMENT_CLASS);
-    this.wrapper.style.top = '0px';
+    model.show(
+      typeof str === 'string' ? str : '',
+      typeof time === 'number' ? time : Infinity,
+      this,
+    );
   }
 }
-
-export default Toast;

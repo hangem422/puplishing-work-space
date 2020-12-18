@@ -64,6 +64,36 @@ export function queryURLToObj(str) {
   return obj;
 }
 
+class CustomRes {
+  /**
+   * @param {number} status HTTP Status의 정수치
+   * @param {boolean} ok HTTP Status 코드가 200에서 299중 하나임을 체크
+   * @param {any} data Response Data
+   */
+  constructor(status, ok, data) {
+    this.status = status;
+    this.ok = ok;
+    this.data = data;
+  }
+
+  /**
+   * @description Response 객체로부터 Data를 추출해 CustomRes 객체를 생성합니다.
+   * @param {Response} res Fetch Response
+   * @returns {Promise<CustomRes>}
+   */
+  static render(res) {
+    const contentType = res.headers.get('content-type');
+
+    return (function () {
+      if (contentType.startsWith('application/json')) return res.json();
+      if (contentType.startsWith('text/plain')) return res.text();
+      throw new Error(`Unsupported response content-type: ${contentType}`);
+    })().then((data) => {
+      return new CustomRes(res.status, res.ok, data);
+    });
+  }
+}
+
 /**
  * @description Post Ajax 요청 비동기 객체를 반환합니다.
  * @typedef {object} option
@@ -72,7 +102,7 @@ export function queryURLToObj(str) {
  * @property {object} headers Request Header
  * @property {boolean} strict HTTP Status가 200이 아니면 에러 발생
  * @param {option} option Post Ajax의 옵션 값
- * @returns {Promise<any>} Post Ajax 요청 비동기 객체
+ * @returns {Promise<CustomRes>} Post Ajax 요청 비동기 객체
  */
 export function post(option) {
   const headers = typeof option.headers === 'object' ? option.headers : {};
@@ -88,10 +118,7 @@ export function post(option) {
       throw new Error(`HTTP status is ${res.status}`);
     }
 
-    const contentType = res.headers.get('content-type');
-    if (contentType.startsWith('application/json')) return res.json();
-    if (contentType.startsWith('text/plain')) return res.text();
-    throw new Error(`Unsupported response content-type: ${contentType}`);
+    return CustomRes.render(res);
   });
 }
 
@@ -103,7 +130,7 @@ export function post(option) {
  * @property {object} headers Request Header
  * @property {boolean} strict HTTP Status가 200이 아니면 에러 발생
  * @param {option} option Get Ajax의 옵션 값
- * @returns {Promise<any>} Get Ajax 요청 비동기 객체
+ * @returns {Promise<CustomRes>} Get Ajax 요청 비동기 객체
  */
 export function get(option) {
   const headers = typeof option.headers === 'object' ? option.headers : {};
@@ -118,9 +145,6 @@ export function get(option) {
       throw new Error(`HTTP status is ${res.status}`);
     }
 
-    const contentType = res.headers.get('content-type');
-    if (contentType.startsWith('application/json')) return res.json();
-    if (contentType.startsWith('text/plain')) return res.text();
-    throw new Error(`Unsupported response content-type: ${contentType}`);
+    return CustomRes.render(res);
   });
 }
